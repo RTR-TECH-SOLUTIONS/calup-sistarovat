@@ -1,0 +1,109 @@
+---
+/** Paginile cu text (lista, zona). Harta are ecranul ei, fără antet. */
+import '../styles/global.css';
+import Cap from '../components/Cap.astro';
+import Navigatie from '../components/Navigatie.astro';
+import { cale } from '../lib/cale';
+
+interface Props {
+  titlu: string;
+  curent: 'parcele' | 'zona';
+  descriere?: string;
+}
+
+const { titlu, curent, descriere } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ro">
+  <head>
+    <Cap titlu={titlu} descriere={descriere} />
+  </head>
+  <body>
+    <header class="antet">
+      <div class="cadru antet-rand">
+        <a class="marca" href={cale('/')}>
+          <span class="marca-nume">Calup 4</span>
+          <span class="marca-loc">Șiștarovăț, jud. Arad</span>
+        </a>
+        <Navigatie curent={curent} />
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="subsol">
+      <div class="cadru">
+        <p>Previzualizare. Contururile și suprafețele vin din exportul cadastral primit și au caracter informativ.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  .cadru {
+    width: 100%;
+    max-width: 1160px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 32px);
+  }
+</style>
+
+<style>
+  .antet {
+    background: var(--color-paper-3);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .antet-rand {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px 24px;
+    min-height: var(--header-h);
+  }
+
+  .marca {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 12px 0 10px;
+    color: var(--color-ink);
+    text-decoration: none;
+    align-self: center;
+  }
+
+  .marca-nume {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    line-height: 1;
+  }
+
+  .marca-loc {
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .subsol {
+    margin-top: clamp(48px, 8vw, 96px);
+    padding-block: 20px 28px;
+    border-top: 1px solid var(--color-hairline);
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  @media (max-width: 640px) {
+    .antet-rand {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .marca {
+      align-self: flex-start;
+      padding-bottom: 0;
+    }
+  }
+</style>

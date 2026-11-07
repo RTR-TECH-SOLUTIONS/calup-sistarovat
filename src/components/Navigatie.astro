@@ -1,0 +1,61 @@
+---
+import { cale } from '../lib/cale';
+
+type Sectiune = 'harta' | 'parcele' | 'zona';
+
+interface Props {
+  curent: Sectiune;
+}
+
+const { curent } = Astro.props;
+
+const legaturi: { id: Sectiune; text: string; href: string }[] = [
+  { id: 'harta', text: 'Hartă', href: cale('/') },
+  { id: 'parcele', text: 'Lista parcelelor', href: cale('/parcele/') },
+  { id: 'zona', text: 'Despre zonă', href: cale('/zona/') },
+];
+---
+
+<nav class="navigatie" aria-label="Secțiuni">
+  <ul>
+    {
+      legaturi.map((l) => (
+        <li>
+          <a href={l.href} aria-current={l.id === curent ? 'page' : undefined}>
+            {l.text}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  ul {
+    display: flex;
+    gap: 20px;
+  }
+
+  a {
+    display: block;
+    padding: 10px 0 8px;
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition:
+      color 150ms ease-out,
+      border-color 150ms ease-out;
+  }
+
+  a:hover {
+    color: var(--color-ink);
+  }
+
+  a[aria-current='page'] {
+    color: var(--color-ink);
+    font-weight: 500;
+    border-bottom-color: var(--color-ink);
+  }
+</style>

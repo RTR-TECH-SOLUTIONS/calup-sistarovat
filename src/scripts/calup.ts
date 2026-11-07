@@ -8,35 +8,12 @@ import type { MapGeoJSONFeature, MapMouseEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { cale } from '../lib/cale';
 import { styleBasemap, FONT_HARTA, type ModBasemap } from '../lib/basemap';
+import { ha, mp, nf, nrParcele, numeCategorie, tarlaParcela, type Colectie, type ProprietatiParcela } from '../lib/parcela';
 
 // Vezi harta.ts: fără calea explicită a workerului sursele GeoJSON rămân goale.
 setWorkerUrl(cale('/maplibre/maplibre-gl-worker.mjs'));
 
-interface ProprietatiParcela {
-  cad: string;
-  parcela: string;
-  tarla: string;
-  suprafata: number;
-  categorie: string;
-  vanzare: boolean;
-}
-
-type Colectie = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon, ProprietatiParcela>;
-
 const SURSA = 'parcele';
-
-/** Denumirile din cadastru, cu diacritice, așa cum le scrie un notar. */
-const CATEGORII: Record<string, string> = {
-  arabil: 'Arabil',
-  pasune: 'Pășune',
-  faneata: 'Fâneață',
-  drum: 'Drum',
-  curti: 'Curți construcții',
-  ape: 'Ape',
-  padure: 'Pădure',
-  neproductiv: 'Neproductiv',
-  altele: 'Altele',
-};
 
 /**
  * Culoarea parcelelor de vânzare depinde de fundal. Pe satelit verdele se
@@ -53,10 +30,6 @@ const FUNDAL: Record<ModBasemap, { contur: string; umplere: string; opacitate: n
   harta: { contur: '#6b6457', umplere: '#d8d2c4', opacitate: 0.28 },
   teren: { contur: '#f4f1ea', umplere: '#f4f1ea', opacitate: 0.04 },
 };
-
-const nf = new Intl.NumberFormat('ro-RO');
-const mp = (n: number) => `${nf.format(n)} m²`;
-const ha = (n: number) => `${new Intl.NumberFormat('ro-RO', { maximumFractionDigits: 2 }).format(n / 10000)} ha`;
 
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
 
@@ -222,22 +195,38 @@ function fisa(p: ProprietatiParcela) {
       <p class="fisa-titlu">Nr. cadastral <strong>${p.cad}</strong></p>
       <dl>
         <div><dt>Suprafață</dt><dd>${mp(p.suprafata)}<span> · ${ha(p.suprafata)}</span></dd></div>
-        <div><dt>Categorie</dt><dd>${CATEGORII[p.categorie] ?? p.categorie}</dd></div>
-        <div><dt>Tarla / parcelă</dt><dd>T${p.tarla} / P${p.parcela}</dd></div>
+        <div><dt>Categorie</dt><dd>${numeCategorie(p.categorie)}</dd></div>
+        <div><dt>Tarla / parcelă</dt><dd>${tarlaParcela(p)}</dd></div>
       </dl>
     </div>`;
 }
 
-function selecteaza(f: GeoJSON.Feature | MapGeoJSONFeature, centreaza = false) {
+function selecteaza(f: GeoJSON.Feature | MapGeoJSONFeature, centreaza = false, durata = redusa() ? 0 : 1400) {
   selectat = Number(f.id);
   harta.setFilter('selectat', ['==', ['id'], selectat] as never);
   const b = limite([f as Colectie['features'][number]]);
-  if (centreaza) harta.fitBounds(b, { padding: margini(120), maxZoom: 17, duration: redusa() ? 0 : 1400 });
   // Fișa stă deasupra parcelei, nu peste ea: parcela e ce vrei să vezi.
   popup
     .setLngLat([b.getCenter().lng, b.getNorth()])
     .setHTML(fisa(f.properties as ProprietatiParcela))
     .addTo(harta);
+  // Încadrarea vine după fișă, ca să știm cât loc ocupă ea deasupra parcelei.
+  if (centreaza) harta.fitBounds(b, { padding: marginiSelectie(), maxZoom: 17, duration: durata });
+}
+
+/**
+ * Încadrarea unei parcele selectate. Fișa stă deasupra ei, deci sus lăsăm
+ * cât e fișa de înaltă, plus rândul cu butoanele de fundal pe telefon.
+ */
+function marginiSelectie() {
+  const lat = window.innerWidth > 900;
+  const m = margini(32);
+  // Pe telefon atribuirea hărții stă deschisă chiar deasupra panoului.
+  if (!lat) m.bottom += 36;
+  const inaltimeFisa = popup.isOpen() ? popup.getElement().offsetHeight : 200;
+  const sus = (lat ? 16 : 56) + inaltimeFisa + 12;
+  // Pe un ecran scurt marginile n-au voie să acopere tot, altfel MapLibre nu mai încadrează deloc.
+  return { ...m, top: Math.min(sus, Math.max(m.top, window.innerHeight - m.bottom - 80)) };
 }
 
 /** Panoul ocupă stânga pe desktop și josul pe telefon; încadrările îl ocolesc. */
@@ -320,13 +309,13 @@ function completeazaPanou() {
     pe.set(f.properties.categorie, c);
   }
   el('nr-vanzare')!.textContent = nf.format(vanzare.length);
-  el('nr-total')!.textContent = nf.format(date.features.length);
+  el('nr-total')!.textContent = nrParcele(date.features.length);
   el('ha-vanzare')!.textContent = ha(total);
   el('pe-categorii')!.innerHTML = [...pe.entries()]
     .sort((a, b) => b[1].s - a[1].s)
     .map(
       ([c, v]) =>
-        `<li><span>${CATEGORII[c] ?? c}</span><span class="cifre">${v.n} parcele · ${ha(v.s)}</span></li>`,
+        `<li><span>${numeCategorie(c)}</span><span class="cifre">${nrParcele(v.n)} · ${ha(v.s)}</span></li>`,
     )
     .join('');
 }
@@ -365,16 +354,20 @@ async function porneste() {
 
   const vanzare = date.features.filter((f) => f.properties.vanzare);
   const incadrare = limite(vanzare.length ? vanzare : date.features);
+  // Din lista de parcele se ajunge aici cu ?cad=…: atunci mergem direct pe
+  // parcela aceea, fără intrarea de pe țară.
+  const cerut = new URLSearchParams(location.search).get('cad');
+  const deschis = cerut ? date.features.find((f) => f.properties.cad === cerut) : undefined;
   // Cu mișcare: pornim cu România încadrată pe ecran, ca omul să vadă unde e
   // satul în țară, și facem zoom pe calup. Fără mișcare: direct pe calup.
   // Globul întreg era prea departe: țara ocupa un colț din ecran.
-  const intrare = !redusa();
+  const intrare = !redusa() && !deschis;
   if (intrare) aparitie = 0;
   harta = new MapLibre({
     container,
     style: await styleBasemap(mod),
-    bounds: intrare ? ROMANIA : incadrare,
-    fitBoundsOptions: { padding: margini(intrare ? 24 : 40) },
+    bounds: deschis ? limite([deschis]) : intrare ? ROMANIA : incadrare,
+    fitBoundsOptions: { padding: margini(intrare ? 24 : 40), maxZoom: 17 },
     validateStyle: false,
     // Globul se vede abia sub zoom 5.
     minZoom: 1.5,
@@ -393,6 +386,11 @@ async function porneste() {
   harta.on('load', () => {
     adaugaStraturi();
     legaInteractiuni();
+    if (deschis) {
+      selecteaza(deschis, true, 0);
+      const camp = el<HTMLInputElement>('cauta-cad');
+      if (camp) camp.value = deschis.properties.cad;
+    }
     if (!intrare) return;
     window.setTimeout(() => {
       if (atins || selectat !== null) {

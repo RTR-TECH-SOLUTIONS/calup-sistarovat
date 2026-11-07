@@ -5,29 +5,21 @@
  * public/date/calup4.geojson.
  */
 import '../styles/global.css';
-import { cale } from '../lib/cale';
+import Cap from '../components/Cap.astro';
+import Navigatie from '../components/Navigatie.astro';
 ---
 
 <!doctype html>
 <html lang="ro">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Calup 4 · parcele de vânzare, Șiștarovăț</title>
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="icon" href={cale('/favicon.svg')} type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
-    />
+    <Cap titlu="Calup 4 · parcele de vânzare, Șiștarovăț" />
   </head>
   <body>
     <div class="ecran" data-fundal="teren">
       <div id="harta" data-slug="calup4" aria-label="Harta parcelelor din calupul 4"></div>
 
       <aside class="panou" aria-labelledby="titlu-calup">
+        <Navigatie curent="harta" />
         <p class="loc">Comuna Șiștarovăț · jud. Arad</p>
         <h1 id="titlu-calup">Calup 4</h1>
 
@@ -41,7 +33,7 @@ import { cale } from '../lib/cale';
             <span>suprafață totală</span>
           </div>
         </div>
-        <p class="nota">din <span id="nr-total">–</span> parcele cadastrale ale calupului</p>
+        <p class="nota">din <span id="nr-total">–</span> cadastrale ale calupului</p>
 
         <form id="cauta" class="cauta" role="search">
           <label for="cauta-cad">Caută după nr. cadastral</label>
@@ -68,6 +60,8 @@ import { cale } from '../lib/cale';
         </label>
 
         <button type="button" id="arata-tot" class="buton-secundar">Vezi tot calupul</button>
+
+        <p class="nota-mobil">Previzualizare. Contururile vin din exportul cadastral primit și au caracter informativ.</p>
       </aside>
 
       <div class="comutator-basemap" role="group" aria-label="Fundal hartă">
@@ -116,6 +110,13 @@ import { cale } from '../lib/cale';
     gap: 18px;
     font-family: var(--font-sans);
     color: var(--color-ink);
+  }
+
+  /* Navigația stă lipită de marginea de sus a panoului, cu hairline sub ea. */
+  .panou > :global(.navigatie) {
+    margin: -22px -22px 0;
+    padding: 0 22px;
+    border-bottom: 1px solid var(--color-hairline);
   }
 
   .loc {
@@ -325,6 +326,10 @@ import { cale } from '../lib/cale';
     color: var(--color-paper-3);
   }
 
+  .nota-mobil {
+    display: none;
+  }
+
   .avertisment {
     position: absolute;
     z-index: 5;
@@ -361,6 +366,11 @@ import { cale } from '../lib/cale';
       gap: 14px;
     }
 
+    .panou > :global(.navigatie) {
+      margin: -16px -16px 0;
+      padding: 0 16px;
+    }
+
     .comutator-basemap {
       top: 8px;
       right: 8px;
@@ -378,13 +388,15 @@ import { cale } from '../lib/cale';
       display: none;
     }
 
+    /* Pe telefon nota din colț ar sta peste fișa parcelei; intră în panou, la coadă. */
     .avertisment {
-      top: 8px;
-      bottom: auto;
-      left: 8px;
-      transform: none;
-      max-width: calc(100% - 160px);
-      text-align: left;
+      display: none;
+    }
+
+    .nota-mobil {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--color-ink-3);
     }
   }
 
@@ -414,6 +426,20 @@ import { cale } from '../lib/cale';
     :global(.harta-eroare) {
       top: 30%;
       left: 50%;
+    }
+
+    /* Între panou și butoanele de sus rămâne puțină hartă; fișa se strânge. */
+    :global(.fisa) {
+      padding: 10px 12px 6px;
+      min-width: 0;
+    }
+
+    :global(.fisa-titlu) {
+      margin: 6px 0 4px;
+    }
+
+    :global(.fisa dl > div) {
+      padding: 4px 0;
     }
   }
 

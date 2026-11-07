@@ -1,0 +1,234 @@
+---
+/**
+ * Tabelul are 2.321 de rânduri. Cu stiluri scoped, Astro ar pune un atribut în
+ * plus pe fiecare element din șablon, așa că componenta are doar stiluri
+ * globale, toate sub .lista.
+ */
+import { cale } from '../lib/cale';
+import { curata, ha, mp, numeCategorie, tarlaParcela, type ProprietatiParcela } from '../lib/parcela';
+
+interface Props {
+  parcele: ProprietatiParcela[];
+}
+
+const { parcele } = Astro.props;
+---
+
+<table class="lista" id="lista">
+  <caption class="sr-only">Parcelele calupului 4, cu suprafața și starea fiecăreia</caption>
+  <thead>
+    <tr>
+      <th scope="col" aria-sort="none"><button type="button" data-col="cad">Nr. cadastral</button></th>
+      <th scope="col" class="c-t" aria-sort="none"><button type="button" data-col="t">Tarla</button></th>
+      <th scope="col" class="c-p" aria-sort="none"><button type="button" data-col="p">Parcelă</button></th>
+      <th scope="col" class="c-c" aria-sort="none"><button type="button" data-col="c">Categorie</button></th>
+      <th scope="col" class="c-s" aria-sort="none"><button type="button" data-col="s">Suprafață</button></th>
+      <th scope="col" class="c-v" aria-sort="ascending"><button type="button" data-col="v">De vânzare</button></th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      parcele.map((p) => (
+        <tr data-c={p.categorie} data-s={p.suprafata} data-v={p.vanzare ? '1' : '0'}>
+          <td class="c-cad">
+            <a href={cale(`/?cad=${p.cad}`)}>{p.cad}</a>
+            <span class="sub">
+              {numeCategorie(p.categorie)} · {tarlaParcela(p)}
+            </span>
+          </td>
+          <td class="c-t">{curata(p.tarla) || '–'}</td>
+          <td class="c-p">{curata(p.parcela) || '–'}</td>
+          <td class="c-c">{numeCategorie(p.categorie)}</td>
+          <td class="c-s">
+            {mp(p.suprafata)}
+            <span class="ha">{ha(p.suprafata)}</span>
+          </td>
+          <td class="c-v">{p.vanzare ? <span class="da">Da</span> : <span class="nu">–</span>}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<style is:global>
+  .lista {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .lista th {
+    position: sticky;
+    top: var(--bara-h, 0px);
+    z-index: 1;
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-ink);
+    text-align: left;
+    font-weight: 600;
+    padding: 0;
+  }
+
+  .lista th button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 12px 10px 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-align: inherit;
+    color: var(--color-ink);
+  }
+
+  .lista th button::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-inline: 4px solid transparent;
+    opacity: 0.25;
+    border-top: 5px solid currentColor;
+  }
+
+  .lista th[aria-sort='ascending'] button::after {
+    opacity: 1;
+    border-top: 0;
+    border-bottom: 5px solid currentColor;
+  }
+
+  .lista th[aria-sort='descending'] button::after {
+    opacity: 1;
+  }
+
+  .lista th.c-s button {
+    justify-content: flex-end;
+  }
+
+  .lista td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--color-hairline);
+    vertical-align: baseline;
+  }
+
+  .lista tbody tr {
+    cursor: pointer;
+    transition: background-color 120ms ease-out;
+  }
+
+  .lista tbody tr:hover {
+    background: var(--color-paper-3);
+  }
+
+  .lista .c-cad a {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-hairline);
+    text-underline-offset: 3px;
+  }
+
+  .lista tr:hover .c-cad a {
+    text-decoration-color: currentColor;
+  }
+
+  .lista td.c-t,
+  .lista td.c-p {
+    font-family: var(--font-mono);
+    color: var(--color-ink-2);
+  }
+
+  /* Restul lățimii rămâne la categorie; altfel tarla și parcela se lățesc degeaba. */
+  .lista th:first-child {
+    width: 17%;
+  }
+
+  .lista th.c-t {
+    width: 10%;
+  }
+
+  .lista th.c-p {
+    width: 15%;
+  }
+
+  .lista th.c-s {
+    width: 22%;
+  }
+
+  .lista th.c-v {
+    width: 12%;
+  }
+
+  .lista td.c-s {
+    font-family: var(--font-mono);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .lista .ha {
+    display: inline-block;
+    min-width: 7ch;
+    margin-left: 10px;
+    color: var(--color-ink-3);
+  }
+
+  .lista .sub {
+    display: none;
+  }
+
+  .lista .da {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+  }
+
+  .lista .da::before {
+    content: '';
+    width: 12px;
+    height: 10px;
+    border-radius: 2px;
+    background: #ffd23f;
+    border: 1px solid #3a2c00;
+  }
+
+  .lista .nu {
+    color: var(--color-ink-3);
+  }
+
+  @media (max-width: 640px) {
+    .lista .c-t,
+    .lista .c-p,
+    .lista .c-c,
+    .lista .ha {
+      display: none;
+    }
+
+    .lista .sub {
+      display: block;
+      margin-top: 2px;
+      font-size: 0.75rem;
+      color: var(--color-ink-2);
+    }
+
+    .lista td,
+    .lista th button {
+      padding-inline: 6px;
+    }
+
+    .lista th,
+    .lista th:first-child,
+    .lista th.c-s,
+    .lista th.c-v {
+      width: auto;
+    }
+
+    .lista th button {
+      white-space: nowrap;
+    }
+
+    .lista td:first-child,
+    .lista th:first-child button {
+      padding-left: 0;
+    }
+  }
+</style>

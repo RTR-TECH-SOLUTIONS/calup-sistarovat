@@ -1,0 +1,333 @@
+---
+/**
+ * Comuna și regiunea, pentru cine n-a mai fost pe acolo. Faptele vin din
+ * Wikipedia (articolele despre comuna și satul Șiștarovăț și despre Banat),
+ * verificate pe 7 noiembrie 2026. Cifrele despre calup se calculează din date.
+ */
+import { Picture } from 'astro:assets';
+import Pagina from '../layouts/Pagina.astro';
+import { citesteCalup } from '../lib/date';
+import { ha, nrParcele, numeCategorie } from '../lib/parcela';
+import { cale } from '../lib/cale';
+import hartaIosefina from '../assets/zona/harta-iosefina-sistarovat.jpg';
+import pastor from '../assets/zona/pastor-valerio-1851.jpg';
+import judet from '../assets/zona/judetul-arad-sistarovat.png';
+
+const parcele = citesteCalup('calup4').features.map((f) => f.properties);
+const vanzare = parcele.filter((p) => p.vanzare);
+const suprafata = (lista: typeof parcele) => lista.reduce((s, p) => s + p.suprafata, 0);
+
+const peCategorii = [...Map.groupBy(vanzare, (p) => p.categorie)]
+  .map(([c, lista]) => ({ nume: numeCategorie(c).toLowerCase(), s: suprafata(lista) }))
+  .sort((a, b) => b.s - a.s)
+  .map((c) => `${ha(c.s)} ${c.nume}`);
+// „50,21 ha arabil, 27,86 ha pășune și 26,16 ha fâneață”. Virgula zecimală
+// strică orice înlocuire cu regex, deci ultimul element se lipește separat.
+const enumerare = (l: string[]) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} și ${l.at(-1)}` : (l[0] ?? ''));
+
+// Astro înghite spațiul dintre un rând de text și o expresie care începe pe
+// rândul următor, deci fraza se compune aici, întreagă.
+const despreCalup =
+  `Calupul are ${nrParcele(parcele.length)} cadastrale, cu o suprafață totală de ${ha(suprafata(parcele))}. ` +
+  `${nrParcele(vanzare.length)} sunt de vânzare și însumează ${ha(suprafata(vanzare))}: ${enumerare(peCategorii)}.`;
+
+const fisa: [string, string][] = [
+  ['Județul', 'Arad'],
+  ['Sate', 'Șiștarovăț (reședința), Cuveșdia, Labașinț, Varnița'],
+  ['Suprafață', '122,67 km²'],
+  ['Locuitori', '340, la recensământul din 2021'],
+  ['Altitudine', '195 m'],
+  ['Până la Arad', '42 km'],
+  ['Prima atestare', '1440'],
+];
+---
+
+<Pagina
+  titlu="Despre zonă · Șiștarovăț, jud. Arad"
+  curent="zona"
+  descriere="Comuna Șiștarovăț, pe Dealurile Lipovei, în Banatul istoric: sate, istorie, pământ."
+>
+  <article>
+    <header class="cadru deschidere">
+      <div class="deschidere-text">
+        <h1>Șiștarovăț, pe Dealurile Lipovei</h1>
+        <p class="lead">
+          Șiștarovăț este o comună din sudul județului Arad, la 42 km de municipiul Arad. Are patru sate și 340 de
+          locuitori pe aproape 123 km², adică mai puțin de trei oameni pe kilometru pătrat. Pădurile trec de 6.000 de
+          hectare, cam jumătate din comună.
+        </p>
+      </div>
+
+      <dl class="fisa" aria-label="Fișa comunei">
+        {
+          fisa.map(([cheie, val]) => (
+            <div>
+              <dt>{cheie}</dt>
+              <dd>{val}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </header>
+
+    <figure class="cadru harta-veche">
+      <Picture
+        src={hartaIosefina}
+        formats={['avif', 'webp']}
+        widths={[800, 1200, 1600, 2400]}
+        sizes="(max-width: 1160px) 100vw, 1096px"
+        alt="Hartă desenată de mână: satul Șiștarovăț, cu grădinile colorate în verde, înconjurat de dealuri împădurite și de câmpuri arate în fâșii."
+        loading="eager"
+      />
+      <figcaption>
+        Satul, notat „Sistarowitz”, pe harta militară iosefină a Banatului, secția 45, ridicată între 1769 și 1772.
+        Österreichisches Staatsarchiv, Kriegsarchiv. Domeniu public.
+      </figcaption>
+    </figure>
+
+    <section class="cadru bloc cu-imagine" aria-labelledby="titlu-istoric">
+      <div class="text">
+        <h2 id="titlu-istoric">Satele și oamenii lor</h2>
+        <p>
+          Șiștarovăț și Cuveșdia apar în documente încă din 1440. Labașinț e pomenit prima oară în 1477, iar Varnița s-a
+          format mult mai târziu, între 1820 și 1830. În trecut, Șiștarovățul s-a mai numit Dâmbu-Timișan. Pe ungurește
+          i se spune Sistaróc, pe nemțește Schischtarowetz.
+        </p>
+        <p>
+          Aici s-au născut doi oameni politici cunoscuți ai vremii lor. Sever Bocu (1874–1951) a fost redactor la ziarul
+          „Tribuna” din Arad, deputat al Banatului și apoi ministru în guvernul lui Iuliu Maniu. Avocatul Ioan Suciu
+          (1862–1939) a fost unul dintre organizatorii Marii Adunări Naționale de la Alba Iulia, din 1 decembrie 1918.
+        </p>
+        <p>
+          În Cuveșdia și în Labașinț sunt bisericile ortodoxe ale satelor, iar în Șiștarovăț e o tabără școlară.
+        </p>
+      </div>
+      <figure class="portret">
+        <Picture
+          src={pastor}
+          formats={['avif', 'webp']}
+          widths={[320, 436]}
+          sizes="(max-width: 760px) 70vw, 320px"
+          alt="Acuarelă: un păstor bătrân în cămașă și ițari albi, cu căciulă neagră de blană, opinci și un toiag subțire."
+        />
+        <figcaption>
+          Păstor din Șiștarovăț, acuarelă de Théodore Valerio, semnată „Sistarovecz 1851”. Beaux-Arts de Paris. Domeniu
+          public.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="cadru bloc cu-imagine cu-harta" aria-labelledby="titlu-banat">
+      <div class="text">
+        <h2 id="titlu-banat">În Banatul istoric</h2>
+        <p>
+          Comuna ține de Banat, regiunea mărginită de Mureș, Tisa, Dunăre și de munții Poiana Ruscă și Retezat, împărțită
+          astăzi între România, Serbia și Ungaria. Relieful Banatului coboară în trepte, de la munte la dealuri și apoi la
+          câmpie.
+        </p>
+        <p>
+          Șiștarovățul e în nordul regiunii, pe treapta de deal, aproape de Mureș. De pe Dealurile Lipovei se vede
+          culoarul râului, iar Valea Mureșului e trecută printre atracțiile comunei.
+        </p>
+        <p>
+          Oamenii trăiesc mai ales din pământ: livezi, vie, creșterea animalelor și prelucrarea lemnului.
+        </p>
+      </div>
+      <figure class="judet">
+        <Picture
+          src={judet}
+          formats={['avif', 'webp']}
+          widths={[420, 840]}
+          sizes="(max-width: 860px) 100vw, 420px"
+          alt="Harta județului Arad împărțit pe comune. Comuna Șiștarovăț e colorată cu negru, la marginea de sud a județului."
+        />
+        <figcaption>
+          Comuna Șiștarovăț, cu negru, între comunele județului Arad. Date ANCPI, licență Open Government.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="cadru bloc calup" aria-labelledby="titlu-calup">
+      <div class="text">
+        <h2 id="titlu-calup">Calupul 4</h2>
+        <p>{despreCalup}</p>
+        <div class="actiuni">
+          <a class="buton" href={cale('/')}>Vezi parcelele pe hartă</a>
+          <a class="buton buton-secundar" href={cale('/parcele/?stare=vanzare')}>Lista celor de vânzare</a>
+        </div>
+      </div>
+    </section>
+
+    <p class="cadru surse">
+      Surse: Wikipedia, articolele despre comuna și satul Șiștarovăț și despre Banat; recensământul din 2021. Cifrele
+      despre calup sunt calculate din exportul cadastral primit.
+    </p>
+  </article>
+</Pagina>
+
+<style>
+  .deschidere {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: end;
+    padding-block: clamp(32px, 6vw, 72px) clamp(28px, 4vw, 44px);
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+    margin-bottom: 18px;
+  }
+
+  .lead {
+    max-width: 58ch;
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-2);
+  }
+
+  /* Fișa are forma unui extras: etichetă la stânga, valoare la dreapta, hairline între rânduri. */
+  .fisa {
+    border-top: 1px solid var(--color-ink);
+    font-size: 0.875rem;
+  }
+
+  .fisa div {
+    display: grid;
+    grid-template-columns: 9.5em 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .fisa dt {
+    color: var(--color-ink-2);
+  }
+
+  .harta-veche :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2400 / 1433;
+    border-radius: var(--radius-panou);
+    border: 1px solid var(--color-hairline);
+  }
+
+  figcaption {
+    margin-top: 10px;
+    max-width: 72ch;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-ink-2);
+  }
+
+  .bloc {
+    padding-top: clamp(40px, 6vw, 72px);
+  }
+
+  .text {
+    max-width: 64ch;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    margin-bottom: 14px;
+  }
+
+  .text p + p {
+    margin-top: 14px;
+  }
+
+  .cu-imagine {
+    display: grid;
+    grid-template-columns: minmax(0, 64ch) 320px;
+    justify-content: space-between;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+  }
+
+  .cu-harta {
+    grid-template-columns: minmax(0, 64ch) 420px;
+    align-items: center;
+  }
+
+  .judet :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1432 / 821;
+  }
+
+  .portret :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 436 / 640;
+    border-radius: var(--radius-mic);
+  }
+
+  .calup .text {
+    padding-top: 24px;
+    border-top: 1px solid var(--color-hairline);
+    max-width: none;
+  }
+
+  .calup p {
+    max-width: 64ch;
+  }
+
+  .actiuni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .buton {
+    display: inline-block;
+    padding: 11px 18px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-panou);
+    text-decoration: none;
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton:hover {
+    background: #000;
+  }
+
+  .buton-secundar {
+    color: var(--color-ink);
+    background: transparent;
+    border-color: var(--color-hairline);
+  }
+
+  .buton-secundar:hover {
+    background: var(--color-paper-2);
+  }
+
+  .surse {
+    margin-top: clamp(40px, 6vw, 64px);
+    font-size: 0.8125rem;
+    color: var(--color-ink-3);
+  }
+
+  @media (max-width: 860px) {
+    .deschidere {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .cu-imagine {
+      grid-template-columns: 1fr;
+    }
+
+    .portret {
+      max-width: 280px;
+    }
+  }
+</style>
