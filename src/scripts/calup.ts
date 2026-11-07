@@ -325,12 +325,37 @@ function completeazaPanou() {
     .join('');
 }
 
+function aratEroare(container: HTMLElement, titlu: string, detaliu: string) {
+  const nod = document.createElement('div');
+  nod.className = 'harta-eroare';
+  nod.setAttribute('role', 'alert');
+  const t = document.createElement('p');
+  t.className = 'harta-eroare-titlu';
+  t.textContent = titlu;
+  const d = document.createElement('p');
+  d.textContent = detaliu;
+  nod.append(t, d);
+  container.append(nod);
+}
+
 async function porneste() {
   const container = el('harta');
   if (!container) return;
   const slug = container.dataset.slug ?? 'calup4';
   date = await fetch(cale(`/date/${slug}.geojson`)).then((r) => r.json());
   completeazaPanou();
+
+  // MapLibre desenează numai prin WebGL2. Când browserul îl are oprit (accelerarea
+  // grafică dezactivată sau placa video blocată), harta ar rămâne un ecran gol,
+  // fără nicio explicație. Mai bine spunem ce e de făcut.
+  if (!document.createElement('canvas').getContext('webgl2')) {
+    aratEroare(
+      container,
+      'Harta nu se poate afișa în acest browser.',
+      'Are nevoie de accelerare grafică (WebGL). În Chrome: Setări, apoi Sistem, apoi pornește „Folosește accelerarea grafică când este disponibilă” și repornește browserul.',
+    );
+    return;
+  }
 
   const vanzare = date.features.filter((f) => f.properties.vanzare);
   const incadrare = limite(vanzare.length ? vanzare : date.features);
@@ -400,4 +425,8 @@ async function porneste() {
   if (import.meta.env.DEV) (window as unknown as { harta: MapLibre }).harta = harta;
 }
 
-void porneste();
+porneste().catch((err) => {
+  console.error('[calup]', err);
+  const container = el('harta');
+  if (container) aratEroare(container, 'Harta nu a putut fi încărcată.', 'Reîncarcă pagina.');
+});

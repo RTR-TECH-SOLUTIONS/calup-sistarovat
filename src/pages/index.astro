@@ -382,6 +382,35 @@ import { cale } from '../lib/cale';
     }
   }
 
+  :global(.harta-eroare) {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 186px);
+    transform: translate(-50%, -50%);
+    width: min(420px, calc(100% - 32px));
+    padding: 18px 20px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-2);
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-panou);
+  }
+
+  :global(.harta-eroare-titlu) {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 900px) {
+    :global(.harta-eroare) {
+      top: 30%;
+      left: 50%;
+    }
+  }
+
   :global(.maplibregl-popup-content) {
     padding: 0;
     border-radius: var(--radius-panou);
