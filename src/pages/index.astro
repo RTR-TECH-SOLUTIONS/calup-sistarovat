@@ -372,6 +372,12 @@ import { cale } from '../lib/cale';
       bottom: calc(42dvh + 12px);
     }
 
+    /* Pe lățimea unui telefon scara intră sub atribuire. Pe ecranul ăsta nu
+       măsoară nimeni distanțe, deci scara e cea care pleacă. */
+    .ecran :global(.maplibregl-ctrl-scale) {
+      display: none;
+    }
+
     .avertisment {
       top: 8px;
       bottom: auto;

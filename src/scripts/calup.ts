@@ -82,6 +82,12 @@ const vizibil = () => (doarVanzare ? 'none' : 'visible');
 
 const redusa = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** Granițele României, cât să încapă toată țara în cadrul de pornire. */
+const ROMANIA: [[number, number], [number, number]] = [
+  [20.26, 43.62],
+  [29.72, 48.27],
+];
+
 /**
  * Cât de aprinse sunt parcelele, de la 0 la 1. La intrare pornesc stinse și se
  * aprind spre finalul coborârii de pe glob, ca la demo-ul Boerescu: altfel ar
@@ -359,16 +365,16 @@ async function porneste() {
 
   const vanzare = date.features.filter((f) => f.properties.vanzare);
   const incadrare = limite(vanzare.length ? vanzare : date.features);
-  // Cu mișcare: pornim de pe glob, de unde se vede România întreagă, și coborâm
-  // pe calup. Fără mișcare: direct pe calup.
+  // Cu mișcare: pornim cu România încadrată pe ecran, ca omul să vadă unde e
+  // satul în țară, și facem zoom pe calup. Fără mișcare: direct pe calup.
+  // Globul întreg era prea departe: țara ocupa un colț din ecran.
   const intrare = !redusa();
   if (intrare) aparitie = 0;
   harta = new MapLibre({
     container,
     style: await styleBasemap(mod),
-    ...(intrare
-      ? { center: [24.6, 46.4] as [number, number], zoom: 2.4 }
-      : { bounds: incadrare, fitBoundsOptions: { padding: margini(40) } }),
+    bounds: intrare ? ROMANIA : incadrare,
+    fitBoundsOptions: { padding: margini(intrare ? 24 : 40) },
     validateStyle: false,
     // Globul se vede abia sub zoom 5.
     minZoom: 1.5,
@@ -395,11 +401,11 @@ async function porneste() {
       }
       const tinta = harta.cameraForBounds(incadrare, { padding: margini(40) });
       if (tinta) {
-        // Mai lung decât un zbor obișnuit: drumul e de la glob până pe un sat.
-        // Curba mare ține camera sus la mijloc, să nu treacă razant peste țară.
-        harta.flyTo({ ...tinta, duration: 4200, curve: 1.9, essential: false });
+        // Curba mică: de la nivel de țară până pe sat e un zoom-in continuu. Cu
+        // una mare, camera s-ar ridica întâi și ar părea că pleacă de pe țară.
+        harta.flyTo({ ...tinta, duration: 3400, curve: 1.2, essential: false });
       }
-      aprindeParcele(2600);
+      aprindeParcele(2000);
     }, 400);
   });
   popup.on('close', () => {
