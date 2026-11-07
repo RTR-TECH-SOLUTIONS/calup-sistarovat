@@ -1,0 +1,29 @@
+{
+  "name": "calup-sistarovat",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "npm run pregatire && astro dev",
+    "build": "npm run pregatire && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "pregatire": "node scripts/copiaza-worker.mjs",
+    "date": "node scripts/kml-calup.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.2.3",
+    "maplibre-gl": "^6.4.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "^24.19.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  }
+}

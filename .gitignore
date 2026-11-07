@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+.env
+.env.*
+.playwright-mcp/
+
+# Workerul MapLibre se copiază la fiecare build din node_modules.
+public/maplibre/
+
+# Exportul KML al clientului conține numele proprietarilor: nu intră în repo.
+*.kml

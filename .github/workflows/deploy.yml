@@ -1,0 +1,51 @@
+name: Deploy demo pe GitHub Pages
+
+# Previzualizare pentru client: se publică la demo.mrwebsites.ro/calup-sistarovat/,
+# cu robots.txt care interzice indexarea.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Blochează indexarea copiei de preview
+        run: |
+          mkdir -p public
+          printf 'User-agent: *\nDisallow: /\n' > public/robots.txt
+
+      - name: Build Astro
+        uses: withastro/action@v3
+        with:
+          node-version: 24
+        env:
+          SITE_URL: https://demo.mrwebsites.ro
+          SITE_BASE: /calup-sistarovat
+          # Fără token, build-ul cade pe fundalul Esri, bun doar pentru preview.
+          PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

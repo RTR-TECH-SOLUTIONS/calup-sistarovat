@@ -1,0 +1,459 @@
+---
+/**
+ * Parcelele cadastrale ale calupului 4 din comuna Șiștarovăț (jud. Arad), din
+ * exportul KML primit de la client. Datele: scripts/kml-calup.mjs ->
+ * public/date/calup4.geojson.
+ */
+import '../styles/global.css';
+import { cale } from '../lib/cale';
+---
+
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calup 4 · parcele de vânzare, Șiștarovăț</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href={cale('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+    />
+  </head>
+  <body>
+    <div class="ecran" data-fundal="teren">
+      <div id="harta" data-slug="calup4" aria-label="Harta parcelelor din calupul 4"></div>
+
+      <aside class="panou" aria-labelledby="titlu-calup">
+        <p class="loc">Comuna Șiștarovăț · jud. Arad</p>
+        <h1 id="titlu-calup">Calup 4</h1>
+
+        <div class="cifre-mari">
+          <div>
+            <strong id="nr-vanzare">–</strong>
+            <span>parcele de vânzare</span>
+          </div>
+          <div>
+            <strong id="ha-vanzare">–</strong>
+            <span>suprafață totală</span>
+          </div>
+        </div>
+        <p class="nota">din <span id="nr-total">–</span> parcele cadastrale ale calupului</p>
+
+        <form id="cauta" class="cauta" role="search">
+          <label for="cauta-cad">Caută după nr. cadastral</label>
+          <div class="cauta-rand">
+            <input id="cauta-cad" inputmode="numeric" autocomplete="off" placeholder="ex. 304964" />
+            <button type="submit">Caută</button>
+          </div>
+          <p id="cauta-mesaj" class="cauta-mesaj" aria-live="polite"></p>
+        </form>
+
+        <section aria-labelledby="titlu-categorii">
+          <h2 id="titlu-categorii">De vânzare, pe categorii</h2>
+          <ul id="pe-categorii" class="categorii"></ul>
+        </section>
+
+        <div class="legenda">
+          <p><span class="mostra mostra-vanzare"></span>De vânzare</p>
+          <p><span class="mostra mostra-rest"></span>Restul parcelelor din calup</p>
+        </div>
+
+        <label class="comutator">
+          <input type="checkbox" id="doar-vanzare" />
+          <span>Arată doar parcelele de vânzare</span>
+        </label>
+
+        <button type="button" id="arata-tot" class="buton-secundar">Vezi tot calupul</button>
+      </aside>
+
+      <div class="comutator-basemap" role="group" aria-label="Fundal hartă">
+        <button type="button" data-basemap="harta" aria-pressed="false">Hartă</button>
+        <button type="button" data-basemap="teren" aria-pressed="true">Satelit</button>
+      </div>
+
+      <p class="avertisment">
+        Previzualizare. Contururile vin din exportul cadastral primit și au caracter informativ.
+      </p>
+    </div>
+
+    <script>
+      import '../scripts/calup.ts';
+    </script>
+  </body>
+</html>
+
+<style>
+  .ecran {
+    position: fixed;
+    inset: 0;
+    background: var(--color-paper);
+  }
+
+  #harta {
+    position: absolute;
+    inset: 0;
+  }
+
+  .panou {
+    position: absolute;
+    z-index: 10;
+    top: 16px;
+    left: 16px;
+    bottom: 16px;
+    width: 340px;
+    overflow-y: auto;
+    padding: 22px 22px 20px;
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-panou);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+  }
+
+  .loc {
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+    margin-bottom: -12px;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .cifre-mari {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .cifre-mari strong {
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .cifre-mari span,
+  .nota {
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .nota {
+    margin-top: -10px;
+  }
+
+  .cauta label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .cauta-rand {
+    display: flex;
+    gap: 6px;
+  }
+
+  .cauta input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    background: #fff;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-mic);
+  }
+
+  .cauta input:focus-visible,
+  .cauta button:focus-visible,
+  .buton-secundar:focus-visible,
+  .comutator-basemap button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .cauta button {
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border-radius: var(--radius-mic);
+    transition: background-color 150ms ease-out;
+  }
+
+  .cauta button:hover {
+    background: #000;
+  }
+
+  .cauta-mesaj {
+    font-size: 0.8125rem;
+    color: var(--color-vandut);
+    margin-top: 6px;
+    min-height: 1em;
+  }
+
+  .categorii :global(li) {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .categorii :global(li:last-child) {
+    border-bottom: 0;
+  }
+
+  .categorii :global(.cifre) {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .legenda {
+    display: grid;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .legenda p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mostra {
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+    flex: none;
+  }
+
+  .mostra-vanzare {
+    background: #2f8f57;
+    border: 1px solid #123f26;
+  }
+
+  [data-fundal='teren'] .mostra-vanzare {
+    background: #ffd23f;
+    border-color: #3a2c00;
+  }
+
+  .mostra-rest {
+    background: transparent;
+    border: 1px solid var(--color-ink-3);
+  }
+
+  .comutator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .comutator input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-ink);
+  }
+
+  .buton-secundar {
+    margin-top: auto;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-mic);
+    background: var(--color-paper-3);
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton-secundar:hover {
+    background: var(--color-paper-2);
+  }
+
+  .comutator-basemap {
+    position: absolute;
+    z-index: 10;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-panou);
+  }
+
+  .comutator-basemap button {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-mic);
+    color: var(--color-ink-2);
+    transition: background-color 150ms ease-out;
+  }
+
+  .comutator-basemap button[aria-pressed='true'] {
+    background: var(--color-ink);
+    color: var(--color-paper-3);
+  }
+
+  .avertisment {
+    position: absolute;
+    z-index: 5;
+    bottom: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100% - 32px);
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    color: var(--color-paper-3);
+    background: rgb(21 24 26 / 0.78);
+    border-radius: var(--radius-mic);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  @media (min-width: 901px) {
+    .avertisment {
+      left: calc(50% + 186px);
+    }
+  }
+
+  /* Pe telefon panoul devine bandă jos, pe o treime din ecran, ca harta să
+     rămână vizibilă. */
+  @media (max-width: 900px) {
+    .panou {
+      top: auto;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      width: auto;
+      max-height: 42dvh;
+      padding: 16px;
+      gap: 14px;
+    }
+
+    .comutator-basemap {
+      top: 8px;
+      right: 8px;
+    }
+
+    /* Zoomul, scara și atribuirea urcă deasupra panoului, altfel stau sub el. */
+    .ecran :global(.maplibregl-ctrl-bottom-right),
+    .ecran :global(.maplibregl-ctrl-bottom-left) {
+      bottom: calc(42dvh + 12px);
+    }
+
+    .avertisment {
+      top: 8px;
+      bottom: auto;
+      left: 8px;
+      transform: none;
+      max-width: calc(100% - 160px);
+      text-align: left;
+    }
+  }
+
+  :global(.maplibregl-popup-content) {
+    padding: 0;
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-ridicat);
+    background: var(--color-paper-3);
+    font-family: var(--font-sans);
+  }
+
+  :global(.maplibregl-popup-close-button) {
+    font-size: 20px;
+    color: var(--color-ink-2);
+    padding: 2px 8px;
+  }
+
+  :global(.fisa) {
+    padding: 14px 16px 12px;
+    min-width: 230px;
+    color: var(--color-ink);
+  }
+
+  :global(.fisa .stare) {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: var(--radius-mic);
+    background: var(--color-paper-2);
+    color: var(--color-ink-2);
+  }
+
+  :global(.fisa .stare-vanzare) {
+    background: #2f8f57;
+    color: #fff;
+  }
+
+  :global([data-fundal='teren'] .fisa .stare-vanzare) {
+    background: #ffd23f;
+    color: #2a2000;
+  }
+
+  :global(.fisa-titlu) {
+    margin: 8px 0 10px;
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+  }
+
+  :global(.fisa-titlu strong) {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    color: var(--color-ink);
+  }
+
+  :global(.fisa dl > div) {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 0;
+    border-top: 1px solid var(--color-hairline);
+    font-size: 0.8125rem;
+  }
+
+  :global(.fisa dt) {
+    color: var(--color-ink-2);
+  }
+
+  :global(.fisa dd) {
+    font-family: var(--font-mono);
+    text-align: right;
+  }
+
+  :global(.fisa dd span) {
+    color: var(--color-ink-3);
+  }
+</style>
