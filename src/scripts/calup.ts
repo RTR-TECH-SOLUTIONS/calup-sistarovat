@@ -80,6 +80,48 @@ function limite(features: Colectie['features']) {
 const FARA_VANZARE = ['!', ['get', 'vanzare']] as never;
 const vizibil = () => (doarVanzare ? 'none' : 'visible');
 
+const redusa = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/**
+ * Cât de aprinse sunt parcelele, de la 0 la 1. La intrare pornesc stinse și se
+ * aprind spre finalul coborârii de pe glob, ca la demo-ul Boerescu: altfel ar
+ * apărea ca o pată galbenă peste toată țara înainte să ajungă camera acolo.
+ */
+let aparitie = 1;
+const hover = (aprins: number, stins: number) =>
+  ['case', ['boolean', ['feature-state', 'hover'], false], aprins * aparitie, stins * aparitie] as never;
+
+/** Expresiile de zoom nu pot sta într-o înmulțire, deci factorul intră în fiecare treaptă. */
+const opacitati = () => {
+  const f = FUNDAL[mod];
+  return {
+    'fundal-umplere': ['fill-opacity', hover(f.opacitate + 0.25, f.opacitate)],
+    'fundal-contur': ['line-opacity', ['interpolate', ['linear'], ['zoom'], 12, 0.22 * aparitie, 15, 0.6 * aparitie]],
+    'vanzare-umplere': ['fill-opacity', hover(0.9, VANZARE[mod].opacitate)],
+    'vanzare-contur': ['line-opacity', aparitie],
+  } as Record<string, [string, unknown]>;
+};
+
+function aplicaAparitie() {
+  for (const [strat, [prop, val]] of Object.entries(opacitati())) {
+    if (harta.getLayer(strat)) harta.setPaintProperty(strat, prop as never, val as never);
+  }
+}
+
+let ceasAparitie: number | null = null;
+function aprindeParcele(intarziere: number) {
+  const durata = 1100;
+  let start = 0;
+  const pas = (t: number) => {
+    if (!start) start = t + intarziere;
+    aparitie = Math.min(1, Math.max(0, (t - start) / durata));
+    aplicaAparitie();
+    ceasAparitie = aparitie < 1 ? requestAnimationFrame(pas) : null;
+  };
+  if (ceasAparitie) cancelAnimationFrame(ceasAparitie);
+  ceasAparitie = requestAnimationFrame(pas);
+}
+
 function adaugaStraturi() {
   if (harta.getSource(SURSA)) return;
   const f = FUNDAL[mod];
@@ -95,7 +137,7 @@ function adaugaStraturi() {
     layout: { visibility: vizibil() },
     paint: {
       'fill-color': f.umplere,
-      'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], f.opacitate + 0.25, f.opacitate],
+      'fill-opacity': opacitati()['fundal-umplere'][1] as never,
     },
   });
   harta.addLayer({
@@ -106,7 +148,7 @@ function adaugaStraturi() {
     layout: { visibility: vizibil() },
     paint: {
       'line-color': f.contur,
-      'line-opacity': ['interpolate', ['linear'], ['zoom'], 12, 0.22, 15, 0.6],
+      'line-opacity': opacitati()['fundal-contur'][1] as never,
       'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.4, 16, 1],
     },
   });
@@ -118,7 +160,7 @@ function adaugaStraturi() {
     filter: ['get', 'vanzare'] as never,
     paint: {
       'fill-color': VANZARE[mod].umplere,
-      'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.9, VANZARE[mod].opacitate],
+      'fill-opacity': opacitati()['vanzare-umplere'][1] as never,
     },
   });
   harta.addLayer({
@@ -128,6 +170,7 @@ function adaugaStraturi() {
     filter: ['get', 'vanzare'] as never,
     paint: {
       'line-color': VANZARE[mod].contur,
+      'line-opacity': aparitie,
       'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.6, 16, 1.6],
     },
   });
@@ -183,7 +226,7 @@ function selecteaza(f: GeoJSON.Feature | MapGeoJSONFeature, centreaza = false) {
   selectat = Number(f.id);
   harta.setFilter('selectat', ['==', ['id'], selectat] as never);
   const b = limite([f as Colectie['features'][number]]);
-  if (centreaza) harta.fitBounds(b, { padding: margini(120), maxZoom: 17, duration: 600 });
+  if (centreaza) harta.fitBounds(b, { padding: margini(120), maxZoom: 17, duration: redusa() ? 0 : 1400 });
   // Fișa stă deasupra parcelei, nu peste ea: parcela e ce vrei să vezi.
   popup
     .setLngLat([b.getCenter().lng, b.getNorth()])
@@ -290,22 +333,49 @@ async function porneste() {
   completeazaPanou();
 
   const vanzare = date.features.filter((f) => f.properties.vanzare);
+  const incadrare = limite(vanzare.length ? vanzare : date.features);
+  // Cu mișcare: pornim de pe glob, de unde se vede România întreagă, și coborâm
+  // pe calup. Fără mișcare: direct pe calup.
+  const intrare = !redusa();
+  if (intrare) aparitie = 0;
   harta = new MapLibre({
     container,
     style: await styleBasemap(mod),
-    bounds: limite(vanzare.length ? vanzare : date.features),
-    fitBoundsOptions: { padding: margini(40) },
+    ...(intrare
+      ? { center: [24.6, 46.4] as [number, number], zoom: 2.4 }
+      : { bounds: incadrare, fitBoundsOptions: { padding: margini(40) } }),
     validateStyle: false,
+    // Globul se vede abia sub zoom 5.
+    minZoom: 1.5,
     maxZoom: 19,
     attributionControl: { compact: true },
     preserveDrawingBuffer: true,
-  } as ConstructorParameters<typeof MapLibre>[0]);
+    // Stilul vine din basemap.ts ca tip propriu; MapLibre îl acceptă la rulare.
+  } as unknown as ConstructorParameters<typeof MapLibre>[0]);
   harta.addControl(new NavigationControl({ showCompass: false }), 'bottom-right');
   harta.addControl(new ScaleControl({ maxWidth: 110, unit: 'metric' }), 'bottom-left');
+
+  // Dacă omul pune mâna pe hartă înainte de zbor, nu-i luăm camera.
+  let atins = false;
+  for (const ev of ['dragstart', 'wheel', 'touchstart'] as const) harta.once(ev, () => (atins = true));
 
   harta.on('load', () => {
     adaugaStraturi();
     legaInteractiuni();
+    if (!intrare) return;
+    window.setTimeout(() => {
+      if (atins || selectat !== null) {
+        aprindeParcele(0);
+        return;
+      }
+      const tinta = harta.cameraForBounds(incadrare, { padding: margini(40) });
+      if (tinta) {
+        // Mai lung decât un zbor obișnuit: drumul e de la glob până pe un sat.
+        // Curba mare ține camera sus la mijloc, să nu treacă razant peste țară.
+        harta.flyTo({ ...tinta, duration: 4200, curve: 1.9, essential: false });
+      }
+      aprindeParcele(2600);
+    }, 400);
   });
   popup.on('close', () => {
     selectat = null;
@@ -324,7 +394,7 @@ async function porneste() {
     cauta(el<HTMLInputElement>('cauta-cad')?.value ?? '');
   });
   el('arata-tot')?.addEventListener('click', () => {
-    harta.fitBounds(limite(date.features), { padding: margini(40), duration: 700 });
+    harta.fitBounds(limite(date.features), { padding: margini(40), duration: redusa() ? 0 : 1400 });
   });
 
   if (import.meta.env.DEV) (window as unknown as { harta: MapLibre }).harta = harta;
