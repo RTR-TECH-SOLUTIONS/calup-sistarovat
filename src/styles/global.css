@@ -22,9 +22,10 @@
   --color-vandut: #b4483a;
   --color-pregatire: #3e6b7a;
 
-  --font-serif: 'Newsreader', 'Source Serif 4', Georgia, 'Times New Roman', serif;
-  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Variabilele --font-* de dedesubt le pune componenta <Font> din Cap.astro. */
+  --font-serif: var(--font-newsreader);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
 
   --radius-panou: 8px;
   --radius-mic: 4px;
@@ -95,6 +96,14 @@
 
   ::selection {
     background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  }
+
+  /* Datele vânzătorului care încă lipsesc din src/lib/contact.ts. */
+  mark.de-completat {
+    padding: 0 4px;
+    color: var(--color-ink);
+    background: #fff1b8;
+    border-radius: 2px;
   }
 
   /* Cifrele se aliniază în coloană peste tot unde contează comparația. */

@@ -1,0 +1,265 @@
+---
+/**
+ * Contact. Formularul nu trimite nimic către site: compune mesajul și deschide
+ * WhatsApp, iar omul decide dacă îl trimite. Așa nu avem nevoie de server și
+ * nu păstrăm date. Din fișa unei parcele se ajunge aici cu ?cad=…, iar
+ * numărul intră singur în formular (src/scripts/contact.ts).
+ */
+import Pagina from '../layouts/Pagina.astro';
+import { CONTACT, telefonLink, whatsapp } from '../lib/contact';
+import type { Limba } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+
+interface Props {
+  limba: Limba;
+}
+
+const { limba } = Astro.props;
+const t = TEXT[limba].contact;
+const lipsa = TEXT[limba].deCompletat;
+---
+
+<Pagina titlu={t.titlu} limba={limba} pagina="contact" descriere={t.descriere}>
+  <section class="cadru intro">
+    <h1>{t.h1}</h1>
+    <p class="lead">{t.lead}</p>
+  </section>
+
+  <div class="cadru grila">
+    <form id="form-wa" class="formular" data-wa={whatsapp()} aria-labelledby="titlu-form">
+      <h2 id="titlu-form">{t.formTitlu}</h2>
+
+      <label>
+        <span class="eticheta">{t.nume}</span>
+        <input name="nume" autocomplete="name" />
+      </label>
+
+      <label>
+        <span class="eticheta">{t.cad} <span class="optional">({t.optional})</span></span>
+        <input name="cad" class="mono" inputmode="numeric" autocomplete="off" spellcheck="false" />
+      </label>
+
+      <label>
+        <span class="eticheta">{t.mesaj}</span>
+        <textarea name="mesaj" rows="5" placeholder={t.mesajExemplu}></textarea>
+      </label>
+
+      <button type="submit" class="buton">{t.trimite}</button>
+      <p class="nota">{t.notaForm}</p>
+    </form>
+
+    <aside class="date" aria-labelledby="titlu-date">
+      <h2 id="titlu-date">{t.dateTitlu}</h2>
+      <dl class="fisa">
+        <div>
+          <dt>{t.telefon}</dt>
+          <dd><a href={telefonLink}>{CONTACT.telefon}</a></dd>
+        </div>
+        <div>
+          <dt>{t.whatsapp}</dt>
+          <dd><a href={whatsapp()} rel="noopener">{CONTACT.telefon}</a></dd>
+        </div>
+        <div>
+          <dt>{t.email}</dt>
+          <dd>
+            {
+              CONTACT.email ? (
+                <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              ) : (
+                <mark class="de-completat">
+                  {lipsa}: {t.lipsaEmail}
+                </mark>
+              )
+            }
+          </dd>
+        </div>
+        <div>
+          <dt>{t.vanzator}</dt>
+          <dd>
+            {
+              CONTACT.nume ?? (
+                <mark class="de-completat">
+                  {lipsa}: {t.lipsaNume}
+                </mark>
+              )
+            }
+            {CONTACT.firma && <span class="firma">{CONTACT.firma}</span>}
+          </dd>
+        </div>
+        {
+          CONTACT.adresa && (
+            <div>
+              <dt>{t.adresa}</dt>
+              <dd>{CONTACT.adresa}</dd>
+            </div>
+          )
+        }
+      </dl>
+    </aside>
+  </div>
+
+  <script>
+    import '../scripts/contact.ts';
+  </script>
+</Pagina>
+
+<style>
+  .intro {
+    padding-block: clamp(32px, 6vw, 64px) 28px;
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+    margin-bottom: 14px;
+  }
+
+  .lead {
+    max-width: 60ch;
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-2);
+  }
+
+  .grila {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+  }
+
+  h2 {
+    font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+    margin-bottom: 18px;
+  }
+
+  .formular {
+    display: grid;
+    gap: 16px;
+    padding: clamp(18px, 3vw, 28px);
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+  }
+
+  .formular h2 {
+    margin-bottom: 2px;
+  }
+
+  label {
+    display: grid;
+    gap: 6px;
+  }
+
+  .eticheta {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .optional {
+    font-weight: 400;
+    color: var(--color-ink-3);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 9px 11px;
+    font-size: 1rem;
+    background: #fff;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-mic);
+    transition: border-color 150ms ease-out;
+  }
+
+  input:hover,
+  textarea:hover {
+    border-color: var(--color-ink-3);
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+  }
+
+  textarea::placeholder {
+    color: var(--color-ink-3);
+  }
+
+  .buton {
+    justify-self: start;
+    padding: 11px 18px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border-radius: var(--radius-panou);
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton:hover {
+    background: #000;
+  }
+
+  .nota {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-ink-2);
+  }
+
+  /* Datele de contact au forma unui extras: etichetă, valoare, hairline între rânduri. */
+  .fisa {
+    border-top: 1px solid var(--color-ink);
+    font-size: 0.9375rem;
+  }
+
+  .fisa div {
+    display: grid;
+    grid-template-columns: 8em 1fr;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .fisa dt {
+    color: var(--color-ink-2);
+  }
+
+  .fisa a {
+    font-family: var(--font-mono);
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-hairline);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 150ms ease-out;
+  }
+
+  .fisa a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .firma {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+  }
+
+  @media (max-width: 860px) {
+    .grila {
+      grid-template-columns: 1fr;
+    }
+
+    /* Pe telefon datele de contact vin primele: un tap pe număr și sună. */
+    .date {
+      order: -1;
+    }
+
+    .buton {
+      justify-self: stretch;
+    }
+  }
+</style>

@@ -4,26 +4,31 @@
  * plus pe fiecare element din șablon, așa că componenta are doar stiluri
  * globale, toate sub .lista.
  */
-import { cale } from '../lib/cale';
-import { curata, ha, mp, numeCategorie, tarlaParcela, type ProprietatiParcela } from '../lib/parcela';
+import { curata, formatare, tarlaParcela, type ProprietatiParcela } from '../lib/parcela';
+import { ruta, type Limba } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
 
 interface Props {
   parcele: ProprietatiParcela[];
+  limba: Limba;
 }
 
-const { parcele } = Astro.props;
+const { parcele, limba } = Astro.props;
+const t = TEXT[limba].lista;
+const fmt = formatare(limba);
+const harta = ruta('harta', limba);
 ---
 
 <table class="lista" id="lista">
-  <caption class="sr-only">Parcelele calupului 4, cu suprafața și starea fiecăreia</caption>
+  <caption class="sr-only">{t.tabel}</caption>
   <thead>
     <tr>
-      <th scope="col" aria-sort="none"><button type="button" data-col="cad">Nr. cadastral</button></th>
-      <th scope="col" class="c-t" aria-sort="none"><button type="button" data-col="t">Tarla</button></th>
-      <th scope="col" class="c-p" aria-sort="none"><button type="button" data-col="p">Parcelă</button></th>
-      <th scope="col" class="c-c" aria-sort="none"><button type="button" data-col="c">Categorie</button></th>
-      <th scope="col" class="c-s" aria-sort="none"><button type="button" data-col="s">Suprafață</button></th>
-      <th scope="col" class="c-v" aria-sort="ascending"><button type="button" data-col="v">De vânzare</button></th>
+      <th scope="col" aria-sort="none"><button type="button" data-col="cad">{t.colCad}</button></th>
+      <th scope="col" class="c-t" aria-sort="none"><button type="button" data-col="t">{t.colTarla}</button></th>
+      <th scope="col" class="c-p" aria-sort="none"><button type="button" data-col="p">{t.colParcela}</button></th>
+      <th scope="col" class="c-c" aria-sort="none"><button type="button" data-col="c">{t.colCategorie}</button></th>
+      <th scope="col" class="c-s" aria-sort="none"><button type="button" data-col="s">{t.colSuprafata}</button></th>
+      <th scope="col" class="c-v" aria-sort="ascending"><button type="button" data-col="v">{t.colVanzare}</button></th>
     </tr>
   </thead>
   <tbody>
@@ -31,19 +36,19 @@ const { parcele } = Astro.props;
       parcele.map((p) => (
         <tr data-c={p.categorie} data-s={p.suprafata} data-v={p.vanzare ? '1' : '0'}>
           <td class="c-cad">
-            <a href={cale(`/?cad=${p.cad}`)}>{p.cad}</a>
+            <a href={`${harta}?cad=${p.cad}`}>{p.cad}</a>
             <span class="sub">
-              {numeCategorie(p.categorie)} · {tarlaParcela(p)}
+              {fmt.categorie(p.categorie)} · {tarlaParcela(p)}
             </span>
           </td>
           <td class="c-t">{curata(p.tarla) || '–'}</td>
           <td class="c-p">{curata(p.parcela) || '–'}</td>
-          <td class="c-c">{numeCategorie(p.categorie)}</td>
+          <td class="c-c">{fmt.categorie(p.categorie)}</td>
           <td class="c-s">
-            {mp(p.suprafata)}
-            <span class="ha">{ha(p.suprafata)}</span>
+            {fmt.mp(p.suprafata)}
+            <span class="ha">{fmt.ha(p.suprafata)}</span>
           </td>
-          <td class="c-v">{p.vanzare ? <span class="da">Da</span> : <span class="nu">–</span>}</td>
+          <td class="c-v">{p.vanzare ? <span class="da">{t.da}</span> : <span class="nu">–</span>}</td>
         </tr>
       ))
     }

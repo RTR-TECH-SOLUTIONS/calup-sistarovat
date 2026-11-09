@@ -8,7 +8,13 @@ import type { MapGeoJSONFeature, MapMouseEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { cale } from '../lib/cale';
 import { styleBasemap, FONT_HARTA, type ModBasemap } from '../lib/basemap';
-import { ha, mp, nf, nrParcele, numeCategorie, tarlaParcela, type Colectie, type ProprietatiParcela } from '../lib/parcela';
+import { formatare, tarlaParcela, type Colectie, type ProprietatiParcela } from '../lib/parcela';
+import { limbaDocument, ruta } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+
+const limba = limbaDocument();
+const t = TEXT[limba];
+const fmt = formatare(limba);
 
 // Vezi harta.ts: fără calea explicită a workerului sursele GeoJSON rămân goale.
 setWorkerUrl(cale('/maplibre/maplibre-gl-worker.mjs'));
@@ -39,7 +45,16 @@ let mod: ModBasemap = 'teren';
 let doarVanzare = false;
 let selectat: number | null = null;
 let hoverId: number | null = null;
-const popup = new Popup({ closeButton: true, closeOnClick: false, maxWidth: '300px', offset: 8, anchor: 'bottom' });
+// Fără focus automat: altfel butonul din fișă primește conturul de focus la
+// fiecare click pe hartă. Cine vine de la tastatură are căutarea.
+const popup = new Popup({
+  closeButton: true,
+  closeOnClick: false,
+  focusAfterOpen: false,
+  maxWidth: '300px',
+  offset: 8,
+  anchor: 'bottom',
+});
 
 function limite(features: Colectie['features']) {
   const b = new LngLatBounds();
@@ -187,17 +202,24 @@ function adaugaStraturi() {
 
 function fisa(p: ProprietatiParcela) {
   const stare = p.vanzare
-    ? '<span class="stare stare-vanzare">De vânzare</span>'
-    : '<span class="stare">Nu e de vânzare</span>';
+    ? `<span class="stare stare-vanzare">${t.fisa.deVanzare}</span>`
+    : `<span class="stare">${t.fisa.nuVanzare}</span>`;
+  // Doar la cele de vânzare are sens întrebarea; pagina de contact preia numărul din adresă.
+  const intreaba = p.vanzare
+    ? `<a class="fisa-cta" href="${ruta('contact', limba)}?cad=${encodeURIComponent(p.cad)}">${t.fisa.intreaba}</a>`
+    : '';
   return `
     <div class="fisa">
-      ${stare}
-      <p class="fisa-titlu">Nr. cadastral <strong>${p.cad}</strong></p>
+      <div class="fisa-cap">
+        ${stare}
+        <p class="fisa-titlu">${t.fisa.nrCadastral} <strong>${p.cad}</strong></p>
+      </div>
       <dl>
-        <div><dt>Suprafață</dt><dd>${mp(p.suprafata)}<span> · ${ha(p.suprafata)}</span></dd></div>
-        <div><dt>Categorie</dt><dd>${numeCategorie(p.categorie)}</dd></div>
-        <div><dt>Tarla / parcelă</dt><dd>${tarlaParcela(p)}</dd></div>
+        <div><dt>${t.fisa.suprafata}</dt><dd>${fmt.mp(p.suprafata)}<span> · ${fmt.ha(p.suprafata)}</span></dd></div>
+        <div><dt>${t.fisa.categorie}</dt><dd>${fmt.categorie(p.categorie)}</dd></div>
+        <div><dt>${t.fisa.tarlaParcela}</dt><dd>${tarlaParcela(p)}</dd></div>
       </dl>
+      ${intreaba}
     </div>`;
 }
 
@@ -210,6 +232,7 @@ function selecteaza(f: GeoJSON.Feature | MapGeoJSONFeature, centreaza = false, d
     .setLngLat([b.getCenter().lng, b.getNorth()])
     .setHTML(fisa(f.properties as ProprietatiParcela))
     .addTo(harta);
+  document.querySelector('.ecran')?.toggleAttribute('data-fisa', true);
   // Încadrarea vine după fișă, ca să știm cât loc ocupă ea deasupra parcelei.
   if (centreaza) harta.fitBounds(b, { padding: marginiSelectie(), maxZoom: 17, duration: durata });
 }
@@ -224,15 +247,18 @@ function marginiSelectie() {
   // Pe telefon atribuirea hărții stă deschisă chiar deasupra panoului.
   if (!lat) m.bottom += 36;
   const inaltimeFisa = popup.isOpen() ? popup.getElement().offsetHeight : 200;
-  const sus = (lat ? 16 : 56) + inaltimeFisa + 12;
+  // Pe telefon comutatorul de fundal se ascunde cât e fișa deschisă, deci sus e liber.
+  const sus = 16 + inaltimeFisa + 12;
   // Pe un ecran scurt marginile n-au voie să acopere tot, altfel MapLibre nu mai încadrează deloc.
-  return { ...m, top: Math.min(sus, Math.max(m.top, window.innerHeight - m.bottom - 80)) };
+  return { ...m, top: Math.min(sus, Math.max(m.top, window.innerHeight - m.bottom - 60)) };
 }
 
 /** Panoul ocupă stânga pe desktop și josul pe telefon; încadrările îl ocolesc. */
 function margini(m: number) {
   const lat = window.innerWidth > 900;
-  return { top: m, right: m, left: lat ? 356 + m : m, bottom: lat ? m : window.innerHeight * 0.42 + m / 2 };
+  // Pe telefon înălțimea benzii depinde de ecran (Harta.astro, --panou-h), deci o măsurăm.
+  const panou = document.querySelector('.panou')?.getBoundingClientRect().top ?? window.innerHeight * 0.58;
+  return { top: m, right: m, left: lat ? 356 + m : m, bottom: lat ? m : window.innerHeight - panou + m / 2 };
 }
 
 function laClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
@@ -282,11 +308,11 @@ function schimbaFundal(nou: ModBasemap) {
 
 function cauta(text: string) {
   const mesaj = el('cauta-mesaj');
-  const t = text.trim().replace(/\s+/g, '');
-  if (!t) return;
-  const gasit = date.features.find((f) => f.properties.cad === t);
+  const cad = text.trim().replace(/\s+/g, '');
+  if (!cad) return;
+  const gasit = date.features.find((f) => f.properties.cad === cad);
   if (!gasit) {
-    if (mesaj) mesaj.textContent = `Nu există nr. cadastral ${t} în calup.`;
+    if (mesaj) mesaj.textContent = t.harta.cautaNegasit(cad);
     return;
   }
   if (mesaj) mesaj.textContent = '';
@@ -308,14 +334,14 @@ function completeazaPanou() {
     c.s += f.properties.suprafata;
     pe.set(f.properties.categorie, c);
   }
-  el('nr-vanzare')!.textContent = nf.format(vanzare.length);
-  el('nr-total')!.textContent = nrParcele(date.features.length);
-  el('ha-vanzare')!.textContent = ha(total);
+  el('nr-vanzare')!.textContent = fmt.nr(vanzare.length);
+  el('nota-total')!.textContent = t.harta.notaTotal(date.features.length, fmt);
+  el('ha-vanzare')!.textContent = fmt.ha(total);
   el('pe-categorii')!.innerHTML = [...pe.entries()]
     .sort((a, b) => b[1].s - a[1].s)
     .map(
       ([c, v]) =>
-        `<li><span>${numeCategorie(c)}</span><span class="cifre">${nrParcele(v.n)} · ${ha(v.s)}</span></li>`,
+        `<li><span>${fmt.categorie(c)}</span><span class="cifre">${fmt.parcele(v.n)} · ${fmt.ha(v.s)}</span></li>`,
     )
     .join('');
 }
@@ -344,11 +370,7 @@ async function porneste() {
   // grafică dezactivată sau placa video blocată), harta ar rămâne un ecran gol,
   // fără nicio explicație. Mai bine spunem ce e de făcut.
   if (!document.createElement('canvas').getContext('webgl2')) {
-    aratEroare(
-      container,
-      'Harta nu se poate afișa în acest browser.',
-      'Are nevoie de accelerare grafică (WebGL). În Chrome: Setări, apoi Sistem, apoi pornește „Folosește accelerarea grafică când este disponibilă” și repornește browserul.',
-    );
+    aratEroare(container, t.harta.eroareWebglTitlu, t.harta.eroareWebgl);
     return;
   }
 
@@ -408,6 +430,7 @@ async function porneste() {
   });
   popup.on('close', () => {
     selectat = null;
+    document.querySelector('.ecran')?.removeAttribute('data-fisa');
     if (harta.getLayer('selectat')) harta.setFilter('selectat', ['==', ['id'], -1] as never);
   });
 
@@ -432,5 +455,5 @@ async function porneste() {
 porneste().catch((err) => {
   console.error('[calup]', err);
   const container = el('harta');
-  if (container) aratEroare(container, 'Harta nu a putut fi încărcată.', 'Reîncarcă pagina.');
+  if (container) aratEroare(container, t.harta.eroareTitlu, t.harta.eroare);
 });

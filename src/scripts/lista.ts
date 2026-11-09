@@ -3,7 +3,12 @@
  * doar le ascundem și le mutăm. Starea filtrelor stă în adresă, ca un link spre
  * „doar cele de vânzare, arabil” să se poată trimite pe WhatsApp.
  */
-import { nrParcele } from '../lib/parcela';
+import { formatare } from '../lib/parcela';
+import { LOCALE, limbaDocument } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+
+const limba = limbaDocument();
+const fmt = formatare(limba);
 
 type Stare = 'toate' | 'vanzare' | 'rest';
 type Coloana = 'cad' | 't' | 'p' | 'c' | 's' | 'v';
@@ -53,7 +58,7 @@ if (tabel && corp && formular) {
     };
   });
 
-  const colator = new Intl.Collator('ro', { numeric: true, sensitivity: 'base' });
+  const colator = new Intl.Collator(LOCALE[limba], { numeric: true, sensitivity: 'base' });
   let sortare: { col: Coloana; dir: 1 | -1 } = { col: 'v', dir: 1 };
 
   function compara(a: Rand, b: Rand) {
@@ -99,7 +104,8 @@ if (tabel && corp && formular) {
       if (ok) n++;
     }
 
-    rezultat.textContent = n === randuri.length ? nrParcele(n) : `${nrParcele(n)} din ${randuri.length.toLocaleString('ro-RO')}`;
+    rezultat.textContent =
+      n === randuri.length ? fmt.parcele(n) : TEXT[limba].lista.rezultat(fmt.parcele(n), fmt.nr(randuri.length));
     gol.hidden = n > 0;
     tabel!.hidden = n === 0;
 

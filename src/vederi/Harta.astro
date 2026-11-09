@@ -1,0 +1,633 @@
+---
+/**
+ * Harta: parcelele cadastrale ale calupului 4 din comuna Șiștarovăț (jud.
+ * Arad), din exportul KML primit de la client. Datele: scripts/kml-calup.mjs
+ * -> public/date/calup4.geojson. Textele din panou vin de aici, cele pe care
+ * le scrie scriptul (fișa, cifrele) din src/i18n/text.ts.
+ */
+import '../styles/global.css';
+import Cap from '../components/Cap.astro';
+import Navigatie from '../components/Navigatie.astro';
+import Limbi from '../components/Limbi.astro';
+import Legale from '../components/Legale.astro';
+import type { Limba } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+
+interface Props {
+  limba: Limba;
+}
+
+const { limba } = Astro.props;
+const t = TEXT[limba].harta;
+---
+
+<!doctype html>
+<html lang={limba}>
+  <head>
+    <Cap titlu={t.titlu} descriere={t.descriere} limba={limba} pagina="harta" />
+  </head>
+  <body>
+    <div class="ecran" data-fundal="teren">
+      <div id="harta" data-slug="calup4" aria-label={t.aria}></div>
+
+      <aside class="panou" aria-labelledby="titlu-calup">
+        <Navigatie limba={limba} curent="harta" />
+        <p class="loc">{t.loc}</p>
+        <div class="titlu-rand">
+          <h1 id="titlu-calup">Calup 4</h1>
+          <Limbi limba={limba} pagina="harta" />
+        </div>
+
+        <div class="cifre-mari">
+          <div>
+            <strong id="nr-vanzare">–</strong>
+            <span>{t.nrVanzare}</span>
+          </div>
+          <div>
+            <strong id="ha-vanzare">–</strong>
+            <span>{t.suprafataTotala}</span>
+          </div>
+        </div>
+        <p class="nota" id="nota-total">&nbsp;</p>
+
+        <form id="cauta" class="cauta" role="search">
+          <label for="cauta-cad">{t.cautaEticheta}</label>
+          <div class="cauta-rand">
+            <input id="cauta-cad" inputmode="numeric" autocomplete="off" placeholder={t.cautaExemplu} />
+            <button type="submit">{t.cautaButon}</button>
+          </div>
+          <p id="cauta-mesaj" class="cauta-mesaj" aria-live="polite"></p>
+        </form>
+
+        <section aria-labelledby="titlu-categorii">
+          <h2 id="titlu-categorii">{t.peCategorii}</h2>
+          <ul id="pe-categorii" class="categorii"></ul>
+        </section>
+
+        <div class="legenda">
+          <p><span class="mostra mostra-vanzare"></span>{t.legendaVanzare}</p>
+          <p><span class="mostra mostra-rest"></span>{t.legendaRest}</p>
+        </div>
+
+        <label class="comutator">
+          <input type="checkbox" id="doar-vanzare" />
+          <span>{t.doarVanzare}</span>
+        </label>
+
+        <button type="button" id="arata-tot" class="buton-secundar">{t.aratTot}</button>
+
+        <p class="nota-mobil">{TEXT[limba].previzualizareScurt}</p>
+
+        <div class="panou-legal">
+          <Legale limba={limba} curent="harta" />
+        </div>
+      </aside>
+
+      <div class="comutator-basemap" role="group" aria-label={t.fundalAria}>
+        <button type="button" data-basemap="harta" aria-pressed="false">{t.fundalHarta}</button>
+        <button type="button" data-basemap="teren" aria-pressed="true">{t.fundalSatelit}</button>
+      </div>
+
+      <p class="avertisment">{TEXT[limba].previzualizareScurt}</p>
+    </div>
+
+    <script>
+      import '../scripts/calup.ts';
+    </script>
+  </body>
+</html>
+
+<style>
+  .ecran {
+    position: fixed;
+    inset: 0;
+    background: var(--color-paper);
+  }
+
+  #harta {
+    position: absolute;
+    inset: 0;
+  }
+
+  .panou {
+    position: absolute;
+    z-index: 10;
+    top: 16px;
+    left: 16px;
+    bottom: 16px;
+    width: 340px;
+    overflow-y: auto;
+    padding: 22px 22px 20px;
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-panou);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+  }
+
+  /* Navigația stă lipită de marginea de sus a panoului, cu hairline sub ea. */
+  .panou > :global(.navigatie) {
+    margin: -22px -22px 0;
+    padding: 0 22px;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .loc {
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+    margin-bottom: -12px;
+  }
+
+  /* „Calup 4” e scurt în orice limbă, deci limbile încap lângă el. */
+  .titlu-rand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .cifre-mari {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .cifre-mari strong {
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .cifre-mari span,
+  .nota {
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .nota {
+    margin-top: -10px;
+  }
+
+  .cauta label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .cauta-rand {
+    display: flex;
+    gap: 6px;
+  }
+
+  .cauta input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    background: #fff;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-mic);
+  }
+
+  .cauta input:focus-visible,
+  .cauta button:focus-visible,
+  .buton-secundar:focus-visible,
+  .comutator-basemap button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .cauta button {
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border-radius: var(--radius-mic);
+    transition: background-color 150ms ease-out;
+  }
+
+  .cauta button:hover {
+    background: #000;
+  }
+
+  .cauta-mesaj {
+    font-size: 0.8125rem;
+    color: var(--color-vandut);
+    margin-top: 6px;
+    min-height: 1em;
+  }
+
+  .categorii :global(li) {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .categorii :global(li:last-child) {
+    border-bottom: 0;
+  }
+
+  .categorii :global(.cifre) {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .legenda {
+    display: grid;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .legenda p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mostra {
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+    flex: none;
+  }
+
+  .mostra-vanzare {
+    background: #2f8f57;
+    border: 1px solid #123f26;
+  }
+
+  [data-fundal='teren'] .mostra-vanzare {
+    background: #ffd23f;
+    border-color: #3a2c00;
+  }
+
+  .mostra-rest {
+    background: transparent;
+    border: 1px solid var(--color-ink-3);
+  }
+
+  .comutator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .comutator input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-ink);
+  }
+
+  .buton-secundar {
+    margin-top: auto;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-mic);
+    background: var(--color-paper-3);
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton-secundar:hover {
+    background: var(--color-paper-2);
+  }
+
+  .comutator-basemap {
+    position: absolute;
+    z-index: 10;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-panou);
+  }
+
+  .comutator-basemap button {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-mic);
+    color: var(--color-ink-2);
+    transition: background-color 150ms ease-out;
+  }
+
+  .comutator-basemap button[aria-pressed='true'] {
+    background: var(--color-ink);
+    color: var(--color-paper-3);
+  }
+
+  .nota-mobil {
+    display: none;
+  }
+
+  /* Pe laptopurile cu ecran scurt panoul s-ar tăia jos; strângem pauzele. */
+  @media (min-width: 901px) and (max-height: 860px) {
+    .panou {
+      gap: 12px;
+      padding-top: 18px;
+    }
+
+    .panou > :global(.navigatie) {
+      margin-top: -18px;
+    }
+
+    .cifre-mari {
+      padding-top: 10px;
+    }
+
+    .categorii :global(li) {
+      padding: 5px 0;
+    }
+  }
+
+  /* Paginile legale și creditul, mici, la coada panoului. */
+  .panou-legal {
+    margin-top: -4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-hairline);
+    font-size: 0.75rem;
+    color: var(--color-ink-3);
+  }
+
+  .avertisment {
+    position: absolute;
+    z-index: 5;
+    bottom: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100% - 32px);
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    color: var(--color-paper-3);
+    background: rgb(21 24 26 / 0.78);
+    border-radius: var(--radius-mic);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  @media (min-width: 901px) {
+    .avertisment {
+      left: calc(50% + 186px);
+    }
+  }
+
+  /* Pe telefon panoul devine bandă jos, pe o treime din ecran, ca harta să
+     rămână vizibilă. Pe ecranele scurte (iPhone SE) banda e mai joasă, altfel
+     fișa unei parcele n-ar mai încăpea deasupra ei. */
+  @media (max-width: 900px) {
+    .ecran {
+      --panou-h: 42dvh;
+    }
+  }
+
+  @media (max-width: 900px) and (max-height: 640px) {
+    .ecran {
+      --panou-h: 34dvh;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .panou {
+      top: auto;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      width: auto;
+      max-height: var(--panou-h);
+      padding: 16px;
+      gap: 14px;
+    }
+
+    .panou > :global(.navigatie) {
+      margin: -16px -16px 0;
+      padding: 0 16px;
+    }
+
+    .comutator-basemap {
+      top: 8px;
+      right: 8px;
+      transition: opacity 150ms ease-out;
+    }
+
+    /* Între fișă și panou rămâne puțină hartă. Comutatorul de fundal nu
+       trebuie cât citești fișa, așa că îi face loc și revine la închidere. */
+    .ecran[data-fisa] .comutator-basemap {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Zoomul, scara și atribuirea urcă deasupra panoului, altfel stau sub el. */
+    .ecran :global(.maplibregl-ctrl-bottom-right),
+    .ecran :global(.maplibregl-ctrl-bottom-left) {
+      bottom: calc(var(--panou-h) + 12px);
+    }
+
+    /* Pe lățimea unui telefon scara intră sub atribuire. Pe ecranul ăsta nu
+       măsoară nimeni distanțe, deci scara e cea care pleacă. */
+    .ecran :global(.maplibregl-ctrl-scale) {
+      display: none;
+    }
+
+    /* Pe telefon nota din colț ar sta peste fișa parcelei; intră în panou, la coadă. */
+    .avertisment {
+      display: none;
+    }
+
+    .nota-mobil {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--color-ink-3);
+    }
+  }
+
+  :global(.harta-eroare) {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 186px);
+    transform: translate(-50%, -50%);
+    width: min(420px, calc(100% - 32px));
+    padding: 18px 20px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-2);
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-panou);
+  }
+
+  :global(.harta-eroare-titlu) {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 900px) {
+    :global(.harta-eroare) {
+      top: 30%;
+      left: 50%;
+    }
+
+    /* Între panou și butoanele de sus rămâne puțină hartă; fișa se strânge. */
+    :global(.fisa) {
+      padding: 10px 12px 6px;
+      min-width: 0;
+    }
+
+    :global(.fisa-cap) {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 10px;
+      padding-right: 22px;
+      margin-bottom: 4px;
+    }
+
+    :global(.fisa-titlu) {
+      margin: 0;
+    }
+
+    :global(.fisa dl > div) {
+      padding: 4px 0;
+    }
+
+    :global(.fisa-cta) {
+      margin-top: 6px;
+      padding: 6px 10px;
+    }
+  }
+
+  :global(.maplibregl-popup-content) {
+    padding: 0;
+    border-radius: var(--radius-panou);
+    box-shadow: var(--shadow-ridicat);
+    background: var(--color-paper-3);
+    font-family: var(--font-sans);
+  }
+
+  :global(.maplibregl-popup-close-button) {
+    font-size: 20px;
+    color: var(--color-ink-2);
+    padding: 2px 8px;
+  }
+
+  :global(.fisa) {
+    padding: 14px 16px 12px;
+    min-width: 230px;
+    color: var(--color-ink);
+  }
+
+  :global(.fisa .stare) {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: var(--radius-mic);
+    background: var(--color-paper-2);
+    color: var(--color-ink-2);
+  }
+
+  :global(.fisa .stare-vanzare) {
+    background: #2f8f57;
+    color: #fff;
+  }
+
+  :global([data-fundal='teren'] .fisa .stare-vanzare) {
+    background: #ffd23f;
+    color: #2a2000;
+  }
+
+  :global(.fisa-titlu) {
+    margin: 8px 0 10px;
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+  }
+
+  :global(.fisa-titlu strong) {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    color: var(--color-ink);
+  }
+
+  :global(.fisa dl > div) {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 0;
+    border-top: 1px solid var(--color-hairline);
+    font-size: 0.8125rem;
+  }
+
+  :global(.fisa dt) {
+    color: var(--color-ink-2);
+  }
+
+  :global(.fisa dd) {
+    font-family: var(--font-mono);
+    text-align: right;
+  }
+
+  :global(.fisa dd span) {
+    color: var(--color-ink-3);
+  }
+
+  /* La parcelele de vânzare fișa se termină cu drumul spre contact. */
+  :global(.fisa-cta) {
+    display: block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border-radius: var(--radius-mic);
+    transition: background-color 150ms ease-out;
+  }
+
+  :global(.fisa-cta:hover) {
+    background: #000;
+  }
+
+  :global(.fisa-cta:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+</style>

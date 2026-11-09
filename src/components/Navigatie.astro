@@ -1,28 +1,27 @@
 ---
-import { cale } from '../lib/cale';
+import { ruta, type Limba, type Pagina } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
 
-type Sectiune = 'harta' | 'parcele' | 'zona';
+type Sectiune = 'harta' | 'parcele' | 'zona' | 'contact';
 
 interface Props {
-  curent: Sectiune;
+  limba: Limba;
+  /** Paginile legale nu sunt în navigație, deci nu marchează nimic. */
+  curent: Pagina;
 }
 
-const { curent } = Astro.props;
-
-const legaturi: { id: Sectiune; text: string; href: string }[] = [
-  { id: 'harta', text: 'Hartă', href: cale('/') },
-  { id: 'parcele', text: 'Lista parcelelor', href: cale('/parcele/') },
-  { id: 'zona', text: 'Despre zonă', href: cale('/zona/') },
-];
+const { limba, curent } = Astro.props;
+const t = TEXT[limba].nav;
+const sectiuni: Sectiune[] = ['harta', 'parcele', 'zona', 'contact'];
 ---
 
-<nav class="navigatie" aria-label="Secțiuni">
+<nav class="navigatie" aria-label={t.aria}>
   <ul>
     {
-      legaturi.map((l) => (
+      sectiuni.map((s) => (
         <li>
-          <a href={l.href} aria-current={l.id === curent ? 'page' : undefined}>
-            {l.text}
+          <a href={ruta(s, limba)} aria-current={s === curent ? 'page' : undefined}>
+            {t[s]}
           </a>
         </li>
       ))
@@ -33,7 +32,7 @@ const legaturi: { id: Sectiune; text: string; href: string }[] = [
 <style>
   ul {
     display: flex;
-    gap: 20px;
+    gap: 18px;
   }
 
   a {

@@ -1,13 +1,22 @@
 ---
-/** Partea comună din <head>: aceleași fonturi, favicon și noindex pe toate paginile. */
+/**
+ * Partea comună din <head>. Fonturile le descarcă Astro la build și le servește
+ * de pe același server cu site-ul: vizitatorul nu ajunge la Google, deci nu
+ * trebuie trecut în politica de confidențialitate și nu cere consimțământ.
+ */
+import { Font } from 'astro:assets';
 import { cale } from '../lib/cale';
+import { LIMBI, ruta, type Limba, type Pagina } from '../i18n/limbi';
 
 interface Props {
   titlu: string;
   descriere?: string;
+  limba: Limba;
+  pagina: Pagina;
 }
 
-const { titlu, descriere } = Astro.props;
+const { titlu, descriere, pagina } = Astro.props;
+const absolut = (l: Limba) => new URL(ruta(pagina, l), Astro.site).href;
 ---
 
 <meta charset="utf-8" />
@@ -16,9 +25,8 @@ const { titlu, descriere } = Astro.props;
 {descriere && <meta name="description" content={descriere} />}
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href={cale('/favicon.svg')} type="image/svg+xml" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
-/>
+{LIMBI.map((l) => <link rel="alternate" hreflang={l} href={absolut(l)} />)}
+<link rel="alternate" hreflang="x-default" href={absolut('ro')} />
+<Font cssVariable="--font-plex-sans" preload={[{ weight: 400, subset: 'latin' }]} />
+<Font cssVariable="--font-plex-mono" />
+<Font cssVariable="--font-newsreader" />

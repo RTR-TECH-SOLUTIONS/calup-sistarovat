@@ -1,0 +1,69 @@
+---
+/** RO · EN · DE. Fiecare duce la aceeași pagină în cealaltă limbă. */
+import { LIMBI, NUME_LIMBA, ruta, type Limba, type Pagina } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+
+interface Props {
+  limba: Limba;
+  pagina: Pagina;
+}
+
+const { limba, pagina } = Astro.props;
+---
+
+<nav class="limbi" aria-label={TEXT[limba].limbiAria}>
+  {
+    LIMBI.map((l) => (
+      <a
+        href={ruta(pagina, l)}
+        hreflang={l}
+        lang={l}
+        aria-label={NUME_LIMBA[l]}
+        aria-current={l === limba ? 'true' : undefined}
+        data-limba
+      >
+        {l.toUpperCase()}
+      </a>
+    ))
+  }
+</nav>
+
+<script>
+  // Parcela deschisă pe hartă (?cad=) și filtrele din listă stau în adresă;
+  // la schimbarea limbii rămân aceleași.
+  document.querySelectorAll<HTMLAnchorElement>('a[data-limba]').forEach((a) => {
+    a.addEventListener('click', () => {
+      if (location.search) a.href = a.href.split('?')[0] + location.search;
+    });
+  });
+</script>
+
+<style>
+  .limbi {
+    display: flex;
+    gap: 2px;
+  }
+
+  a {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-ink-3);
+    text-decoration: none;
+    border-radius: var(--radius-mic);
+    transition:
+      color 150ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  a:hover {
+    color: var(--color-ink);
+    background: var(--color-paper-2);
+  }
+
+  a[aria-current='true'] {
+    color: var(--color-ink);
+    background: var(--color-paper-2);
+  }
+</style>

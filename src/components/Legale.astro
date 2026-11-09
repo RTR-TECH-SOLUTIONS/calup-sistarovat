@@ -1,0 +1,63 @@
+---
+/** Paginile legale și creditul. În subsolul paginilor cu text și la coada panoului de pe hartă. */
+import { ruta, type Limba, type Pagina } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+
+interface Props {
+  limba: Limba;
+  curent: Pagina;
+}
+
+const { limba, curent } = Astro.props;
+const t = TEXT[limba];
+const pagini = ['confidentialitate', 'termeni', 'cookies'] as const;
+---
+
+<div class="legale">
+  <nav aria-label={t.legal.aria}>
+    <ul>
+      {
+        pagini.map((p) => (
+          <li>
+            <a href={ruta(p, limba)} aria-current={p === curent ? 'page' : undefined}>
+              {t.legal[p]}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <p>{t.credit} <a href="https://mrwebsites.ro" rel="noopener">MR Websites</a></p>
+</div>
+
+<style>
+  .legale {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 24px;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 150ms ease-out;
+  }
+
+  a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  a[aria-current='page'] {
+    color: var(--color-ink);
+    text-decoration-color: currentColor;
+  }
+</style>

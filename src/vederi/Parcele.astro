@@ -1,0 +1,244 @@
+---
+/**
+ * Toate parcelele calupului într-un tabel, scris direct în HTML la build: se
+ * vede și fără JavaScript și nu mai descarcă geometriile de 1 MB ale hărții.
+ * Filtrele și sortarea le face src/scripts/lista.ts peste rândurile existente.
+ */
+import Pagina from '../layouts/Pagina.astro';
+import { citesteCalup } from '../lib/date';
+import TabelParcele from '../components/TabelParcele.astro';
+import { formatare } from '../lib/parcela';
+import { LOCALE, type Limba } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+
+interface Props {
+  limba: Limba;
+}
+
+const { limba } = Astro.props;
+const t = TEXT[limba].lista;
+const fmt = formatare(limba);
+
+const colator = new Intl.Collator(LOCALE[limba], { numeric: true });
+// Ordinea de pornire e și cea pe care o pune scriptul: întâi cele de vânzare.
+const parcele = citesteCalup('calup4')
+  .features.map((f) => f.properties)
+  .sort((a, b) => Number(b.vanzare) - Number(a.vanzare) || colator.compare(a.cad, b.cad));
+
+const vanzare = parcele.filter((p) => p.vanzare);
+const suprafataVanzare = vanzare.reduce((s, p) => s + p.suprafata, 0);
+const categorii = [...new Set(parcele.map((p) => p.categorie))].sort((a, b) =>
+  colator.compare(fmt.categorie(a), fmt.categorie(b)),
+);
+---
+
+
+<Pagina titlu={t.titlu} limba={limba} pagina="parcele" descriere={t.descriere(fmt.parcele(parcele.length))}>
+  <section class="cadru intro">
+    <h1>{t.h1}</h1>
+    <p>{t.intro(fmt.parcele(parcele.length), fmt.parcele(vanzare.length), fmt.ha(suprafataVanzare))}</p>
+  </section>
+
+  <div class="bara" id="bara">
+    <form class="cadru bara-rand" id="filtre" role="search">
+      <label class="cauta">
+        <span class="sr-only">{t.cauta}</span>
+        <input
+          type="search"
+          id="filtru-text"
+          name="q"
+          placeholder={t.cautaExemplu}
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </label>
+
+      <fieldset class="segmente">
+        <legend class="sr-only">{t.stare}</legend>
+        <label><input type="radio" name="stare" value="toate" checked /><span>{t.toate}</span></label>
+        <label>
+          <input type="radio" name="stare" value="vanzare" /><span
+            >{t.vanzare} <span class="nr">{fmt.nr(vanzare.length)}</span></span
+          >
+        </label>
+        <label><input type="radio" name="stare" value="rest" /><span>{t.rest}</span></label>
+      </fieldset>
+
+      <label class="categorie">
+        <span class="sr-only">{t.categorie}</span>
+        <select id="filtru-categorie" name="categorie">
+          <option value="">{t.toateCategoriile}</option>
+          {categorii.map((c) => <option value={c}>{fmt.categorie(c)}</option>)}
+        </select>
+      </label>
+
+      <p class="rezultat" id="rezultat" aria-live="polite">{fmt.parcele(parcele.length)}</p>
+    </form>
+  </div>
+
+  <div class="cadru">
+    <TabelParcele parcele={parcele} limba={limba} />
+
+    <p class="gol" id="gol" hidden>
+      {t.gol}
+      <button type="button" id="sterge-filtre">{t.stergeFiltre}</button>
+    </p>
+  </div>
+
+  <script>
+    import '../scripts/lista.ts';
+  </script>
+</Pagina>
+
+<style>
+  .intro {
+    padding-block: clamp(28px, 5vw, 56px) 20px;
+  }
+
+  h1 {
+    font-size: clamp(1.875rem, 1.4rem + 1.8vw, 2.75rem);
+    margin-bottom: 10px;
+  }
+
+  .intro p {
+    max-width: 62ch;
+    color: var(--color-ink-2);
+  }
+
+  .bara {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .bara-rand {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    padding-block: 12px;
+  }
+
+  .cauta {
+    flex: 1 1 240px;
+    max-width: 340px;
+  }
+
+  input[type='search'],
+  select {
+    width: 100%;
+    height: 38px;
+    padding: 0 10px;
+    font-size: 0.9375rem;
+    background: #fff;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-mic);
+  }
+
+  input[type='search'] {
+    font-family: var(--font-mono);
+  }
+
+  input[type='search']::placeholder {
+    font-family: var(--font-sans);
+    color: var(--color-ink-3);
+  }
+
+  select {
+    padding-right: 28px;
+  }
+
+  .segmente {
+    display: flex;
+    padding: 3px;
+    gap: 2px;
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+  }
+
+  .segmente label {
+    position: relative;
+  }
+
+  .segmente input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .segmente label > span {
+    display: block;
+    padding: 5px 12px;
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+    border-radius: var(--radius-mic);
+    white-space: nowrap;
+    transition: background-color 150ms ease-out;
+  }
+
+  .segmente input:checked + span {
+    background: var(--color-ink);
+    color: var(--color-paper-3);
+  }
+
+  .segmente input:focus-visible + span {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .nr {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    opacity: 0.75;
+  }
+
+  .categorie {
+    flex: 0 0 190px;
+  }
+
+  .rezultat {
+    margin-left: auto;
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+    white-space: nowrap;
+  }
+
+  .gol {
+    padding: 40px 0;
+    text-align: center;
+    color: var(--color-ink-2);
+  }
+
+  .gol button {
+    margin-left: 6px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 640px) {
+    /* Pe telefon bara are trei rânduri. Lipită sus ar ocupa un sfert din ecran,
+       deci aici rămâne lipit doar capul tabelului. */
+    .bara {
+      position: static;
+    }
+
+    .cauta {
+      flex-basis: 100%;
+      max-width: none;
+    }
+
+    .categorie {
+      flex: 1 1 140px;
+    }
+
+    .rezultat {
+      flex-basis: 100%;
+      margin-left: 0;
+    }
+  }
+</style>

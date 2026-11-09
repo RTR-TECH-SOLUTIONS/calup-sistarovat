@@ -1,0 +1,290 @@
+---
+/**
+ * Comuna și regiunea, pentru cine n-a mai fost pe acolo. Textul, în cele trei
+ * limbi, stă în src/i18n/zona.ts. Cifrele despre calup se calculează din date.
+ */
+import { Picture } from 'astro:assets';
+import Pagina from '../layouts/Pagina.astro';
+import { citesteCalup } from '../lib/date';
+import { formatare } from '../lib/parcela';
+import { ruta, type Limba } from '../i18n/limbi';
+import { ZONA } from '../i18n/zona';
+import hartaIosefina from '../assets/zona/harta-iosefina-sistarovat.jpg';
+import pastor from '../assets/zona/pastor-valerio-1851.jpg';
+import judet from '../assets/zona/judetul-arad-sistarovat.png';
+
+interface Props {
+  limba: Limba;
+}
+
+const { limba } = Astro.props;
+const t = ZONA[limba];
+const fmt = formatare(limba);
+
+const parcele = citesteCalup('calup4').features.map((f) => f.properties);
+const vanzare = parcele.filter((p) => p.vanzare);
+const suprafata = (lista: typeof parcele) => lista.reduce((s, p) => s + p.suprafata, 0);
+
+const categorii = [...Map.groupBy(vanzare, (p) => p.categorie)]
+  .map(([c, lista]) => ({ nume: fmt.categorie(c), s: suprafata(lista) }))
+  .sort((a, b) => b.s - a.s)
+  .map((c) => `${fmt.ha(c.s)} ${t.categoriiMici ? c.nume.toLowerCase() : c.nume}`);
+
+// Astro înghite spațiul dintre un rând de text și o expresie care începe pe
+// rândul următor, deci fraza se compune întreagă, în zona.ts.
+const despreCalup = t.calup({
+  total: fmt.parcele(parcele.length),
+  ha: fmt.ha(suprafata(parcele)),
+  vanzare: fmt.parcele(vanzare.length),
+  haVanzare: fmt.ha(suprafata(vanzare)),
+  categorii,
+});
+---
+
+<Pagina titlu={t.titlu} limba={limba} pagina="zona" descriere={t.descriere}>
+  <article>
+    <header class="cadru deschidere">
+      <div class="deschidere-text">
+        <h1>{t.h1}</h1>
+        <p class="lead">{t.lead}</p>
+      </div>
+
+      <dl class="fisa" aria-label={t.fisaAria}>
+        {
+          t.fisa.map(([cheie, val]) => (
+            <div>
+              <dt>{cheie}</dt>
+              <dd>{val}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </header>
+
+    <figure class="cadru harta-veche">
+      <Picture
+        src={hartaIosefina}
+        formats={['avif', 'webp']}
+        widths={[800, 1200, 1600, 2400]}
+        sizes="(max-width: 1160px) 100vw, 1096px"
+        alt={t.hartaVecheAlt}
+        loading="eager"
+      />
+      <figcaption>{t.hartaVeche}</figcaption>
+    </figure>
+
+    <section class="cadru bloc cu-imagine" aria-labelledby="titlu-istoric">
+      <div class="text">
+        <h2 id="titlu-istoric">{t.istoricTitlu}</h2>
+        {t.istoric.map((p) => <p>{p}</p>)}
+      </div>
+      <figure class="portret">
+        <Picture
+          src={pastor}
+          formats={['avif', 'webp']}
+          widths={[320, 436]}
+          sizes="(max-width: 760px) 70vw, 320px"
+          alt={t.pastorAlt}
+        />
+        <figcaption>{t.pastor}</figcaption>
+      </figure>
+    </section>
+
+    <section class="cadru bloc cu-imagine cu-harta" aria-labelledby="titlu-banat">
+      <div class="text">
+        <h2 id="titlu-banat">{t.banatTitlu}</h2>
+        {t.banat.map((p) => <p>{p}</p>)}
+      </div>
+      <figure class="judet">
+        <Picture
+          src={judet}
+          formats={['avif', 'webp']}
+          widths={[420, 840]}
+          sizes="(max-width: 860px) 100vw, 420px"
+          alt={t.judetAlt}
+        />
+        <figcaption>{t.judet}</figcaption>
+      </figure>
+    </section>
+
+    <section class="cadru bloc calup" aria-labelledby="titlu-calup">
+      <div class="text">
+        <h2 id="titlu-calup">Calup 4</h2>
+        <p>{despreCalup}</p>
+        <div class="actiuni">
+          <a class="buton" href={ruta('harta', limba)}>{t.butonHarta}</a>
+          <a class="buton buton-secundar" href={`${ruta('parcele', limba)}?stare=vanzare`}>{t.butonLista}</a>
+        </div>
+      </div>
+    </section>
+
+    <p class="cadru surse">{t.surse}</p>
+  </article>
+</Pagina>
+
+<style>
+  .deschidere {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: end;
+    padding-block: clamp(32px, 6vw, 72px) clamp(28px, 4vw, 44px);
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+    margin-bottom: 18px;
+  }
+
+  .lead {
+    max-width: 58ch;
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-2);
+  }
+
+  /* Fișa are forma unui extras: etichetă la stânga, valoare la dreapta, hairline între rânduri. */
+  .fisa {
+    border-top: 1px solid var(--color-ink);
+    font-size: 0.875rem;
+  }
+
+  .fisa div {
+    display: grid;
+    grid-template-columns: 9.5em 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .fisa dt {
+    color: var(--color-ink-2);
+  }
+
+  .harta-veche :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2400 / 1433;
+    border-radius: var(--radius-panou);
+    border: 1px solid var(--color-hairline);
+  }
+
+  figcaption {
+    margin-top: 10px;
+    max-width: 72ch;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-ink-2);
+  }
+
+  .bloc {
+    padding-top: clamp(40px, 6vw, 72px);
+  }
+
+  .text {
+    max-width: 64ch;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    margin-bottom: 14px;
+  }
+
+  .text p + p {
+    margin-top: 14px;
+  }
+
+  .cu-imagine {
+    display: grid;
+    grid-template-columns: minmax(0, 64ch) 320px;
+    justify-content: space-between;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+  }
+
+  .cu-harta {
+    grid-template-columns: minmax(0, 64ch) 420px;
+    align-items: center;
+  }
+
+  .judet :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1432 / 821;
+  }
+
+  .portret :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 436 / 640;
+    border-radius: var(--radius-mic);
+  }
+
+  .calup .text {
+    padding-top: 24px;
+    border-top: 1px solid var(--color-hairline);
+    max-width: none;
+  }
+
+  .calup p {
+    max-width: 64ch;
+  }
+
+  .actiuni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .buton {
+    display: inline-block;
+    padding: 11px 18px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-panou);
+    text-decoration: none;
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton:hover {
+    background: #000;
+  }
+
+  .buton-secundar {
+    color: var(--color-ink);
+    background: transparent;
+    border-color: var(--color-hairline);
+  }
+
+  .buton-secundar:hover {
+    background: var(--color-paper-2);
+  }
+
+  .surse {
+    margin-top: clamp(40px, 6vw, 64px);
+    font-size: 0.8125rem;
+    color: var(--color-ink-3);
+  }
+
+  @media (max-width: 860px) {
+    .deschidere {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .cu-imagine {
+      grid-template-columns: 1fr;
+    }
+
+    .portret {
+      max-width: 280px;
+    }
+  }
+</style>

@@ -6,14 +6,39 @@ https://demo.mrwebsites.ro/calup-sistarovat/
 
 ## Pagini
 
-- `/`: harta. Cu `?cad=<nr. cadastral>` deschide direct parcela aceea.
-- `/parcele/`: toate parcelele într-un tabel, scris în HTML la build, cu căutare,
-  filtre și sortare (`src/scripts/lista.ts`). Filtrele stau în adresă, de exemplu
-  `/parcele/?stare=vanzare&categorie=arabil`.
-- `/zona/`: comuna și Banatul. Faptele vin din Wikipedia (articolele despre comuna
-  și satul Șiștarovăț și despre Banat). Imaginile sunt de pe Wikimedia Commons:
-  harta iosefină și acuarela lui Valerio sunt în domeniul public, iar harta
-  județului e cu date ANCPI, sub licența Open Government.
+Site-ul e în română, engleză și germană. Româna stă în rădăcină, celelalte sub
+`/en/` și `/de/`, cu adrese traduse. Harta adreselor e în `src/i18n/limbi.ts`;
+fișierele din `src/pages/` doar aleg vederea (`src/vederi/`) și limba.
+
+| Pagina | RO | EN | DE |
+| --- | --- | --- | --- |
+| Harta (`?cad=<nr. cadastral>` deschide parcela) | `/` | `/en/` | `/de/` |
+| Lista parcelelor | `/parcele/` | `/en/parcels/` | `/de/flurstuecke/` |
+| Despre zonă | `/zona/` | `/en/area/` | `/de/gegend/` |
+| Contact (`?cad=` completează numărul) | `/contact/` | `/en/contact/` | `/de/kontakt/` |
+| Confidențialitate | `/confidentialitate/` | `/en/privacy/` | `/de/datenschutz/` |
+| Termeni | `/termeni/` | `/en/terms/` | `/de/nutzungsbedingungen/` |
+| Cookies | `/cookies/` | `/en/cookies/` | `/de/cookies/` |
+
+- Textele interfeței: `src/i18n/text.ts`. Pagina zonei: `src/i18n/zona.ts`, cu fapte
+  din Wikipedia (comuna și satul Șiștarovăț, Banatul). Imaginile ei sunt de pe
+  Wikimedia Commons: harta iosefină și acuarela lui Valerio în domeniul public,
+  harta județului cu date ANCPI, sub licența Open Government.
+- Lista e scrisă în HTML la build, cu căutare, filtre și sortare
+  (`src/scripts/lista.ts`). Filtrele stau în adresă, de exemplu
+  `/parcele/?stare=vanzare&categorie=arabil`, și rămân la schimbarea limbii.
+- Contactul nu are server: formularul compune mesajul și deschide WhatsApp.
+
+## Date de contact și paginile legale
+
+Numele, emailul și, dacă e cazul, firma vânzătorului se completează în
+`src/lib/contact.ts`. Până atunci apar pe site marcate cu galben („de completat”)
+și build-ul le listează în consolă.
+
+Textele legale (`src/i18n/legal.ts`) descriu site-ul așa cum e acum: fără
+cookie-uri, fără analytics, fonturi servite de pe site (Astro le descarcă la
+build), harta de la Mapbox. De aceea nu există banner de cookies. Dacă se adaugă
+statistici sau alt serviciu extern, se schimbă și textele, și apare bannerul.
 
 ## Date
 
