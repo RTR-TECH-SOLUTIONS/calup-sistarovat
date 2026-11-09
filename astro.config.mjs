@@ -42,6 +42,17 @@ export default defineConfig({
       fallbacks: ['Georgia', 'serif'],
       options: { experimental: { variableAxis: { opsz: ['6..72'] } } },
     },
+    // Doar pentru numele din antet, ca să semene cu sigla clientului. Numele e
+    // în germană, deci ajunge setul latin (Ü, Ä).
+    {
+      provider: fontProviders.google(),
+      name: 'Montserrat',
+      cssVariable: '--font-montserrat',
+      weights: [500, 700],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+    },
   ],
   vite: {
     plugins: [tailwindcss()],

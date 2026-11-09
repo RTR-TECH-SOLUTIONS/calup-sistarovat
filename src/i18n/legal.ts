@@ -9,7 +9,7 @@
  * Datele vânzătorului vin din src/lib/contact.ts; ce lipsește apare marcat.
  * Textele sunt HTML scris de noi, randat cu set:html.
  */
-import { CONTACT, camp, telefonLink, whatsapp } from '../lib/contact';
+import { CONTACT, camp, telefonDeLink, telefonLink, whatsapp } from '../lib/contact';
 import { ruta, type Limba } from './limbi';
 import { TEXT } from './text';
 
@@ -28,6 +28,8 @@ const ul = (...x: string[]) => `<ul>${x.map((t) => `<li>${t}</li>`).join('')}</u
 const a = (href: string, text: string) =>
   `<a href="${href}"${href.startsWith('http') ? ' rel="noopener"' : ''}>${text}</a>`;
 
+const SAU: Record<Limba, string> = { ro: 'sau', en: 'or', de: 'oder' };
+
 /** Datele care se repetă, în forma fiecărei limbi. */
 function date(l: Limba) {
   const t = TEXT[l];
@@ -38,7 +40,8 @@ function date(l: Limba) {
     : camp(null, t.deCompletat, t.contact.lipsaEmail);
   return {
     vanzator: [nume, ...extra].join(', '),
-    telefon: a(telefonLink, CONTACT.telefon),
+    // Două numere: cel din România (și pe WhatsApp) și cel din Germania.
+    telefon: `${a(telefonLink, CONTACT.telefon)} ${SAU[l]} ${a(telefonDeLink, CONTACT.telefonDe)}`,
     whatsapp: a(whatsapp(), 'WhatsApp'),
     email,
     cookies: ruta('cookies', l),
@@ -55,7 +58,7 @@ function confidentialitate(l: Limba): DocLegal {
     return {
       titlu: 'Privacy policy',
       descriere: 'How personal data is handled on the Calup 4, Șiștarovăț website.',
-      actualizat: 'Last updated: 9 November 2026',
+      actualizat: 'Last updated: 10 November 2026',
       intro:
         'In short: this website uses no cookies and does not track visitors. We only receive personal data when you contact us, on WhatsApp, by phone or by email.',
       sectiuni: [
@@ -92,6 +95,7 @@ function confidentialitate(l: Limba): DocLegal {
               'the company hosting the website;',
               'Mapbox, Inc. (USA), which delivers the map and the satellite imagery;',
               'WhatsApp (Meta), if you choose to write to us on WhatsApp; the WhatsApp privacy policy also applies to those messages;',
+              'our email provider, if you write to us by email;',
               'the notary and the authorities, if a sale goes ahead, as far as the law requires.',
             ) + p('We do not sell or rent your data to anyone.'),
         },
@@ -125,7 +129,7 @@ function confidentialitate(l: Limba): DocLegal {
     return {
       titlu: 'Datenschutzerklärung',
       descriere: 'Wie auf der Website zu Calup 4, Șiștarovăț, mit personenbezogenen Daten umgegangen wird.',
-      actualizat: 'Zuletzt aktualisiert: 9. November 2026',
+      actualizat: 'Zuletzt aktualisiert: 10. November 2026',
       intro:
         'Kurz gesagt: Diese Website verwendet keine Cookies und verfolgt keine Besucher. Personenbezogene Daten erhalten wir nur, wenn Sie uns kontaktieren, per WhatsApp, Telefon oder E-Mail.',
       sectiuni: [
@@ -162,6 +166,7 @@ function confidentialitate(l: Limba): DocLegal {
               'das Unternehmen, das die Website hostet;',
               'Mapbox, Inc. (USA), das die Karte und die Satellitenbilder liefert;',
               'WhatsApp (Meta), wenn Sie uns per WhatsApp schreiben; für diese Nachrichten gilt zusätzlich die Datenschutzrichtlinie von WhatsApp;',
+              'unser E-Mail-Anbieter, wenn Sie uns eine E-Mail schreiben;',
               'der Notar und die Behörden, wenn es zu einem Verkauf kommt, soweit das Gesetz es verlangt.',
             ) + p('Wir verkaufen oder vermieten Ihre Daten an niemanden.'),
         },
@@ -194,7 +199,7 @@ function confidentialitate(l: Limba): DocLegal {
   return {
     titlu: 'Politica de confidențialitate',
     descriere: 'Cum sunt prelucrate datele personale pe site-ul calupului 4, Șiștarovăț.',
-    actualizat: 'Ultima actualizare: 9 noiembrie 2026',
+    actualizat: 'Ultima actualizare: 10 noiembrie 2026',
     intro:
       'Pe scurt: site-ul nu folosește cookie-uri și nu urmărește vizitatorii. Date personale primim doar când ne contactezi, pe WhatsApp, la telefon sau pe email.',
     sectiuni: [
@@ -231,6 +236,7 @@ function confidentialitate(l: Limba): DocLegal {
             'firmei care găzduiește site-ul;',
             'Mapbox, Inc. (SUA), care livrează harta și imaginile din satelit;',
             'WhatsApp (Meta), dacă alegi să ne scrii pe WhatsApp; pentru mesajele de acolo se aplică și politica de confidențialitate WhatsApp;',
+            'furnizorului nostru de email, dacă ne scrii pe email;',
             'notarului și autorităților, dacă se ajunge la vânzare, în măsura în care o cere legea.',
           ) + p('Nu vindem și nu închiriem datele nimănui.'),
       },
@@ -267,7 +273,7 @@ function termeni(l: Limba): DocLegal {
     return {
       titlu: 'Terms of use',
       descriere: 'Terms of use for the Calup 4, Șiștarovăț website.',
-      actualizat: 'Last updated: 9 November 2026',
+      actualizat: 'Last updated: 10 November 2026',
       sectiuni: [
         {
           titlu: 'About this website',
@@ -321,7 +327,7 @@ function termeni(l: Limba): DocLegal {
     return {
       titlu: 'Nutzungsbedingungen',
       descriere: 'Nutzungsbedingungen der Website zu Calup 4, Șiștarovăț.',
-      actualizat: 'Zuletzt aktualisiert: 9. November 2026',
+      actualizat: 'Zuletzt aktualisiert: 10. November 2026',
       sectiuni: [
         {
           titlu: 'Über diese Website',
@@ -376,7 +382,7 @@ function termeni(l: Limba): DocLegal {
   return {
     titlu: 'Termeni și condiții',
     descriere: 'Termenii de folosire a site-ului calupului 4, Șiștarovăț.',
-    actualizat: 'Ultima actualizare: 9 noiembrie 2026',
+    actualizat: 'Ultima actualizare: 10 noiembrie 2026',
     sectiuni: [
       {
         titlu: 'Despre site',

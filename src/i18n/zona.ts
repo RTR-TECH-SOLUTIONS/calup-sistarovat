@@ -1,10 +1,22 @@
 /**
- * Textul paginii despre zonă. Faptele vin din Wikipedia (articolele despre
- * comuna și satul Șiștarovăț și despre Banat), verificate pe 7 noiembrie 2026.
- * Engleza și germana sunt traduceri ale aceluiași text, fără nimic adăugat.
+ * Textul paginii despre zonă. Începe cu descrierea trimisă de client pe
+ * WhatsApp pe 9 noiembrie 2026 („descrierea găsită de mine cu IA”), păstrată
+ * cum a scris-o, fără emoji, cu ortografia îndreptată (liniuța din
+ * „București–Nădlac”, minuscula după două puncte). Restul faptelor vin din
+ * Wikipedia (articolele despre comuna și satul Șiștarovăț și despre Banat),
+ * verificate pe 7 noiembrie 2026. Engleza și germana sunt traduceri ale
+ * aceluiași text, fără nimic adăugat.
  * În germană râurile au numele germane (Marosch, Theiß), cum le știe cititorul.
  */
 import type { Limba } from './limbi';
+import { MARCA } from './text';
+
+/** Descrierea clientului: secțiuni cu titlu, o frază de intrare și puncte „Etichetă: text”. */
+export interface Descriere {
+  intro: string;
+  sectiuni: { titlu: string; intro?: string; puncte: [string, string][]; numerotat?: boolean }[];
+  incheiere: string;
+}
 
 interface Calup {
   total: string;
@@ -19,6 +31,9 @@ export interface TextZona {
   descriere: string;
   h1: string;
   lead: string;
+  descriereClient: Descriere;
+  /** Fostul paragraf de deschidere, cu cifrele comunei; acum deschide secțiunea despre sate. */
+  comuna: string;
   fisaAria: string;
   fisa: [string, string][];
   hartaVecheAlt: string;
@@ -45,10 +60,81 @@ const enumerare = (l: string[], si: string) =>
 
 export const ZONA: Record<Limba, TextZona> = {
   ro: {
-    titlu: 'Despre zonă · Șiștarovăț, jud. Arad',
-    descriere: 'Comuna Șiștarovăț, pe Dealurile Lipovei, în Banatul istoric: sate, istorie, pământ.',
-    h1: 'Șiștarovăț, pe Dealurile Lipovei',
-    lead: 'Șiștarovăț este o comună din sudul județului Arad, la 42 km de municipiul Arad. Are patru sate și 340 de locuitori pe aproape 123 km², adică mai puțin de trei oameni pe kilometru pătrat. Pădurile trec de 6.000 de hectare, cam jumătate din comună.',
+    titlu: `Zona · Șiștarovăț, jud. Arad · ${MARCA}`,
+    descriere: 'Comuna Șiștarovăț, pe Dealurile Lipovei, în Banat: așezare, legături, potențial și istorie.',
+    h1: 'Șiștarovăț – Oaza de dezvoltare și natură de la porțile Aradului',
+    lead: 'Șiștarovăț reprezintă una dintre cele mai promițătoare și strategice micro-regiuni din județul Arad și întreaga zonă a Banatului. Amplasată într-un cadru natural deosebit, dar perfect conectată la arterele economice majore ale vestului României, această localitate oferă oportunități unice atât pentru proiecte rezidențiale ecologice, cât și pentru investiții industriale, logistice sau agricole.',
+    descriereClient: {
+      intro: 'Iată principalele argumente care transformă Șiștarovăț într-o destinație de top pentru achiziția de terenuri:',
+      sectiuni: [
+        {
+          titlu: 'Poziționare geografică și conectivitate excelentă',
+          intro:
+            'Deși oferă liniștea și aerul curat specifice unei zone colinare, Șiștarovăț beneficiază de o proximitate strategică față de marile centre urbane și logistice din vestul țării:',
+          puncte: [
+            [
+              'Distanțe reduse',
+              'Localitatea se află la doar aproximativ 40 km de municipiul Arad și în jur de 60 km de Timișoara, cele două mari motoare economice ale regiunii.',
+            ],
+            [
+              'Acces rapid la infrastructura europeană',
+              'Poziționarea permite un acces facil la autostrada A1 (București–Nădlac), corelată direct cu rețeaua de autostrăzi din Ungaria și restul Europei de Vest. Acest lucru facilitează transportul rapid de mărfuri și deplasarea facilă a angajaților sau rezidenților.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Potențial rezidențial și ecoturism: calitatea vieții pe primul loc',
+          intro:
+            'Pentru cei interesați de parcele intravilane, Șiștarovăț devine rapid o destinație favorită pentru dezvoltări rezidențiale de tip „green living”, case de vacanță sau pensiuni:',
+          puncte: [
+            [
+              'Peisaj colinar și natură virgină',
+              'Zona este înconjurată de dealuri împădurite (Dealurile Lipovei), oferind un aer extrem de curat, un microclimat blând și un peisaj pitoresc, ferit de poluarea marilor aglomerări urbane.',
+            ],
+            [
+              'Turism și relaxare',
+              'Proximitatea față de stațiunea balneoclimaterică Lipova și mănăstirea Maria Radna adaugă o puternică valoare turistică zonei, ideală pentru proiecte de ospitalitate, glamping sau centre de recreere.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Oportunități industriale, logistice și agricole',
+          intro:
+            'Pentru investitorii interesați de parcele extravilane sau suprafețe mari de teren, Șiștarovăț oferă un teren fertil pentru afaceri sustenabile:',
+          puncte: [
+            [
+              'Soluri fertile și relief favorabil',
+              'Terenurile extravilane din zonă sunt excelente pentru agricultură, pomicultură, viticultură sau silvicultură, beneficiind de un istoric agricol bogat în Banat.',
+            ],
+            [
+              'Spațiu pentru expansiune industrială ușoară',
+              'Datorită prețurilor încă extrem de competitive ale terenurilor (comparativ cu periferia imediată a Aradului sau Timișoarei), Șiștarovăț este o opțiune excelentă pentru parcuri logistice de mici/medii dimensiuni, hale de producție nepoluantă sau facilități de depozitare care deservesc vestul țării.',
+            ],
+          ],
+        },
+        {
+          titlu: 'De ce să cumperi o parcelă în Șiștarovăț chiar acum?',
+          numerotat: true,
+          puncte: [
+            [
+              'Costuri de achiziție atractive',
+              'Terenurile din Șiștarovăț oferă în prezent un raport calitate-preț imbatabil în regiunea de vest, asigurând un potențial uriaș de apreciere a valorii pe termen mediu și lung.',
+            ],
+            [
+              'Infrastructură locală în modernizare',
+              'Autoritățile locale investesc constant în rețelele de utilități, drumuri și facilități, crescând atractivitatea și viabilitatea fiecărei parcele.',
+            ],
+            [
+              'Comunitate primitoare și multiculturală',
+              'Ca parte din Banat, localitatea se bucură de o atmosferă sigură, liniștită, deschisă către investitorii străini și perfect aliniată valorilor europene.',
+            ],
+          ],
+        },
+      ],
+      incheiere:
+        'Fie că îți dorești o parcelă intravilană pentru a construi casa visurilor tale în mijlocul naturii, fie că ești o companie europeană în căutare de teren extravilan pentru un proiect de anvergură, Șiștarovăț este locul unde investiția ta prinde rădăcini puternice.',
+    },
+    comuna: 'Șiștarovăț este o comună din sudul județului Arad, la 42 km de municipiul Arad. Are patru sate și 340 de locuitori pe aproape 123 km², adică mai puțin de trei oameni pe kilometru pătrat. Pădurile trec de 6.000 de hectare, cam jumătate din comună.',
     fisaAria: 'Fișa comunei',
     fisa: [
       ['Județul', 'Arad'],
@@ -88,14 +174,85 @@ export const ZONA: Record<Limba, TextZona> = {
     butonHarta: 'Vezi parcelele pe hartă',
     butonLista: 'Lista celor de vânzare',
     surse:
-      'Surse: Wikipedia, articolele despre comuna și satul Șiștarovăț și despre Banat; recensământul din 2021. Cifrele despre calup sunt calculate din exportul cadastral primit.',
+      'Descrierea de la început e textul primit de la vânzător. Surse pentru restul paginii: Wikipedia, articolele despre comuna și satul Șiștarovăț și despre Banat; recensământul din 2021. Cifrele despre calup sunt calculate din exportul cadastral primit.',
   },
 
   en: {
-    titlu: 'The area · Șiștarovăț, Arad County',
-    descriere: 'Șiștarovăț commune in the Lipova Hills, in the historical Banat: villages, history, land.',
-    h1: 'Șiștarovăț, in the Lipova Hills',
-    lead: 'Șiștarovăț is a commune in the south of Arad County, Romania, 42 km from the city of Arad. It has four villages and 340 inhabitants on almost 123 km², fewer than three people per square kilometre. Forests cover more than 6,000 hectares, about half of the commune.',
+    titlu: `The area · Șiștarovăț, Arad County · ${MARCA}`,
+    descriere: 'Șiștarovăț commune in the Lipova Hills, in the Banat, Romania: location, connections, potential and history.',
+    h1: 'Șiștarovăț – an oasis of growth and nature at the gates of Arad',
+    lead: 'Șiștarovăț is one of the most promising and strategic micro-regions in Arad County and in the whole of the Banat. Set in exceptional natural surroundings, yet perfectly connected to the main economic arteries of western Romania, it offers unique opportunities both for eco-friendly residential projects and for industrial, logistics or agricultural investment.',
+    descriereClient: {
+      intro: 'Here are the main reasons that make Șiștarovăț a top destination for buying land:',
+      sectiuni: [
+        {
+          titlu: 'Location and excellent connections',
+          intro:
+            'While it offers the peace and clean air of hill country, Șiștarovăț lies strategically close to the large urban and logistics centres of western Romania:',
+          puncte: [
+            [
+              'Short distances',
+              'Șiștarovăț is only about 40 km from the city of Arad and around 60 km from Timișoara, the two great economic engines of the region.',
+            ],
+            [
+              'Fast access to European infrastructure',
+              'The A1 motorway (Bucharest–Nădlac) is within easy reach and links directly to the motorway network of Hungary and the rest of Western Europe. This makes it easy to move goods quickly and for employees or residents to get around.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Residential and eco-tourism potential: quality of life first',
+          intro:
+            'For those interested in parcels inside the village boundary, Șiștarovăț is fast becoming a favourite for “green living” homes, holiday houses and guesthouses:',
+          puncte: [
+            [
+              'Rolling hills and unspoilt nature',
+              'The area is surrounded by wooded hills (the Lipova Hills), with very clean air, a mild microclimate and picturesque scenery, away from the pollution of large cities.',
+            ],
+            [
+              'Tourism and leisure',
+              'The nearby Lipova spa resort and the Maria Radna monastery add strong tourist value to the area, ideal for hospitality projects, glamping or leisure centres.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Industrial, logistics and agricultural opportunities',
+          intro:
+            'For investors interested in land outside the built-up area or in large plots, Șiștarovăț is fertile ground for sustainable business:',
+          puncte: [
+            [
+              'Fertile soils and favourable terrain',
+              'The agricultural land around here is excellent for farming, orchards, vineyards or forestry, with a rich farming history in the Banat.',
+            ],
+            [
+              'Room for light industry',
+              'Thanks to land prices that are still highly competitive (compared with the immediate outskirts of Arad or Timișoara), Șiștarovăț is an excellent option for small and medium logistics parks, clean manufacturing halls or storage facilities serving western Romania.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Why buy a parcel in Șiștarovăț now?',
+          numerotat: true,
+          puncte: [
+            [
+              'Attractive purchase costs',
+              'Land in Șiștarovăț currently offers unbeatable value for money in western Romania, with huge potential for appreciation in the medium and long term.',
+            ],
+            [
+              'Local infrastructure being modernised',
+              'The local authorities invest steadily in utilities, roads and facilities, making every parcel more attractive and more viable.',
+            ],
+            [
+              'A welcoming, multicultural community',
+              'As part of the Banat, the village enjoys a safe, quiet atmosphere, open to foreign investors and fully in line with European values.',
+            ],
+          ],
+        },
+      ],
+      incheiere:
+        'Whether you want a parcel inside the village to build your dream home in the middle of nature, or you are a European company looking for land outside the built-up area for a major project, Șiștarovăț is where your investment puts down strong roots.',
+    },
+    comuna: 'Șiștarovăț is a commune in the south of Arad County, Romania, 42 km from the city of Arad. It has four villages and 340 inhabitants on almost 123 km², fewer than three people per square kilometre. Forests cover more than 6,000 hectares, about half of the commune.',
     fisaAria: 'Commune facts',
     fisa: [
       ['County', 'Arad'],
@@ -135,14 +292,85 @@ export const ZONA: Record<Limba, TextZona> = {
     butonHarta: 'See the parcels on the map',
     butonLista: 'List of parcels for sale',
     surse:
-      'Sources: Wikipedia, the articles on the commune and the village of Șiștarovăț and on the Banat; the 2021 census. The figures for Calup 4 are calculated from the cadastral export we received.',
+      'The description at the top is the text we received from the seller. Sources for the rest of the page: Wikipedia, the articles on the commune and the village of Șiștarovăț and on the Banat; the 2021 census. The figures for Calup 4 are calculated from the cadastral export we received.',
   },
 
   de: {
-    titlu: 'Die Gegend · Șiștarovăț, Kreis Arad',
-    descriere: 'Die Gemeinde Șiștarovăț im Hügelland von Lipova, im historischen Banat: Dörfer, Geschichte, Land.',
-    h1: 'Șiștarovăț, im Hügelland von Lipova',
-    lead: 'Șiștarovăț ist eine Gemeinde im Süden des Kreises Arad in Rumänien, 42 km von der Stadt Arad entfernt. Zu ihr gehören vier Dörfer mit 340 Einwohnern auf knapp 123 km², weniger als drei Menschen pro Quadratkilometer. Der Wald bedeckt mehr als 6.000 Hektar, etwa die Hälfte der Gemeinde.',
+    titlu: `Die Gegend · Șiștarovăț, Kreis Arad · ${MARCA}`,
+    descriere: 'Die Gemeinde Șiștarovăț im Hügelland von Lipova, im Banat, Rumänien: Lage, Anbindung, Potenzial und Geschichte.',
+    h1: 'Șiștarovăț – eine Oase für Entwicklung und Natur vor den Toren Arads',
+    lead: 'Șiștarovăț gehört zu den vielversprechendsten und strategisch günstigsten Kleinregionen des Kreises Arad und des gesamten Banats. Der Ort liegt in einer besonderen Naturlandschaft und ist zugleich bestens an die großen Wirtschaftsachsen Westrumäniens angebunden. Er bietet einmalige Möglichkeiten für ökologische Wohnprojekte ebenso wie für Investitionen in Industrie, Logistik oder Landwirtschaft.',
+    descriereClient: {
+      intro: 'Die wichtigsten Gründe, warum Șiștarovăț zu den besten Adressen für den Grundstückskauf zählt:',
+      sectiuni: [
+        {
+          titlu: 'Lage und hervorragende Anbindung',
+          intro:
+            'Șiștarovăț bietet die Ruhe und die saubere Luft des Hügellands und liegt doch strategisch nahe an den großen Städten und Logistikzentren im Westen des Landes:',
+          puncte: [
+            [
+              'Kurze Wege',
+              'Der Ort liegt nur etwa 40 km von der Stadt Arad und rund 60 km von Timișoara entfernt, den beiden großen Wirtschaftsmotoren der Region.',
+            ],
+            [
+              'Schneller Anschluss an Europa',
+              'Die Autobahn A1 (Bukarest–Nădlac) ist gut erreichbar und direkt mit dem Autobahnnetz Ungarns und Westeuropas verbunden. Das erleichtert den schnellen Warentransport und die Wege von Mitarbeitern und Bewohnern.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Wohnen und sanfter Tourismus: Lebensqualität zuerst',
+          intro:
+            'Für alle, die sich für Grundstücke innerhalb der Ortslage interessieren, wird Șiștarovăț schnell zu einer beliebten Adresse für „Green Living“, Ferienhäuser oder Pensionen:',
+          puncte: [
+            [
+              'Hügelland und unberührte Natur',
+              'Die Gegend ist von bewaldeten Hügeln umgeben (dem Hügelland von Lipova), mit sehr sauberer Luft, mildem Mikroklima und malerischer Landschaft, fern von der Luftverschmutzung der Großstädte.',
+            ],
+            [
+              'Tourismus und Erholung',
+              'Die Nähe zum Kurort Lipova und zum Kloster Maria Radna gibt der Gegend einen hohen touristischen Wert, ideal für Gastgewerbe, Glamping oder Freizeitanlagen.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Chancen für Industrie, Logistik und Landwirtschaft',
+          intro:
+            'Für Investoren, die Flächen außerhalb der Ortslage oder große Grundstücke suchen, bietet Șiștarovăț einen fruchtbaren Boden für nachhaltige Geschäfte:',
+          puncte: [
+            [
+              'Fruchtbare Böden, günstiges Gelände',
+              'Die landwirtschaftlichen Flächen der Gegend eignen sich hervorragend für Ackerbau, Obstbau, Weinbau oder Forstwirtschaft, mit einer reichen landwirtschaftlichen Tradition im Banat.',
+            ],
+            [
+              'Raum für leichte Industrie',
+              'Dank der noch äußerst günstigen Grundstückspreise (im Vergleich zum direkten Umland von Arad oder Timișoara) ist Șiștarovăț eine ausgezeichnete Wahl für kleine und mittlere Logistikparks, Hallen für emissionsarme Produktion oder Lagerflächen für den Westen Rumäniens.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Warum gerade jetzt ein Grundstück in Șiștarovăț kaufen?',
+          numerotat: true,
+          puncte: [
+            [
+              'Günstige Anschaffungskosten',
+              'Grundstücke in Șiștarovăț bieten derzeit ein unschlagbares Preis-Leistungs-Verhältnis in Westrumänien, mit großem Wertsteigerungspotenzial auf mittlere und lange Sicht.',
+            ],
+            [
+              'Örtliche Infrastruktur im Ausbau',
+              'Die örtlichen Behörden investieren laufend in Versorgungsnetze, Straßen und Einrichtungen, was jedes Grundstück attraktiver und besser nutzbar macht.',
+            ],
+            [
+              'Offene, multikulturelle Gemeinschaft',
+              'Als Teil des Banats bietet der Ort eine sichere, ruhige Atmosphäre, offen für ausländische Investoren und ganz im Einklang mit europäischen Werten.',
+            ],
+          ],
+        },
+      ],
+      incheiere:
+        'Ob Sie ein Grundstück im Ort suchen, um mitten in der Natur Ihr Traumhaus zu bauen, oder als europäisches Unternehmen Land außerhalb der Ortslage für ein großes Projekt: In Șiștarovăț schlägt Ihre Investition starke Wurzeln.',
+    },
+    comuna: 'Șiștarovăț ist eine Gemeinde im Süden des Kreises Arad in Rumänien, 42 km von der Stadt Arad entfernt. Zu ihr gehören vier Dörfer mit 340 Einwohnern auf knapp 123 km², weniger als drei Menschen pro Quadratkilometer. Der Wald bedeckt mehr als 6.000 Hektar, etwa die Hälfte der Gemeinde.',
     fisaAria: 'Steckbrief der Gemeinde',
     fisa: [
       ['Kreis', 'Arad'],
@@ -182,6 +410,6 @@ export const ZONA: Record<Limba, TextZona> = {
     butonHarta: 'Flurstücke auf der Karte ansehen',
     butonLista: 'Liste der Flurstücke zum Verkauf',
     surse:
-      'Quellen: Wikipedia, die Artikel über die Gemeinde und das Dorf Șiștarovăț und über das Banat; Volkszählung 2021. Die Zahlen zu Calup 4 sind aus dem erhaltenen Katasterexport berechnet.',
+      'Die Beschreibung am Anfang ist der Text, den wir vom Verkäufer erhalten haben. Quellen für den Rest der Seite: Wikipedia, die Artikel über die Gemeinde und das Dorf Șiștarovăț und über das Banat; Volkszählung 2021. Die Zahlen zu Calup 4 sind aus dem erhaltenen Katasterexport berechnet.',
   },
 };

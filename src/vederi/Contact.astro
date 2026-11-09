@@ -1,12 +1,14 @@
 ---
 /**
- * Contact. Formularul nu trimite nimic către site: compune mesajul și deschide
- * WhatsApp, iar omul decide dacă îl trimite. Așa nu avem nevoie de server și
- * nu păstrăm date. Din fișa unei parcele se ajunge aici cu ?cad=…, iar
- * numărul intră singur în formular (src/scripts/contact.ts).
+ * Contact, după modelul trimis de client: datele de contact cu butoane pentru
+ * WhatsApp, apel (pe numărul din Germania, cum a cerut) și email, apoi un
+ * formular care pregătește mesajul. Formularul nu trimite nimic către site:
+ * deschide WhatsApp sau programul de email, iar omul decide dacă trimite. Din
+ * fișa unei parcele se ajunge aici cu ?cad=…, iar numărul intră singur în
+ * formular (src/scripts/contact.ts).
  */
 import Pagina from '../layouts/Pagina.astro';
-import { CONTACT, telefonLink, whatsapp } from '../lib/contact';
+import { CONTACT, mailto, telefonDeLink, telefonLink, whatsapp } from '../lib/contact';
 import type { Limba } from '../i18n/limbi';
 import { TEXT } from '../i18n/text';
 
@@ -17,6 +19,7 @@ interface Props {
 const { limba } = Astro.props;
 const t = TEXT[limba].contact;
 const lipsa = TEXT[limba].deCompletat;
+const email = mailto();
 ---
 
 <Pagina titlu={t.titlu} limba={limba} pagina="contact" descriere={t.descriere}>
@@ -26,34 +29,16 @@ const lipsa = TEXT[limba].deCompletat;
   </section>
 
   <div class="cadru grila">
-    <form id="form-wa" class="formular" data-wa={whatsapp()} aria-labelledby="titlu-form">
-      <h2 id="titlu-form">{t.formTitlu}</h2>
-
-      <label>
-        <span class="eticheta">{t.nume}</span>
-        <input name="nume" autocomplete="name" />
-      </label>
-
-      <label>
-        <span class="eticheta">{t.cad} <span class="optional">({t.optional})</span></span>
-        <input name="cad" class="mono" inputmode="numeric" autocomplete="off" spellcheck="false" />
-      </label>
-
-      <label>
-        <span class="eticheta">{t.mesaj}</span>
-        <textarea name="mesaj" rows="5" placeholder={t.mesajExemplu}></textarea>
-      </label>
-
-      <button type="submit" class="buton">{t.trimite}</button>
-      <p class="nota">{t.notaForm}</p>
-    </form>
-
     <aside class="date" aria-labelledby="titlu-date">
       <h2 id="titlu-date">{t.dateTitlu}</h2>
       <dl class="fisa">
         <div>
           <dt>{t.telefon}</dt>
           <dd><a href={telefonLink}>{CONTACT.telefon}</a></dd>
+        </div>
+        <div>
+          <dt>{t.telefonDe}</dt>
+          <dd><a href={telefonDeLink}>{CONTACT.telefonDe}</a></dd>
         </div>
         <div>
           <dt>{t.whatsapp}</dt>
@@ -63,8 +48,17 @@ const lipsa = TEXT[limba].deCompletat;
           <dt>{t.email}</dt>
           <dd>
             {
-              CONTACT.email ? (
-                <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              CONTACT.email && email ? (
+                <span class="email">
+                  <a href={email}>{CONTACT.email}</a>
+                  <button type="button" class="copiaza" data-copiaza={CONTACT.email}>
+                    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                      <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+                      <path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" />
+                    </svg>
+                    <span aria-live="polite">{t.copiaza}</span>
+                  </button>
+                </span>
               ) : (
                 <mark class="de-completat">
                   {lipsa}: {t.lipsaEmail}
@@ -95,7 +89,72 @@ const lipsa = TEXT[limba].deCompletat;
           )
         }
       </dl>
+
+      <div class="actiuni">
+        <a class="buton" href={whatsapp()} rel="noopener">
+          <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+            <path d="M10 2.75a7.25 7.25 0 0 0-6.3 10.83L2.75 17.25l3.75-.93A7.25 7.25 0 1 0 10 2.75Z" />
+            <path d="M7.4 7.1c.2-.4.5-.4.7-.4h.4c.1 0 .3 0 .4.3l.6 1.4c0 .2 0 .3-.1.4l-.4.5c-.1.1-.1.3 0 .4.6 1 1.4 1.7 2.4 2.2.2.1.3 0 .4-.1l.5-.6c.1-.1.3-.2.4-.1l1.4.7c.2.1.3.2.3.4 0 .5-.2 1.1-.7 1.4-.5.3-1.2.4-2 .1-1.6-.6-3-1.8-3.9-3.3-.6-1-.8-2-.4-3.3Z" />
+          </svg>
+          {t.whatsapp}
+        </a>
+        <a class="buton buton-secundar" href={telefonDeLink} aria-label={t.sunaAria(CONTACT.telefonDe)}>
+          <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+            <path d="M6.2 2.8 4.3 3.3c-.8.2-1.4 1-1.3 1.9.6 6 5.8 11.2 11.8 11.8.9.1 1.7-.5 1.9-1.3l.5-1.9a1 1 0 0 0-.6-1.2l-2.6-1a1 1 0 0 0-1.1.3l-1 1.2a10 10 0 0 1-4.4-4.4l1.2-1a1 1 0 0 0 .3-1.1l-1-2.6a1 1 0 0 0-1.2-.6Z" />
+          </svg>
+          {t.suna}
+        </a>
+        {
+          email && (
+            <a class="buton buton-secundar buton-lat" href={email}>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <rect x="2.75" y="4.75" width="14.5" height="10.5" rx="1.5" />
+                <path d="m3.5 5.75 6.5 5 6.5-5" />
+              </svg>
+              {t.scrieEmail}
+            </a>
+          )
+        }
+      </div>
     </aside>
+
+    <form
+      id="form-mesaj"
+      class="formular"
+      data-wa={whatsapp()}
+      data-email={email ?? undefined}
+      aria-labelledby="titlu-form"
+    >
+      <h2 id="titlu-form">{t.formTitlu}</h2>
+      <p class="form-lead">{t.formLead}</p>
+
+      <label>
+        <span class="eticheta">{t.nume}</span>
+        <input name="nume" autocomplete="name" />
+      </label>
+
+      <label>
+        <span class="eticheta">{t.cad} <span class="optional">({t.optional})</span></span>
+        <input name="cad" class="mono" inputmode="numeric" autocomplete="off" spellcheck="false" />
+      </label>
+
+      <label>
+        <span class="eticheta">{t.mesaj}</span>
+        <textarea name="mesaj" rows="5" placeholder={t.mesajExemplu}></textarea>
+      </label>
+
+      <div class="form-butoane">
+        <button type="submit" class="buton" value="whatsapp">{t.trimite}</button>
+        {
+          email && (
+            <button type="submit" class="buton buton-secundar" value="email">
+              {t.trimiteEmail}
+            </button>
+          )
+        }
+      </div>
+      <p class="nota">{t.notaForm}</p>
+    </form>
   </div>
 
   <script>
@@ -114,15 +173,16 @@ const lipsa = TEXT[limba].deCompletat;
   }
 
   .lead {
-    max-width: 60ch;
+    max-width: 62ch;
     font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
     line-height: 1.65;
     color: var(--color-ink-2);
   }
 
+  /* Datele de contact întâi, ca în modelul clientului; formularul lângă ele. */
   .grila {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
     gap: clamp(28px, 5vw, 72px);
     align-items: start;
   }
@@ -130,6 +190,131 @@ const lipsa = TEXT[limba].deCompletat;
   h2 {
     font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
     margin-bottom: 18px;
+  }
+
+  /* Datele de contact au forma unui extras: etichetă, valoare, hairline între rânduri. */
+  .fisa {
+    border-top: 1px solid var(--color-ink);
+    font-size: 0.9375rem;
+  }
+
+  .fisa div {
+    display: grid;
+    grid-template-columns: 9.5em 1fr;
+    gap: 12px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .fisa dt {
+    color: var(--color-ink-2);
+  }
+
+  .fisa a {
+    font-family: var(--font-mono);
+    color: var(--color-ink);
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-color: var(--color-hairline);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 150ms ease-out;
+  }
+
+  .fisa a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+  }
+
+  .copiaza {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-mic);
+    transition:
+      color 150ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  .copiaza:hover {
+    color: var(--color-ink);
+    background: var(--color-paper-2);
+  }
+
+  .copiaza svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.3;
+  }
+
+  .firma {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+  }
+
+  /* WhatsApp și apelul pe un rând, emailul dedesubt pe toată lățimea. */
+  .actiuni {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .buton-lat {
+    grid-column: 1 / -1;
+  }
+
+  .buton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 18px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-panou);
+    text-decoration: none;
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton:hover {
+    background: #000;
+  }
+
+  .buton-secundar {
+    color: var(--color-ink);
+    background: transparent;
+    border-color: var(--color-hairline);
+  }
+
+  .buton-secundar:hover {
+    background: var(--color-paper-2);
+  }
+
+  .buton svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linejoin: round;
   }
 
   .formular {
@@ -142,7 +327,13 @@ const lipsa = TEXT[limba].deCompletat;
   }
 
   .formular h2 {
-    margin-bottom: 2px;
+    margin-bottom: -8px;
+  }
+
+  .form-lead {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-2);
   }
 
   label {
@@ -190,19 +381,10 @@ const lipsa = TEXT[limba].deCompletat;
     color: var(--color-ink-3);
   }
 
-  .buton {
-    justify-self: start;
-    padding: 11px 18px;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: var(--color-paper-3);
-    background: var(--color-ink);
-    border-radius: var(--radius-panou);
-    transition: background-color 150ms ease-out;
-  }
-
-  .buton:hover {
-    background: #000;
+  .form-butoane {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .nota {
@@ -211,55 +393,20 @@ const lipsa = TEXT[limba].deCompletat;
     color: var(--color-ink-2);
   }
 
-  /* Datele de contact au forma unui extras: etichetă, valoare, hairline între rânduri. */
-  .fisa {
-    border-top: 1px solid var(--color-ink);
-    font-size: 0.9375rem;
-  }
-
-  .fisa div {
-    display: grid;
-    grid-template-columns: 8em 1fr;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--color-hairline);
-  }
-
-  .fisa dt {
-    color: var(--color-ink-2);
-  }
-
-  .fisa a {
-    font-family: var(--font-mono);
-    color: var(--color-ink);
-    text-decoration: underline;
-    text-decoration-color: var(--color-hairline);
-    text-underline-offset: 4px;
-    transition: text-decoration-color 150ms ease-out;
-  }
-
-  .fisa a:hover {
-    text-decoration-color: currentColor;
-  }
-
-  .firma {
-    display: block;
-    font-size: 0.875rem;
-    color: var(--color-ink-2);
-  }
-
   @media (max-width: 860px) {
     .grila {
       grid-template-columns: 1fr;
     }
+  }
 
-    /* Pe telefon datele de contact vin primele: un tap pe număr și sună. */
-    .date {
-      order: -1;
+  @media (max-width: 480px) {
+    .fisa div {
+      grid-template-columns: 1fr;
+      gap: 2px;
     }
 
-    .buton {
-      justify-self: stretch;
+    .form-butoane .buton {
+      flex: 1 1 100%;
     }
   }
 </style>

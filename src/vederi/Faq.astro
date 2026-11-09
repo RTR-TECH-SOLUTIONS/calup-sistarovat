@@ -1,0 +1,175 @@
+---
+/**
+ * Întrebări frecvente. Fiecare întrebare e un <details> nativ: se deschide
+ * cu un tap sau din tastatură, fără JS, iar căutarea din browser găsește și
+ * textul din răspunsurile închise. Textul stă în src/i18n/faq.ts.
+ */
+import Pagina from '../layouts/Pagina.astro';
+import { ruta, type Limba } from '../i18n/limbi';
+import { FAQ } from '../i18n/faq';
+import { OFERTA, euro, peHectar } from '../lib/oferta';
+import { statistici } from '../lib/statistici';
+import { CONTACT, mailto, telefonDeLink, telefonLink } from '../lib/contact';
+
+interface Props {
+  limba: Limba;
+}
+
+const { limba } = Astro.props;
+const t = FAQ[limba];
+const link = (href: string, text: string) => `<a href="${href}">${text}</a>`;
+const email = mailto();
+
+const intrebari = t.intrebari({
+  pret: {
+    vanzare: euro(limba, OFERTA.vanzare),
+    concesiune: euro(limba, OFERTA.concesiune),
+    vanzareHa: euro(limba, peHectar(OFERTA.vanzare)),
+    concesiuneHa: euro(limba, peHectar(OFERTA.concesiune)),
+  },
+  s: statistici(limba, t.categoriiMici),
+  link: {
+    harta: ruta('harta', limba),
+    parcele: ruta('parcele', limba),
+    zona: ruta('zona', limba),
+    contact: ruta('contact', limba),
+  },
+  tel: {
+    ro: link(telefonLink, CONTACT.telefon),
+    de: link(telefonDeLink, CONTACT.telefonDe),
+    email: CONTACT.email && email ? link(email, CONTACT.email) : null,
+  },
+});
+---
+
+<Pagina titlu={t.titlu} limba={limba} pagina="faq" descriere={t.descriere}>
+  <article class="cadru faq">
+    <header>
+      <h1>{t.h1}</h1>
+      <p class="lead">{t.lead}</p>
+    </header>
+
+    <div class="lista">
+      {
+        intrebari.map((i) => (
+          <details>
+            <summary>{i.q}</summary>
+            <div class="raspuns">
+              <p set:html={i.a} />
+            </div>
+          </details>
+        ))
+      }
+    </div>
+
+    <p class="inca">
+      {t.maiAiIntrebari}
+      <a class="buton" href={ruta('contact', limba)}>{t.butonContact}</a>
+    </p>
+  </article>
+</Pagina>
+
+<style>
+  .faq {
+    max-width: calc(72ch + 2 * clamp(16px, 4vw, 32px));
+    padding-top: clamp(32px, 6vw, 64px);
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+    margin-bottom: 14px;
+  }
+
+  .lead {
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-2);
+  }
+
+  .lista {
+    margin-top: clamp(24px, 4vw, 40px);
+    border-top: 1px solid var(--color-ink);
+  }
+
+  details {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 16px 0;
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+    line-height: 1.3;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Plus care devine minus: arată că rândul se deschide, fără iconițe în plus. */
+  summary::after {
+    content: '+';
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    color: var(--color-ink-3);
+    transition: color 150ms ease-out;
+  }
+
+  details[open] summary::after {
+    content: '−';
+  }
+
+  summary:hover::after {
+    color: var(--color-ink);
+  }
+
+  .raspuns {
+    padding-bottom: 18px;
+    max-width: 64ch;
+    color: var(--color-ink-2);
+  }
+
+  .raspuns :global(a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-ink-3);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms ease-out;
+  }
+
+  .raspuns :global(a:hover) {
+    text-decoration-color: currentColor;
+  }
+
+  .inca {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+    margin-top: 32px;
+    font-size: 1.0625rem;
+  }
+
+  .buton {
+    display: inline-block;
+    padding: 11px 18px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border-radius: var(--radius-panou);
+    text-decoration: none;
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton:hover {
+    background: #000;
+  }
+</style>

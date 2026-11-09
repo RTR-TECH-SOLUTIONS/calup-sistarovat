@@ -1,0 +1,304 @@
+---
+/**
+ * Despre noi: cine vinde, cele două variante (cumpărare și concesiune) cu
+ * prețurile de pornire, parcelele din ofertă și pașii. Textul stă în
+ * src/i18n/despre.ts, prețurile în src/lib/oferta.ts.
+ */
+import Pagina from '../layouts/Pagina.astro';
+import { ruta, type Limba } from '../i18n/limbi';
+import { DESPRE, type Preturi } from '../i18n/despre';
+import { OFERTA, euro, peHectar } from '../lib/oferta';
+import { statistici } from '../lib/statistici';
+import PlanCalup from '../components/PlanCalup.astro';
+
+interface Props {
+  limba: Limba;
+}
+
+const { limba } = Astro.props;
+const t = DESPRE[limba];
+
+const pret: Preturi = {
+  vanzare: euro(limba, OFERTA.vanzare),
+  concesiune: euro(limba, OFERTA.concesiune),
+  vanzareHa: euro(limba, peHectar(OFERTA.vanzare)),
+  concesiuneHa: euro(limba, peHectar(OFERTA.concesiune)),
+};
+
+const variante = [
+  { ...t.cumparare, pret: pret.vanzare, ha: pret.vanzareHa },
+  { ...t.concesiune, pret: pret.concesiune, ha: pret.concesiuneHa },
+];
+---
+
+<Pagina titlu={t.titlu} limba={limba} pagina="despre" descriere={t.descriere(pret)}>
+  <article>
+    <header class="cadru deschidere">
+      <h1>{t.h1}</h1>
+      <p class="lead">{t.lead}</p>
+    </header>
+
+    <section class="cadru oferta" aria-labelledby="titlu-oferta">
+      <h2 id="titlu-oferta">{t.ofertaTitlu}</h2>
+      <div class="variante">
+        {
+          variante.map((v) => (
+            <div class="varianta">
+              <h3>{v.titlu}</h3>
+              <p class="pret">
+                <span class="dela">{v.dela}</span>
+                <strong>{v.pret}</strong>
+                <span class="unitate">{v.unitate}</span>
+              </p>
+              <p class="exemplu">{v.exemplu(v.ha)}</p>
+              <p>{v.text}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="nota">{t.notaPret}</p>
+    </section>
+
+    <section class="cadru bloc cu-plan" aria-labelledby="titlu-parcele">
+      <div>
+        <h2 id="titlu-parcele">{t.parceleTitlu}</h2>
+        <p class="text">{t.parcele(statistici(limba, t.categoriiMici))}</p>
+      </div>
+      <figure>
+        <a href={ruta("harta", limba)} class="plan-link">
+          <PlanCalup eticheta={t.planAria} />
+        </a>
+        <figcaption>{t.planNota}</figcaption>
+      </figure>
+    </section>
+
+    <section class="cadru bloc" aria-labelledby="titlu-pasi">
+      <h2 id="titlu-pasi">{t.pasiTitlu}</h2>
+      <ol class="pasi">
+        {
+          t.pasi.map((p) => (
+            <li>
+              <h3>{p.titlu}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="actiuni">
+        <a class="buton" href={ruta('harta', limba)}>{t.butonHarta}</a>
+        <a class="buton buton-secundar" href={ruta('contact', limba)}>{t.butonContact}</a>
+      </div>
+    </section>
+  </article>
+</Pagina>
+
+<style>
+  .deschidere {
+    padding-block: clamp(32px, 6vw, 72px) clamp(24px, 4vw, 40px);
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+    margin-bottom: 18px;
+  }
+
+  .lead {
+    max-width: 60ch;
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-2);
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    margin-bottom: 18px;
+  }
+
+  h3 {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  /* Cele două variante ca un tarif: două coloane sub o linie de tuș, nu carduri. */
+  .variante {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .varianta {
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    padding: 20px clamp(16px, 3vw, 32px) 24px 0;
+  }
+
+  .varianta + .varianta {
+    padding-left: clamp(16px, 3vw, 32px);
+    border-left: 1px solid var(--color-hairline);
+  }
+
+  .varianta p {
+    max-width: 38ch;
+    font-size: 0.9375rem;
+    color: var(--color-ink-2);
+  }
+
+  .pret {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 8px;
+  }
+
+  .varianta .pret {
+    color: var(--color-ink);
+  }
+
+  .pret strong {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .dela,
+  .unitate {
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+  }
+
+  .varianta .exemplu {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-ink);
+  }
+
+  .nota {
+    margin-top: 14px;
+    max-width: 70ch;
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+  }
+
+  .bloc {
+    padding-top: clamp(40px, 6vw, 64px);
+  }
+
+  .text {
+    max-width: 64ch;
+  }
+
+  .cu-plan {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+  }
+
+  .plan-link {
+    display: block;
+    padding: 12px;
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
+    transition: border-color 150ms ease-out;
+  }
+
+  .plan-link:hover {
+    border-color: var(--color-ink-3);
+  }
+
+  figcaption {
+    margin-top: 10px;
+    font-size: 0.8125rem;
+    color: var(--color-ink-2);
+  }
+
+  .pasi {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 3vw, 40px);
+    counter-reset: pas;
+  }
+
+  .pasi li {
+    padding-top: 14px;
+    border-top: 1px solid var(--color-hairline);
+    counter-increment: pas;
+  }
+
+  .pasi h3::before {
+    content: counter(pas) '. ';
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--color-ink-3);
+  }
+
+  .pasi p {
+    margin-top: 6px;
+    font-size: 0.9375rem;
+    color: var(--color-ink-2);
+  }
+
+  .actiuni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+
+  .buton {
+    display: inline-block;
+    padding: 11px 18px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-panou);
+    text-decoration: none;
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton:hover {
+    background: #000;
+  }
+
+  .buton-secundar {
+    color: var(--color-ink);
+    background: transparent;
+    border-color: var(--color-hairline);
+  }
+
+  .buton-secundar:hover {
+    background: var(--color-paper-2);
+  }
+
+  @media (max-width: 760px) {
+    .pasi,
+    .cu-plan {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .variante {
+      grid-template-columns: 1fr;
+    }
+
+    .varianta {
+      padding-right: 0;
+    }
+
+    .varianta + .varianta {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--color-hairline);
+    }
+  }
+</style>

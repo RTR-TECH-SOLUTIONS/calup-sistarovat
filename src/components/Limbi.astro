@@ -1,6 +1,6 @@
 ---
-/** RO · EN · DE. Fiecare duce la aceeași pagină în cealaltă limbă. */
-import { LIMBI, NUME_LIMBA, ruta, type Limba, type Pagina } from '../i18n/limbi';
+/** DE · EN · RO. Fiecare duce la aceeași pagină în cealaltă limbă. */
+import { NUME_LIMBA, ORDINE_LIMBI, ruta, type Limba, type Pagina } from '../i18n/limbi';
 import { TEXT } from '../i18n/text';
 
 interface Props {
@@ -13,7 +13,7 @@ const { limba, pagina } = Astro.props;
 
 <nav class="limbi" aria-label={TEXT[limba].limbiAria}>
   {
-    LIMBI.map((l) => (
+    ORDINE_LIMBI.map((l) => (
       <a
         href={ruta(pagina, l)}
         hreflang={l}

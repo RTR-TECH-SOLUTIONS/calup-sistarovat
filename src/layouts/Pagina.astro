@@ -1,11 +1,10 @@
 ---
-/** Paginile cu text (lista, zona, contact, legale). Harta are ecranul ei, fără antet. */
+/** Paginile cu text (despre, lista, zona, FAQ, contact, legale). Harta are ecranul ei, cu același antet. */
 import '../styles/global.css';
 import Cap from '../components/Cap.astro';
-import Navigatie from '../components/Navigatie.astro';
-import Limbi from '../components/Limbi.astro';
+import Antet from '../components/Antet.astro';
 import Legale from '../components/Legale.astro';
-import { ruta, type Limba, type Pagina } from '../i18n/limbi';
+import type { Limba, Pagina } from '../i18n/limbi';
 import { TEXT } from '../i18n/text';
 
 interface Props {
@@ -25,18 +24,7 @@ const t = TEXT[limba];
     <Cap titlu={titlu} descriere={descriere} limba={limba} pagina={pagina} />
   </head>
   <body>
-    <header class="antet">
-      <div class="cadru antet-rand">
-        <a class="marca" href={ruta('harta', limba)}>
-          <span class="marca-nume">{t.marca}</span>
-          <span class="marca-loc">{t.loc}</span>
-        </a>
-        <Navigatie limba={limba} curent={pagina} />
-        <div class="antet-limbi">
-          <Limbi limba={limba} pagina={pagina} />
-        </div>
-      </div>
-    </header>
+    <Antet limba={limba} pagina={pagina} />
 
     <main>
       <slot />
@@ -61,52 +49,6 @@ const t = TEXT[limba];
 </style>
 
 <style>
-  .antet {
-    background: var(--color-paper-3);
-    border-bottom: 1px solid var(--color-hairline);
-  }
-
-  /* Marca la stânga, navigația și limbile la dreapta, pe linia de jos. */
-  .antet-rand {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    grid-template-areas: 'marca nav limbi';
-    align-items: end;
-    gap: 8px 24px;
-    min-height: var(--header-h);
-  }
-
-  .marca {
-    grid-area: marca;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 12px 0 10px;
-    color: var(--color-ink);
-    text-decoration: none;
-    align-self: center;
-  }
-
-  .antet-rand > :global(.navigatie) {
-    grid-area: nav;
-  }
-
-  .antet-limbi {
-    grid-area: limbi;
-    align-self: center;
-  }
-
-  .marca-nume {
-    font-family: var(--font-serif);
-    font-size: 1.375rem;
-    line-height: 1;
-  }
-
-  .marca-loc {
-    font-size: 0.8125rem;
-    color: var(--color-ink-2);
-  }
-
   .subsol {
     margin-top: clamp(48px, 8vw, 96px);
     padding-block: 20px 28px;
@@ -118,26 +60,5 @@ const t = TEXT[limba];
   .subsol-nota {
     margin-top: 12px;
     color: var(--color-ink-3);
-  }
-
-  /* Pe telefon: marca și limbile pe primul rând, navigația dedesubt. */
-  @media (max-width: 760px) {
-    .antet-rand {
-      grid-template-columns: 1fr auto;
-      grid-template-areas:
-        'marca limbi'
-        'nav nav';
-      gap: 0 12px;
-    }
-
-    .marca {
-      padding-bottom: 0;
-    }
-  }
-
-  @media (max-width: 380px) {
-    .marca-loc {
-      display: none;
-    }
   }
 </style>

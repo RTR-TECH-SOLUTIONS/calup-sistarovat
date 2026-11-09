@@ -14,12 +14,26 @@ export const LOCALE: Record<Limba, string> = { ro: 'ro-RO', en: 'en-GB', de: 'de
 
 export const NUME_LIMBA: Record<Limba, string> = { ro: 'Română', en: 'English', de: 'Deutsch' };
 
-export type Pagina = 'harta' | 'parcele' | 'zona' | 'contact' | 'confidentialitate' | 'termeni' | 'cookies';
+/** Ordinea din comutatorul de limbi, cum a cerut-o clientul: DE EN RO. */
+export const ORDINE_LIMBI: readonly Limba[] = ['de', 'en', 'ro'];
+
+export type Pagina =
+  | 'despre'
+  | 'harta'
+  | 'parcele'
+  | 'zona'
+  | 'faq'
+  | 'contact'
+  | 'confidentialitate'
+  | 'termeni'
+  | 'cookies';
 
 export const RUTE: Record<Pagina, Record<Limba, string>> = {
+  despre: { ro: '/despre-noi/', en: '/en/about/', de: '/de/ueber-uns/' },
   harta: { ro: '/', en: '/en/', de: '/de/' },
   parcele: { ro: '/parcele/', en: '/en/parcels/', de: '/de/flurstuecke/' },
   zona: { ro: '/zona/', en: '/en/area/', de: '/de/gegend/' },
+  faq: { ro: '/intrebari-frecvente/', en: '/en/faq/', de: '/de/faq/' },
   contact: { ro: '/contact/', en: '/en/contact/', de: '/de/kontakt/' },
   confidentialitate: { ro: '/confidentialitate/', en: '/en/privacy/', de: '/de/datenschutz/' },
   termeni: { ro: '/termeni/', en: '/en/terms/', de: '/de/nutzungsbedingungen/' },

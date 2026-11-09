@@ -13,8 +13,14 @@
   --color-ink: #15181a;
   --color-ink-2: #565d62;
   --color-ink-3: #8a9095;
-  --color-accent: #2f5d46;
-  --color-accent-alt: #244a38;
+  /* Verdele din sigla clientului; restul paletei rămâne neutru. */
+  --color-accent: #1d5440;
+  --color-accent-alt: #17432f;
+
+  /* Culorile siglei, măsurate pe imaginea primită. Doar în antet și în semn. */
+  --color-marca: #123047;
+  --color-marca-verde: #1d5440;
+  --color-marca-aur: #bca659;
 
   /* Cod de semnalizare pentru statusul lotului. Separat de paleta de brand. */
   --color-disponibil: #2f8f57;
@@ -26,6 +32,7 @@
   --font-serif: var(--font-newsreader);
   --font-sans: var(--font-plex-sans);
   --font-mono: var(--font-plex-mono);
+  --font-marca: var(--font-montserrat);
 
   --radius-panou: 8px;
   --radius-mic: 4px;
@@ -35,13 +42,13 @@
 }
 
 :root {
-  --header-h: 60px;
+  --header-h: 64px;
   --sidebar-w: 340px;
 }
 
 @media (min-width: 1280px) {
   :root {
-    --header-h: 68px;
+    --header-h: 72px;
     --sidebar-w: 372px;
   }
 }

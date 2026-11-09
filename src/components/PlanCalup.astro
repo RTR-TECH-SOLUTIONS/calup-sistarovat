@@ -1,0 +1,26 @@
+---
+/**
+ * Planul calupului: toate parcelele, cele de vânzare pline, în verdele siglei.
+ * Fișierul îl scrie build-ul (src/pages/plan-calup.svg.ts); aici e doar
+ * imaginea, cu dimensiunile ei, ca pagina să nu sară când se încarcă.
+ */
+import { cale } from '../lib/cale';
+import { planCalup } from '../lib/plan';
+
+interface Props {
+  eticheta: string;
+}
+
+const { eticheta } = Astro.props;
+const { latime, inaltime } = planCalup();
+---
+
+<img class="plan" src={cale('/plan-calup.svg')} width={latime} height={inaltime} alt={eticheta} loading="lazy" decoding="async" />
+
+<style>
+  .plan {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

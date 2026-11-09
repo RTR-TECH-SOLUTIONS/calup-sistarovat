@@ -1,21 +1,26 @@
 ---
+/**
+ * Meniul site-ului, în ordinea cerută de client. Pe ecranele late stă în
+ * antet, pe un rând. Pe cele înguste e un popover nativ, deschis de butonul
+ * din antet: se închide singur la Esc sau la un tap în afara lui, fără JS.
+ */
 import { ruta, type Limba, type Pagina } from '../i18n/limbi';
 import { TEXT } from '../i18n/text';
 
-type Sectiune = 'harta' | 'parcele' | 'zona' | 'contact';
+type Sectiune = 'despre' | 'harta' | 'parcele' | 'zona' | 'faq' | 'contact';
 
 interface Props {
   limba: Limba;
-  /** Paginile legale nu sunt în navigație, deci nu marchează nimic. */
+  /** Paginile legale nu sunt în meniu, deci nu marchează nimic. */
   curent: Pagina;
 }
 
 const { limba, curent } = Astro.props;
 const t = TEXT[limba].nav;
-const sectiuni: Sectiune[] = ['harta', 'parcele', 'zona', 'contact'];
+const sectiuni: Sectiune[] = ['despre', 'harta', 'parcele', 'zona', 'faq', 'contact'];
 ---
 
-<nav class="navigatie" aria-label={t.aria}>
+<nav id="meniu" class="navigatie" popover aria-label={t.aria}>
   <ul>
     {
       sectiuni.map((s) => (
@@ -30,31 +35,87 @@ const sectiuni: Sectiune[] = ['harta', 'parcele', 'zona', 'contact'];
 </nav>
 
 <style>
+  /* Deschis pe telefon: o foaie sub antet, lipită de dreapta. */
+  .navigatie:popover-open {
+    position: fixed;
+    inset: var(--header-h) 0 auto auto;
+    width: min(300px, 100vw);
+    max-height: calc(100dvh - var(--header-h));
+    margin: 0;
+    padding: 8px 0 12px;
+    overflow-y: auto;
+    color: var(--color-ink);
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-right: 0;
+    border-radius: 0 0 0 var(--radius-panou);
+    box-shadow: var(--shadow-ridicat);
+  }
+
   ul {
-    display: flex;
-    gap: 18px;
+    display: grid;
   }
 
   a {
     display: block;
-    padding: 10px 0 8px;
-    font-size: 0.875rem;
+    padding: 12px 22px;
+    font-size: 1rem;
     color: var(--color-ink-2);
     text-decoration: none;
     white-space: nowrap;
-    border-bottom: 2px solid transparent;
+    border-left: 2px solid transparent;
     transition:
       color 150ms ease-out,
-      border-color 150ms ease-out;
+      border-color 150ms ease-out,
+      background-color 150ms ease-out;
   }
 
   a:hover {
     color: var(--color-ink);
+    background: var(--color-paper);
   }
 
   a[aria-current='page'] {
     color: var(--color-ink);
     font-weight: 500;
-    border-bottom-color: var(--color-ink);
+    border-left-color: var(--color-ink);
+  }
+
+  /* Pe ecran lat meniul e un rând obișnuit în antet. Stilurile de popover ale
+     browserului (fixed, chenar, fundal) se anulează aici. */
+  @media (min-width: 960px) {
+    .navigatie {
+      display: block;
+      position: static;
+      inset: auto;
+      width: auto;
+      height: auto;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      color: inherit;
+      background: none;
+      border: 0;
+    }
+
+    ul {
+      display: flex;
+      gap: 22px;
+    }
+
+    a {
+      padding: 10px 0 8px;
+      font-size: 0.875rem;
+      border-left: 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    a:hover {
+      background: none;
+    }
+
+    a[aria-current='page'] {
+      border-bottom-color: var(--color-ink);
+    }
   }
 </style>

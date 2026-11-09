@@ -250,7 +250,9 @@ function marginiSelectie() {
   // Pe telefon comutatorul de fundal se ascunde cât e fișa deschisă, deci sus e liber.
   const sus = 16 + inaltimeFisa + 12;
   // Pe un ecran scurt marginile n-au voie să acopere tot, altfel MapLibre nu mai încadrează deloc.
-  return { ...m, top: Math.min(sus, Math.max(m.top, window.innerHeight - m.bottom - 60)) };
+  // Harta începe sub antet, deci se socotește pe înălțimea ei, nu a ferestrei.
+  const inaltime = harta.getContainer().clientHeight;
+  return { ...m, top: Math.min(sus, Math.max(m.top, inaltime - m.bottom - 60)) };
 }
 
 /** Panoul ocupă stânga pe desktop și josul pe telefon; încadrările îl ocolesc. */

@@ -1,6 +1,7 @@
 ---
 /**
- * Comuna și regiunea, pentru cine n-a mai fost pe acolo. Textul, în cele trei
+ * Comuna și regiunea, pentru cine n-a mai fost pe acolo. Deschide descrierea
+ * trimisă de client, apoi vin satele, Banatul și calupul. Textul, în cele trei
  * limbi, stă în src/i18n/zona.ts. Cifrele despre calup se calculează din date.
  */
 import { Picture } from 'astro:assets';
@@ -32,6 +33,8 @@ const categorii = [...Map.groupBy(vanzare, (p) => p.categorie)]
 
 // Astro înghite spațiul dintre un rând de text și o expresie care începe pe
 // rândul următor, deci fraza se compune întreagă, în zona.ts.
+const d = t.descriereClient;
+
 const despreCalup = t.calup({
   total: fmt.parcele(parcele.length),
   ha: fmt.ha(suprafata(parcele)),
@@ -73,9 +76,42 @@ const despreCalup = t.calup({
       <figcaption>{t.hartaVeche}</figcaption>
     </figure>
 
+    <div class="cadru bloc">
+      <div class="descriere">
+      <p class="descriere-intro">{d.intro}</p>
+      {
+        d.sectiuni.map((sec, i) => (
+          <section aria-labelledby={`titlu-desc-${i}`}>
+            <h2 id={`titlu-desc-${i}`}>{sec.titlu}</h2>
+            {sec.intro && <p>{sec.intro}</p>}
+            {sec.numerotat ? (
+              <ol class="puncte numerotat">
+                {sec.puncte.map(([eticheta, text]) => (
+                  <li>
+                    <strong>{eticheta}:</strong> {text}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <ul class="puncte">
+                {sec.puncte.map(([eticheta, text]) => (
+                  <li>
+                    <strong>{eticheta}:</strong> {text}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))
+      }
+      <p class="incheiere">{d.incheiere}</p>
+      </div>
+    </div>
+
     <section class="cadru bloc cu-imagine" aria-labelledby="titlu-istoric">
       <div class="text">
         <h2 id="titlu-istoric">{t.istoricTitlu}</h2>
+        <p>{t.comuna}</p>
         {t.istoric.map((p) => <p>{p}</p>)}
       </div>
       <figure class="portret">
@@ -193,6 +229,57 @@ const despreCalup = t.calup({
 
   .text p + p {
     margin-top: 14px;
+  }
+
+  /* Descrierea clientului: secțiuni scurte, cu punctele „Etichetă: text”. */
+  .descriere {
+    max-width: 68ch;
+  }
+
+  .descriere-intro {
+    font-size: 1.0625rem;
+  }
+
+  .descriere section {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .descriere h2 {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    margin-bottom: 10px;
+  }
+
+  .puncte {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+    padding-left: 1.1em;
+    list-style: disc;
+  }
+
+  .puncte.numerotat {
+    list-style: decimal;
+  }
+
+  .puncte li::marker {
+    color: var(--color-ink-3);
+  }
+
+  .puncte strong {
+    font-weight: 600;
+  }
+
+  .incheiere {
+    margin-top: 32px;
+    padding: 16px 18px;
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+    line-height: 1.5;
+    background: var(--color-paper-3);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-panou);
   }
 
   .cu-imagine {

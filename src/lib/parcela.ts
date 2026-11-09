@@ -75,8 +75,9 @@ export function formatare(limba: Limba) {
   const nfHa = new Intl.NumberFormat(LOCALE[limba], { maximumFractionDigits: 2 });
   return {
     nr: (n: number) => nf.format(n),
-    mp: (n: number) => `${nf.format(n)} m²`,
-    ha: (n: number) => `${nfHa.format(n / 10000)} ha`,
+    // Spațiu nedespărțitor: „4,5 ha” nu se rupe pe două rânduri.
+    mp: (n: number) => `${nf.format(n)}\u00a0m²`,
+    ha: (n: number) => `${nfHa.format(n / 10000)}\u00a0ha`,
     categorie: (c: string) => CATEGORII[limba][c] ?? c,
     parcele: (n: number) => PARCELE[limba](n, nf.format(n)),
   };
