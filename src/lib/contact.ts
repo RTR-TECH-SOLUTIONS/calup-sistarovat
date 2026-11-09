@@ -7,11 +7,11 @@
  */
 export const CONTACT = {
   /** Numele vânzătorului sau al firmei prin care vinde. */
-  nume: null as string | null,
+  nume: 'Popescu Ion' as string | null,
   /** CUI și nr. de înregistrare, doar dacă vinde printr-o firmă. Altfel rămâne null și nu apare. */
   firma: null as string | null,
   adresa: null as string | null,
-  email: null as string | null,
+  email: 'x@x' as string | null,
   telefon: '+40 742 314 574',
 };
 
@@ -23,7 +23,8 @@ export function whatsapp(text?: string) {
   return `https://wa.me/${nr}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
 }
 
-const lipsa = (['nume', 'adresa', 'email'] as const).filter((k) => !CONTACT[k]);
+// Adresa și firma sunt opționale: când lipsesc, pur și simplu nu apar.
+const lipsa = (['nume', 'email'] as const).filter((k) => !CONTACT[k]);
 if (lipsa.length && typeof window === 'undefined') {
   console.warn(`[contact] De completat în src/lib/contact.ts: ${lipsa.join(', ')}`);
 }
