@@ -38,8 +38,8 @@ const ro = {
     cookies: 'Cookies',
   },
   previzualizare:
-    'Previzualizare. Contururile și suprafețele vin din exportul cadastral primit și au caracter informativ.',
-  previzualizareScurt: 'Previzualizare. Contururile vin din exportul cadastral primit și au caracter informativ.',
+    'Contururile și suprafețele vin din exportul cadastral primit și au caracter informativ.',
+  previzualizareScurt: 'Contururile vin din exportul cadastral primit și au caracter informativ.',
   credit: 'Site realizat de',
   deCompletat: 'de completat',
 
@@ -182,8 +182,8 @@ const en: Text = {
     termeni: 'Terms of use',
     cookies: 'Cookies',
   },
-  previzualizare: 'Preview. Outlines and areas come from the cadastral export we received and are for information only.',
-  previzualizareScurt: 'Preview. Outlines come from the cadastral export we received and are for information only.',
+  previzualizare: 'Outlines and areas come from the cadastral export we received and are for information only.',
+  previzualizareScurt: 'Outlines come from the cadastral export we received and are for information only.',
   credit: 'Website by',
   deCompletat: 'to be added',
 
@@ -325,8 +325,8 @@ const de: Text = {
     cookies: 'Cookies',
   },
   previzualizare:
-    'Vorschau. Umrisse und Flächen stammen aus dem erhaltenen Katasterexport und dienen nur zur Information.',
-  previzualizareScurt: 'Vorschau. Die Umrisse stammen aus dem erhaltenen Katasterexport und dienen nur zur Information.',
+    'Umrisse und Flächen stammen aus dem erhaltenen Katasterexport und dienen nur zur Information.',
+  previzualizareScurt: 'Die Umrisse stammen aus dem erhaltenen Katasterexport und dienen nur zur Information.',
   credit: 'Website von',
   deCompletat: 'noch einzutragen',
 
