@@ -54,7 +54,7 @@ export const DESPRE: Record<Limba, TextDespre> = {
     descriere: (p) =>
       `Vindem și dăm în concesiune parcele în comuna Șiștarovăț, jud. Arad: cumpărare de la ${p.vanzare}/m², concesiune de la ${p.concesiune}/m² pe an.`,
     h1: 'Despre noi',
-    lead: 'Vindem și dăm în concesiune parcele de teren din calupul 4 al comunei Șiștarovăț, în județul Arad, pe Dealurile Lipovei. Toate sunt pe hartă, fiecare cu numărul cadastral, suprafața și categoria de folosință, ca să știi exact ce alegi înainte să ne scrii.',
+    lead: 'Vindem și dăm în concesiune parcele de teren în comuna Șiștarovăț, în județul Arad, pe Dealurile Lipovei. Toate sunt pe hartă, fiecare cu numărul cadastral, suprafața și categoria de folosință, ca să știi exact ce alegi înainte să ne scrii.',
     ofertaTitlu: 'Cumperi sau iei în concesiune',
     cumparare: {
       titlu: 'Cumpărare',
@@ -75,9 +75,9 @@ export const DESPRE: Record<Limba, TextDespre> = {
     parceleTitlu: 'Ce parcele avem',
     categoriiMici: true,
     parcele: (s) =>
-      `Din cele ${s.total} cadastrale ale calupului, ${s.vanzare} sunt de vânzare, în total ${s.haVanzare}. Cea mai mică are ${s.min}, cea mai mare ${s.max}. Pe categorii de folosință: ${enumerare(s.categorii, 'și')}.`,
-    planAria: 'Planul calupului 4, cu toate parcelele; cele de vânzare sunt în verde',
-    planNota: 'Toate parcelele calupului 4; cele de vânzare, în verde. Nordul e sus.',
+      `Din cele ${s.total} cadastrale de pe hartă, ${s.vanzare} sunt de vânzare, în total ${s.haVanzare}. Cea mai mică are ${s.min}, cea mai mare ${s.max}. Pe categorii de folosință: ${enumerare(s.categorii, 'și')}.`,
+    planAria: 'Planul parcelelor din Șiștarovăț; cele de vânzare sunt în verde',
+    planNota: 'Toate parcelele de pe hartă; cele de vânzare, în verde. Nordul e sus.',
     pasiTitlu: 'Cum se face',
     pasi: [
       {
@@ -102,7 +102,7 @@ export const DESPRE: Record<Limba, TextDespre> = {
     descriere: (p) =>
       `We sell and lease parcels of land in Șiștarovăț commune, Arad County, Romania: to buy from ${p.vanzare}/m², to lease from ${p.concesiune}/m² a year.`,
     h1: 'About us',
-    lead: 'We sell and lease parcels of land in Calup 4 of Șiștarovăț commune, Arad County, in the Lipova Hills of western Romania. Every parcel is on the map with its cadastral number, area and land use, so you know exactly what you are choosing before you get in touch.',
+    lead: 'We sell and lease parcels of land in Șiștarovăț commune, Arad County, in the Lipova Hills of western Romania. Every parcel is on the map with its cadastral number, area and land use, so you know exactly what you are choosing before you get in touch.',
     ofertaTitlu: 'Buy or lease',
     cumparare: {
       titlu: 'Buy',
@@ -123,9 +123,9 @@ export const DESPRE: Record<Limba, TextDespre> = {
     parceleTitlu: 'The parcels',
     categoriiMici: true,
     parcele: (s) =>
-      `Of the ${s.total} in Calup 4, ${s.vanzare} are for sale, ${s.haVanzare} in total. The smallest is ${s.min}, the largest ${s.max}. By land use: ${enumerare(s.categorii, 'and')}.`,
-    planAria: 'Plan of Calup 4 with all its parcels; the ones for sale are in green',
-    planNota: 'All the parcels of Calup 4; the ones for sale in green. North is up.',
+      `Of the ${s.total} on the map, ${s.vanzare} are for sale, ${s.haVanzare} in total. The smallest is ${s.min}, the largest ${s.max}. By land use: ${enumerare(s.categorii, 'and')}.`,
+    planAria: 'Plan of the parcels in Șiștarovăț; the ones for sale are in green',
+    planNota: 'All the parcels on the map; the ones for sale in green. North is up.',
     pasiTitlu: 'How it works',
     pasi: [
       {
@@ -150,7 +150,7 @@ export const DESPRE: Record<Limba, TextDespre> = {
     descriere: (p) =>
       `Wir verkaufen und verpachten Flurstücke in der Gemeinde Șiștarovăț, Kreis Arad, Rumänien: Kauf ab ${p.vanzare}/m², Pacht ab ${p.concesiune}/m² im Jahr.`,
     h1: 'Über uns',
-    lead: 'Wir verkaufen und verpachten Flurstücke in Calup 4 der Gemeinde Șiștarovăț im Kreis Arad, im Hügelland von Lipova im rumänischen Banat. Jedes Flurstück ist auf der Karte zu sehen, mit Katasternummer, Fläche und Nutzungsart, damit Sie genau wissen, was Sie wählen, bevor Sie uns schreiben.',
+    lead: 'Wir verkaufen und verpachten Flurstücke in der Gemeinde Șiștarovăț im Kreis Arad, im Hügelland von Lipova im rumänischen Banat. Jedes Flurstück ist auf der Karte zu sehen, mit Katasternummer, Fläche und Nutzungsart, damit Sie genau wissen, was Sie wählen, bevor Sie uns schreiben.',
     ofertaTitlu: 'Kaufen oder pachten',
     cumparare: {
       titlu: 'Kauf',
@@ -171,9 +171,9 @@ export const DESPRE: Record<Limba, TextDespre> = {
     parceleTitlu: 'Die Flurstücke',
     categoriiMici: false,
     parcele: (s) =>
-      `Von den ${s.total.replace('Flurstücke', 'Flurstücken')} in Calup 4 stehen ${s.vanzare} zum Verkauf, insgesamt ${s.haVanzare}. Das kleinste hat ${s.min}, das größte ${s.max}. Nach Nutzungsart: ${enumerare(s.categorii, 'und')}.`,
-    planAria: 'Plan von Calup 4 mit allen Flurstücken; die zum Verkauf sind grün',
-    planNota: 'Alle Flurstücke von Calup 4; die zum Verkauf grün. Norden ist oben.',
+      `Von den ${s.total.replace('Flurstücke', 'Flurstücken')} auf der Karte stehen ${s.vanzare} zum Verkauf, insgesamt ${s.haVanzare}. Das kleinste hat ${s.min}, das größte ${s.max}. Nach Nutzungsart: ${enumerare(s.categorii, 'und')}.`,
+    planAria: 'Plan der Flurstücke in Șiștarovăț; die zum Verkauf sind grün',
+    planNota: 'Alle Flurstücke auf der Karte; die zum Verkauf grün. Norden ist oben.',
     pasiTitlu: 'So geht es',
     pasi: [
       {

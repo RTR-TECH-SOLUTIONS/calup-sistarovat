@@ -1,0 +1,10 @@
+---
+import Articol from '../../../vederi/Articol.astro';
+import { caiArticole, type Articol as A } from '../../../lib/articole';
+
+export const getStaticPaths = () => caiArticole('de');
+
+const { articol } = Astro.props as { articol: A };
+---
+
+<Articol limba="de" articol={articol} />

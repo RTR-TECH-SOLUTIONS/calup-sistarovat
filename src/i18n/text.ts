@@ -3,7 +3,8 @@
  * două au exact aceleași chei, altfel TypeScript nu trece build-ul.
  *
  * „Grundstücke Banat Rumänien” e numele site-ului și rămâne în germană în toate
- * limbile, ca pe siglă. „Calup 4” rămâne nume propriu, așa îl numește clientul.
+ * limbile, ca pe siglă. „Calup 4” nu mai apare nicăieri: pe 10 nov clientul a cerut
+ * să scriem Șiștarovăț în locul lui.
  * „Tarla” rămâne și el netradus: apare așa pe actele pe care le va vedea
  * cumpărătorul. În germană vorbim cu „Sie”.
  *
@@ -25,6 +26,7 @@ const ro = {
     harta: 'Hartă',
     parcele: 'Parcele',
     zona: 'Zona',
+    articole: 'Articole',
     faq: 'FAQ',
     contact: 'Contact',
   },
@@ -43,21 +45,21 @@ const ro = {
 
   harta: {
     titlu: `Parcele de vânzare în Șiștarovăț, jud. Arad · ${MARCA}`,
-    descriere: 'Harta parcelelor de vânzare din calupul 4, comuna Șiștarovăț, jud. Arad.',
-    loc: 'Comuna Șiștarovăț · jud. Arad',
-    aria: 'Harta parcelelor din calupul 4',
+    descriere: 'Harta parcelelor de vânzare din Șiștarovăț, jud. Arad.',
+    loc: 'Județul Arad · Banat',
+    aria: 'Harta parcelelor din Șiștarovăț',
     nrVanzare: 'parcele de vânzare',
     suprafataTotala: 'suprafață totală',
-    notaTotal: (n: number, f: Formatare) => `din ${f.parcele(n)} cadastrale ale calupului`,
+    notaTotal: (n: number, f: Formatare) => `din ${f.parcele(n)} cadastrale de pe hartă`,
     cautaEticheta: 'Caută după nr. cadastral',
     cautaExemplu: 'ex. 304964',
     cautaButon: 'Caută',
-    cautaNegasit: (cad: string) => `Nu există nr. cadastral ${cad} în calup.`,
+    cautaNegasit: (cad: string) => `Nu există nr. cadastral ${cad} pe hartă.`,
     peCategorii: 'De vânzare, pe categorii',
     legendaVanzare: 'De vânzare',
-    legendaRest: 'Restul parcelelor din calup',
+    legendaRest: 'Restul parcelelor',
     doarVanzare: 'Arată doar parcelele de vânzare',
-    aratTot: 'Vezi tot calupul',
+    aratTot: 'Vezi toate parcelele',
     fundalAria: 'Fundal hartă',
     fundalHarta: 'Hartă',
     fundalSatelit: 'Satelit',
@@ -81,7 +83,7 @@ const ro = {
   lista: {
     titlu: `Lista parcelelor · ${MARCA}`,
     descriere: (total: string) => `${total} cadastrale din comuna Șiștarovăț, jud. Arad.`,
-    h1: 'Toate parcelele din calupul 4',
+    h1: 'Toate parcelele din Șiștarovăț',
     intro: (total: string, vanzare: string, ha: string) =>
       `${total} cadastrale din comuna Șiștarovăț. ${vanzare} sunt de vânzare, în total ${ha}. Apasă pe un număr cadastral ca să vezi parcela pe hartă.`,
     cauta: 'Caută',
@@ -95,7 +97,7 @@ const ro = {
     rezultat: (gasite: string, total: string) => `${gasite} din ${total}`,
     gol: 'Nicio parcelă nu se potrivește filtrelor.',
     stergeFiltre: 'Șterge filtrele',
-    tabel: 'Parcelele calupului 4, cu suprafața și starea fiecăreia',
+    tabel: 'Parcelele din Șiștarovăț, cu suprafața și starea fiecăreia',
     colCad: 'Nr. cadastral',
     colTarla: 'Tarla',
     colParcela: 'Parcelă',
@@ -105,9 +107,23 @@ const ro = {
     da: 'Da',
   },
 
+  articole: {
+    titlu: `Articole · ${MARCA}`,
+    descriere: 'Articole despre Șiștarovăț, Banat și terenurile din zonă.',
+    h1: 'Articole',
+    lead: 'Despre Șiștarovăț, Banat și terenurile din zonă.',
+    gol: 'Primele articole apar aici în curând.',
+    golLinkuri: (harta: string, zona: string) =>
+      `Până atunci, vezi parcelele pe <a href="${harta}">hartă</a> sau citește despre <a href="${zona}">zonă</a>.`,
+    toate: 'Toate articolele',
+    finalText: 'Te interesează o parcelă din Șiștarovăț?',
+    butonHarta: 'Vezi parcelele pe hartă',
+    butonContact: 'Contact',
+  },
+
   contact: {
     titlu: `Contact · ${MARCA}`,
-    descriere: 'Întrebări despre parcelele din calupul 4, Șiștarovăț: pe WhatsApp, la telefon în România sau în Germania, ori pe email.',
+    descriere: 'Întrebări despre parcelele din Șiștarovăț: pe WhatsApp, la telefon în România sau în Germania, ori pe email.',
     h1: 'Contact',
     lead: 'Pentru întrebări despre o parcelă, o vizită pe teren sau acte, scrie-ne pe WhatsApp sau pe email, ori sună-ne în România sau în Germania. Dacă ai găsit parcela pe hartă, trimite și numărul ei cadastral.',
     formTitlu: 'Pregătește mesajul',
@@ -121,10 +137,10 @@ const ro = {
     trimiteEmail: 'Trimite pe email',
     notaForm:
       'Se deschide WhatsApp sau programul de email, cu mesajul gata scris, iar tu decizi dacă îl trimiți. Site-ul nu trimite și nu păstrează nimic din ce scrii aici.',
-    subiect: (cad: string) => (cad ? `Parcela ${cad}, calupul 4, Șiștarovăț` : 'Parcele în Șiștarovăț'),
+    subiect: (cad: string) => (cad ? `Parcela ${cad}, Șiștarovăț` : 'Parcele în Șiștarovăț'),
     salut: 'Bună ziua,',
-    despreParcela: (cad: string) => `Mă interesează parcela cu nr. cadastral ${cad} din calupul 4, Șiștarovăț.`,
-    despreSite: 'Vă scriu de pe site-ul cu parcelele din calupul 4, Șiștarovăț.',
+    despreParcela: (cad: string) => `Mă interesează parcela cu nr. cadastral ${cad} din Șiștarovăț.`,
+    despreSite: 'Vă scriu de pe site-ul cu parcelele din Șiștarovăț.',
     dateTitlu: 'Date de contact',
     telefon: 'Telefon România',
     telefonDe: 'Telefon Germania',
@@ -155,6 +171,7 @@ const en: Text = {
     harta: 'Map',
     parcele: 'Parcels',
     zona: 'The area',
+    articole: 'Articles',
     faq: 'FAQ',
     contact: 'Contact',
   },
@@ -172,21 +189,21 @@ const en: Text = {
 
   harta: {
     titlu: `Land for sale in Șiștarovăț, Romania · ${MARCA}`,
-    descriere: 'Map of the parcels for sale in Calup 4, Șiștarovăț commune, Arad County, Romania.',
-    loc: 'Șiștarovăț commune · Arad County',
-    aria: 'Map of the parcels in Calup 4',
+    descriere: 'Map of the parcels for sale in Șiștarovăț, Arad County, Romania.',
+    loc: 'Arad County · Banat',
+    aria: 'Map of the parcels in Șiștarovăț',
     nrVanzare: 'parcels for sale',
     suprafataTotala: 'total area',
-    notaTotal: (n: number, f: Formatare) => `out of ${f.parcele(n)} in Calup 4`,
+    notaTotal: (n: number, f: Formatare) => `out of ${f.parcele(n)} on the map`,
     cautaEticheta: 'Search by cadastral number',
     cautaExemplu: 'e.g. 304964',
     cautaButon: 'Search',
-    cautaNegasit: (cad: string) => `There is no cadastral number ${cad} in Calup 4.`,
+    cautaNegasit: (cad: string) => `There is no cadastral number ${cad} on the map.`,
     peCategorii: 'For sale, by land use',
     legendaVanzare: 'For sale',
-    legendaRest: 'Other parcels in Calup 4',
+    legendaRest: 'Other parcels',
     doarVanzare: 'Show only parcels for sale',
-    aratTot: 'Show all of Calup 4',
+    aratTot: 'Show all parcels',
     fundalAria: 'Map background',
     fundalHarta: 'Map',
     fundalSatelit: 'Satellite',
@@ -210,7 +227,7 @@ const en: Text = {
   lista: {
     titlu: `Parcel list · ${MARCA}`,
     descriere: (total: string) => `${total} in Șiștarovăț commune, Arad County, Romania.`,
-    h1: 'All parcels in Calup 4',
+    h1: 'All parcels in Șiștarovăț',
     intro: (total: string, vanzare: string, ha: string) =>
       `${total} in Șiștarovăț commune. ${vanzare} are for sale, ${ha} in total. Click a cadastral number to see the parcel on the map.`,
     cauta: 'Search',
@@ -224,7 +241,7 @@ const en: Text = {
     rezultat: (gasite: string, total: string) => `${gasite} of ${total}`,
     gol: 'No parcel matches these filters.',
     stergeFiltre: 'Clear filters',
-    tabel: 'The parcels of Calup 4, with the area and status of each',
+    tabel: 'The parcels in Șiștarovăț, with the area and status of each',
     colCad: 'Cadastral no.',
     colTarla: 'Tarla',
     colParcela: 'Parcel',
@@ -234,9 +251,23 @@ const en: Text = {
     da: 'Yes',
   },
 
+  articole: {
+    titlu: `Articles · ${MARCA}`,
+    descriere: 'Articles about Șiștarovăț, the Banat and the land in the area.',
+    h1: 'Articles',
+    lead: 'About Șiștarovăț, the Banat and the land in the area.',
+    gol: 'The first articles will appear here soon.',
+    golLinkuri: (harta: string, zona: string) =>
+      `Until then, see the parcels on the <a href="${harta}">map</a> or read about <a href="${zona}">the area</a>.`,
+    toate: 'All articles',
+    finalText: 'Interested in a parcel in Șiștarovăț?',
+    butonHarta: 'See the parcels on the map',
+    butonContact: 'Contact',
+  },
+
   contact: {
     titlu: `Contact · ${MARCA}`,
-    descriere: 'Questions about the parcels in Calup 4, Șiștarovăț: on WhatsApp, by phone in Romania or Germany, or by email.',
+    descriere: 'Questions about the parcels in Șiștarovăț: on WhatsApp, by phone in Romania or Germany, or by email.',
     h1: 'Contact',
     lead: 'For questions about a parcel, a visit on site or the paperwork, message us on WhatsApp or by email, or call us in Romania or Germany. If you found the parcel on the map, please include its cadastral number.',
     formTitlu: 'Prepare your message',
@@ -250,10 +281,10 @@ const en: Text = {
     trimiteEmail: 'Send by email',
     notaForm:
       'WhatsApp or your email app opens with the message ready, and you decide whether to send it. This website does not send or store anything you type here.',
-    subiect: (cad: string) => (cad ? `Parcel ${cad}, Calup 4, Șiștarovăț` : 'Land in Șiștarovăț'),
+    subiect: (cad: string) => (cad ? `Parcel ${cad}, Șiștarovăț` : 'Land in Șiștarovăț'),
     salut: 'Hello,',
-    despreParcela: (cad: string) => `I am interested in the parcel with cadastral number ${cad} in Calup 4, Șiștarovăț.`,
-    despreSite: 'I am writing from the website about the parcels in Calup 4, Șiștarovăț.',
+    despreParcela: (cad: string) => `I am interested in the parcel with cadastral number ${cad} in Șiștarovăț.`,
+    despreSite: 'I am writing from the website about the parcels in Șiștarovăț.',
     dateTitlu: 'Contact details',
     telefon: 'Phone, Romania',
     telefonDe: 'Phone, Germany',
@@ -282,6 +313,7 @@ const de: Text = {
     harta: 'Karte',
     parcele: 'Flurstücke',
     zona: 'Die Gegend',
+    articole: 'Artikel',
     faq: 'FAQ',
     contact: 'Kontakt',
   },
@@ -300,22 +332,22 @@ const de: Text = {
 
   harta: {
     titlu: `Grundstücke zu verkaufen in Șiștarovăț, Rumänien · ${MARCA}`,
-    descriere: 'Karte der Flurstücke zum Verkauf in Calup 4, Gemeinde Șiștarovăț, Kreis Arad, Rumänien.',
-    loc: 'Gemeinde Șiștarovăț · Kreis Arad',
-    aria: 'Karte der Flurstücke in Calup 4',
+    descriere: 'Karte der Flurstücke zum Verkauf in Șiștarovăț, Kreis Arad, Rumänien.',
+    loc: 'Kreis Arad · Banat',
+    aria: 'Karte der Flurstücke in Șiștarovăț',
     nrVanzare: 'Flurstücke zu verkaufen',
     suprafataTotala: 'Gesamtfläche',
     // Dativ: „von 2.321 Flurstücken”, deci nu putem folosi pluralul din formatare.
-    notaTotal: (n: number, f: Formatare) => `von insgesamt ${f.nr(n)} Flurstücken in Calup 4`,
+    notaTotal: (n: number, f: Formatare) => `von insgesamt ${f.nr(n)} Flurstücken auf der Karte`,
     cautaEticheta: 'Nach Katasternummer suchen',
     cautaExemplu: 'z. B. 304964',
     cautaButon: 'Suchen',
-    cautaNegasit: (cad: string) => `Die Katasternummer ${cad} gibt es in Calup 4 nicht.`,
+    cautaNegasit: (cad: string) => `Die Katasternummer ${cad} gibt es auf der Karte nicht.`,
     peCategorii: 'Zu verkaufen, nach Nutzungsart',
     legendaVanzare: 'Zu verkaufen',
-    legendaRest: 'Übrige Flurstücke in Calup 4',
+    legendaRest: 'Übrige Flurstücke',
     doarVanzare: 'Nur Flurstücke zum Verkauf zeigen',
-    aratTot: 'Ganz Calup 4 zeigen',
+    aratTot: 'Alle Flurstücke zeigen',
     fundalAria: 'Kartenhintergrund',
     fundalHarta: 'Karte',
     fundalSatelit: 'Satellit',
@@ -339,7 +371,7 @@ const de: Text = {
   lista: {
     titlu: `Flurstücksliste · ${MARCA}`,
     descriere: (total: string) => `${total} in der Gemeinde Șiștarovăț, Kreis Arad, Rumänien.`,
-    h1: 'Alle Flurstücke in Calup 4',
+    h1: 'Alle Flurstücke in Șiștarovăț',
     intro: (total: string, vanzare: string, ha: string) =>
       `${total} in der Gemeinde Șiștarovăț. ${vanzare} stehen zum Verkauf, insgesamt ${ha}. Klicken Sie auf eine Katasternummer, um das Flurstück auf der Karte zu sehen.`,
     cauta: 'Suchen',
@@ -353,7 +385,7 @@ const de: Text = {
     rezultat: (gasite: string, total: string) => `${gasite} von ${total}`,
     gol: 'Kein Flurstück entspricht diesen Filtern.',
     stergeFiltre: 'Filter zurücksetzen',
-    tabel: 'Die Flurstücke von Calup 4 mit Fläche und Status',
+    tabel: 'Die Flurstücke in Șiștarovăț mit Fläche und Status',
     colCad: 'Katasternr.',
     colTarla: 'Tarla',
     colParcela: 'Parzelle',
@@ -363,9 +395,23 @@ const de: Text = {
     da: 'Ja',
   },
 
+  articole: {
+    titlu: `Artikel · ${MARCA}`,
+    descriere: 'Artikel über Șiștarovăț, das Banat und die Grundstücke in der Gegend.',
+    h1: 'Artikel',
+    lead: 'Über Șiștarovăț, das Banat und die Grundstücke in der Gegend.',
+    gol: 'Die ersten Artikel erscheinen hier in Kürze.',
+    golLinkuri: (harta: string, zona: string) =>
+      `Bis dahin finden Sie die Flurstücke auf der <a href="${harta}">Karte</a> und mehr über <a href="${zona}">die Gegend</a>.`,
+    toate: 'Alle Artikel',
+    finalText: 'Interessieren Sie sich für ein Flurstück in Șiștarovăț?',
+    butonHarta: 'Flurstücke auf der Karte ansehen',
+    butonContact: 'Kontakt',
+  },
+
   contact: {
     titlu: `Kontakt · ${MARCA}`,
-    descriere: 'Fragen zu den Flurstücken in Calup 4, Șiștarovăț: per WhatsApp, telefonisch in Rumänien oder Deutschland oder per E-Mail.',
+    descriere: 'Fragen zu den Flurstücken in Șiștarovăț: per WhatsApp, telefonisch in Rumänien oder Deutschland oder per E-Mail.',
     h1: 'Kontakt',
     lead: 'Bei Fragen zu einem Flurstück, zu einer Besichtigung vor Ort oder zu den Unterlagen schreiben Sie uns per WhatsApp oder E-Mail, oder rufen Sie uns in Rumänien oder Deutschland an. Wenn Sie das Flurstück auf der Karte gefunden haben, nennen Sie bitte die Katasternummer.',
     formTitlu: 'Nachricht vorbereiten',
@@ -379,11 +425,11 @@ const de: Text = {
     trimiteEmail: 'Per E-Mail senden',
     notaForm:
       'WhatsApp oder Ihr E-Mail-Programm öffnet sich mit der fertigen Nachricht, und Sie entscheiden, ob Sie sie absenden. Diese Website sendet oder speichert nichts von dem, was Sie hier eingeben.',
-    subiect: (cad: string) => (cad ? `Flurstück ${cad}, Calup 4, Șiștarovăț` : 'Grundstücke in Șiștarovăț'),
+    subiect: (cad: string) => (cad ? `Flurstück ${cad}, Șiștarovăț` : 'Grundstücke in Șiștarovăț'),
     salut: 'Guten Tag,',
     despreParcela: (cad: string) =>
-      `ich interessiere mich für das Flurstück mit der Katasternummer ${cad} in Calup 4, Șiștarovăț.`,
-    despreSite: 'ich schreibe Ihnen über die Website zu den Flurstücken in Calup 4, Șiștarovăț.',
+      `ich interessiere mich für das Flurstück mit der Katasternummer ${cad} in Șiștarovăț.`,
+    despreSite: 'ich schreibe Ihnen über die Website zu den Flurstücken in Șiștarovăț.',
     dateTitlu: 'Kontaktdaten',
     telefon: 'Telefon Rumänien',
     telefonDe: 'Telefon Deutschland',

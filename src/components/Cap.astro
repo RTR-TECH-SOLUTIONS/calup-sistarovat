@@ -13,10 +13,14 @@ interface Props {
   descriere?: string;
   limba: Limba;
   pagina: Pagina;
+  /** Adresele aceleiași pagini în celelalte limbi, când nu sunt cele din RUTE (articolele). */
+  adrese?: Partial<Record<Limba, string>>;
 }
 
-const { titlu, descriere, pagina } = Astro.props;
-const absolut = (l: Limba) => new URL(ruta(pagina, l), Astro.site).href;
+const { titlu, descriere, pagina, adrese } = Astro.props;
+// hreflang doar spre traducerile care există.
+const alternative = adrese ? LIMBI.filter((l) => adrese[l]) : LIMBI;
+const absolut = (l: Limba) => new URL(adrese?.[l] ?? ruta(pagina, l), Astro.site).href;
 ---
 
 <meta charset="utf-8" />
@@ -25,8 +29,8 @@ const absolut = (l: Limba) => new URL(ruta(pagina, l), Astro.site).href;
 {descriere && <meta name="description" content={descriere} />}
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href={cale('/favicon.svg')} type="image/svg+xml" />
-{LIMBI.map((l) => <link rel="alternate" hreflang={l} href={absolut(l)} />)}
-<link rel="alternate" hreflang="x-default" href={absolut('ro')} />
+{alternative.map((l) => <link rel="alternate" hreflang={l} href={absolut(l)} />)}
+<link rel="alternate" hreflang="x-default" href={absolut(alternative.includes('ro') ? 'ro' : alternative[0])} />
 <Font cssVariable="--font-plex-sans" preload={[{ weight: 400, subset: 'latin' }]} />
 <Font cssVariable="--font-plex-mono" />
 <Font cssVariable="--font-newsreader" />

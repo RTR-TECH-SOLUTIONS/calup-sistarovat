@@ -11,7 +11,7 @@
  */
 import { CONTACT, camp, telefonDeLink, telefonLink, whatsapp } from '../lib/contact';
 import { ruta, type Limba } from './limbi';
-import { TEXT } from './text';
+import { MARCA, TEXT } from './text';
 
 export type PaginaLegala = 'confidentialitate' | 'termeni' | 'cookies';
 
@@ -57,7 +57,7 @@ function confidentialitate(l: Limba): DocLegal {
   if (l === 'en')
     return {
       titlu: 'Privacy policy',
-      descriere: 'How personal data is handled on the Calup 4, Șiștarovăț website.',
+      descriere: `How personal data is handled on the ${MARCA} website.`,
       actualizat: 'Last updated: 10 November 2026',
       intro:
         'In short: this website uses no cookies and does not track visitors. We only receive personal data when you contact us, on WhatsApp, by phone or by email.',
@@ -128,7 +128,7 @@ function confidentialitate(l: Limba): DocLegal {
   if (l === 'de')
     return {
       titlu: 'Datenschutzerklärung',
-      descriere: 'Wie auf der Website zu Calup 4, Șiștarovăț, mit personenbezogenen Daten umgegangen wird.',
+      descriere: `Wie auf der Website ${MARCA} mit personenbezogenen Daten umgegangen wird.`,
       actualizat: 'Zuletzt aktualisiert: 10. November 2026',
       intro:
         'Kurz gesagt: Diese Website verwendet keine Cookies und verfolgt keine Besucher. Personenbezogene Daten erhalten wir nur, wenn Sie uns kontaktieren, per WhatsApp, Telefon oder E-Mail.',
@@ -198,7 +198,7 @@ function confidentialitate(l: Limba): DocLegal {
 
   return {
     titlu: 'Politica de confidențialitate',
-    descriere: 'Cum sunt prelucrate datele personale pe site-ul calupului 4, Șiștarovăț.',
+    descriere: `Cum sunt prelucrate datele personale pe site-ul ${MARCA}.`,
     actualizat: 'Ultima actualizare: 10 noiembrie 2026',
     intro:
       'Pe scurt: site-ul nu folosește cookie-uri și nu urmărește vizitatorii. Date personale primim doar când ne contactezi, pe WhatsApp, la telefon sau pe email.',
@@ -272,13 +272,13 @@ function termeni(l: Limba): DocLegal {
   if (l === 'en')
     return {
       titlu: 'Terms of use',
-      descriere: 'Terms of use for the Calup 4, Șiștarovăț website.',
+      descriere: `Terms of use for the ${MARCA} website.`,
       actualizat: 'Last updated: 10 November 2026',
       sectiuni: [
         {
           titlu: 'About this website',
           html: p(
-            `This website presents the parcels of Calup 4 in Șiștarovăț commune, Arad County, Romania, offered for sale by ${d.vanzator}. By using the website you accept the terms below.`,
+            `This website presents the parcels in Șiștarovăț commune, Arad County, Romania, offered for sale by ${d.vanzator}. By using the website you accept the terms below.`,
           ),
         },
         {
@@ -326,13 +326,13 @@ function termeni(l: Limba): DocLegal {
   if (l === 'de')
     return {
       titlu: 'Nutzungsbedingungen',
-      descriere: 'Nutzungsbedingungen der Website zu Calup 4, Șiștarovăț.',
+      descriere: `Nutzungsbedingungen der Website ${MARCA}.`,
       actualizat: 'Zuletzt aktualisiert: 10. November 2026',
       sectiuni: [
         {
           titlu: 'Über diese Website',
           html: p(
-            `Diese Website zeigt die Flurstücke von Calup 4 in der Gemeinde Șiștarovăț, Kreis Arad, Rumänien, die ${d.vanzator} zum Verkauf anbietet. Mit der Nutzung der Website akzeptieren Sie die folgenden Bedingungen.`,
+            `Diese Website zeigt die Flurstücke in der Gemeinde Șiștarovăț, Kreis Arad, Rumänien, die ${d.vanzator} zum Verkauf anbietet. Mit der Nutzung der Website akzeptieren Sie die folgenden Bedingungen.`,
           ),
         },
         {
@@ -381,13 +381,13 @@ function termeni(l: Limba): DocLegal {
 
   return {
     titlu: 'Termeni și condiții',
-    descriere: 'Termenii de folosire a site-ului calupului 4, Șiștarovăț.',
+    descriere: `Termenii de folosire a site-ului ${MARCA}.`,
     actualizat: 'Ultima actualizare: 10 noiembrie 2026',
     sectiuni: [
       {
         titlu: 'Despre site',
         html: p(
-          `Site-ul prezintă parcelele din calupul 4, comuna Șiștarovăț, județul Arad, puse în vânzare de ${d.vanzator}. Folosind site-ul, accepți condițiile de mai jos.`,
+          `Site-ul prezintă parcelele din comuna Șiștarovăț, județul Arad, puse în vânzare de ${d.vanzator}. Folosind site-ul, accepți condițiile de mai jos.`,
         ),
       },
       {
@@ -438,7 +438,7 @@ function cookies(l: Limba): DocLegal {
   if (l === 'en')
     return {
       titlu: 'Cookie policy',
-      descriere: 'The Calup 4, Șiștarovăț website uses no cookies.',
+      descriere: `The ${MARCA} website uses no cookies.`,
       actualizat: 'Last updated: 9 November 2026',
       intro: 'This website uses no cookies. That is why we do not ask for your consent with a banner.',
       sectiuni: [
@@ -482,7 +482,7 @@ function cookies(l: Limba): DocLegal {
   if (l === 'de')
     return {
       titlu: 'Hinweise zu Cookies',
-      descriere: 'Die Website zu Calup 4, Șiștarovăț, verwendet keine Cookies.',
+      descriere: `Die Website ${MARCA} verwendet keine Cookies.`,
       actualizat: 'Zuletzt aktualisiert: 9. November 2026',
       intro:
         'Diese Website verwendet keine Cookies. Deshalb bitten wir Sie auch nicht mit einem Banner um Ihre Einwilligung.',
@@ -526,7 +526,7 @@ function cookies(l: Limba): DocLegal {
 
   return {
     titlu: 'Politica de cookies',
-    descriere: 'Site-ul calupului 4, Șiștarovăț, nu folosește cookie-uri.',
+    descriere: `Site-ul ${MARCA} nu folosește cookie-uri.`,
     actualizat: 'Ultima actualizare: 9 noiembrie 2026',
     intro: 'Site-ul nu folosește cookie-uri. De aceea nu îți cerem acordul printr-un banner.',
     sectiuni: [

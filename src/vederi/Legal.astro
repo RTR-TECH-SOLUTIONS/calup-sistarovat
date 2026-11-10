@@ -3,6 +3,7 @@
 import Pagina from '../layouts/Pagina.astro';
 import { LEGAL, type PaginaLegala } from '../i18n/legal';
 import type { Limba } from '../i18n/limbi';
+import { MARCA } from '../i18n/text';
 
 interface Props {
   limba: Limba;
@@ -13,7 +14,7 @@ const { limba, pagina } = Astro.props;
 const doc = LEGAL[pagina](limba);
 ---
 
-<Pagina titlu={`${doc.titlu} · Calup 4, Șiștarovăț`} limba={limba} pagina={pagina} descriere={doc.descriere}>
+<Pagina titlu={`${doc.titlu} · ${MARCA}`} limba={limba} pagina={pagina} descriere={doc.descriere}>
   <article class="cadru legal">
     <header>
       <h1>{doc.titlu}</h1>

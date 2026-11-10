@@ -15,9 +15,11 @@ interface Props {
   pagina: Pagina;
   /** Pe hartă antetul ține toată lățimea; pe paginile cu text stă în cadru. */
   lat?: boolean;
+  /** Adresele aceleiași pagini în celelalte limbi, când nu sunt cele din RUTE (articolele). */
+  adrese?: Partial<Record<Limba, string>>;
 }
 
-const { limba, pagina, lat = false } = Astro.props;
+const { limba, pagina, lat = false, adrese } = Astro.props;
 const t = TEXT[limba];
 ---
 
@@ -35,7 +37,7 @@ const t = TEXT[limba];
     <Navigatie limba={limba} curent={pagina} />
 
     <div class="antet-dreapta">
-      <Limbi limba={limba} pagina={pagina} />
+      <Limbi limba={limba} pagina={pagina} adrese={adrese} />
       <button type="button" class="buton-meniu" popovertarget="meniu" aria-label={t.nav.meniu}>
         <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
           <path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>

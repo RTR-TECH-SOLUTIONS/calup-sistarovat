@@ -1,0 +1,214 @@
+---
+/**
+ * Un articol. Textul vine din Markdown, deci stilurile pentru titluri, liste,
+ * citate și imagini sunt aici, aplicate pe tot ce scrie Markdown-ul.
+ */
+import { render } from 'astro:content';
+import Pagina from '../layouts/Pagina.astro';
+import { ruta, type Limba } from '../i18n/limbi';
+import { MARCA, TEXT } from '../i18n/text';
+import { dataArticol, traduceri, type Articol } from '../lib/articole';
+
+interface Props {
+  limba: Limba;
+  articol: Articol;
+}
+
+const { limba, articol } = Astro.props;
+const t = TEXT[limba].articole;
+const { titlu, descriere, data } = articol.data;
+const { Content } = await render(articol);
+const adrese = await traduceri(articol);
+---
+
+<Pagina titlu={`${titlu} · ${MARCA}`} limba={limba} pagina="articole" descriere={descriere} adrese={adrese}>
+  <article class="cadru articol">
+    <a class="inapoi" href={ruta('articole', limba)}>{t.toate}</a>
+
+    <header>
+      <time datetime={data.toISOString().slice(0, 10)}>{dataArticol(limba, data)}</time>
+      <h1>{titlu}</h1>
+      <p class="lead">{descriere}</p>
+    </header>
+
+    <div class="continut">
+      <Content />
+    </div>
+
+    <aside class="final">
+      <p>{t.finalText}</p>
+      <div class="actiuni">
+        <a class="buton" href={ruta('harta', limba)}>{t.butonHarta}</a>
+        <a class="buton buton-secundar" href={ruta('contact', limba)}>{t.butonContact}</a>
+      </div>
+    </aside>
+  </article>
+</Pagina>
+
+<style>
+  .articol {
+    max-width: calc(68ch + 2 * clamp(16px, 4vw, 32px));
+    padding-top: clamp(24px, 5vw, 48px);
+  }
+
+  .inapoi {
+    display: inline-block;
+    margin-bottom: clamp(20px, 4vw, 36px);
+    font-size: 0.875rem;
+    color: var(--color-ink-2);
+    text-decoration: underline;
+    text-decoration-color: var(--color-hairline);
+    text-underline-offset: 3px;
+    transition:
+      color 150ms ease-out,
+      text-decoration-color 150ms ease-out;
+  }
+
+  .inapoi:hover {
+    color: var(--color-ink);
+    text-decoration-color: currentColor;
+  }
+
+  time {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-ink-3);
+  }
+
+  h1 {
+    margin: 6px 0 14px;
+    font-size: clamp(2rem, 1.45rem + 2.3vw, 3.25rem);
+  }
+
+  .lead {
+    padding-bottom: clamp(20px, 3vw, 28px);
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-2);
+    border-bottom: 1px solid var(--color-ink);
+  }
+
+  .continut {
+    margin-top: clamp(20px, 3vw, 28px);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .continut :global(:where(p, ul, ol, blockquote, figure, table)) {
+    margin-bottom: 1.1em;
+  }
+
+  .continut :global(h2) {
+    margin: 1.8em 0 0.5em;
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  }
+
+  .continut :global(h3) {
+    margin: 1.5em 0 0.4em;
+    font-size: 1.3125rem;
+  }
+
+  .continut :global(:where(ul, ol)) {
+    padding-left: 1.3em;
+  }
+
+  .continut :global(ul) {
+    list-style: disc;
+  }
+
+  .continut :global(ol) {
+    list-style: decimal;
+  }
+
+  .continut :global(li + li) {
+    margin-top: 0.35em;
+  }
+
+  .continut :global(li::marker) {
+    color: var(--color-ink-3);
+  }
+
+  .continut :global(a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-ink-3);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms ease-out;
+  }
+
+  .continut :global(a:hover) {
+    text-decoration-color: currentColor;
+  }
+
+  .continut :global(blockquote) {
+    padding-left: 18px;
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    color: var(--color-ink-2);
+    border-left: 2px solid var(--color-accent);
+  }
+
+  .continut :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-panou);
+  }
+
+  .continut :global(table) {
+    width: 100%;
+    font-size: 0.9375rem;
+    border-collapse: collapse;
+  }
+
+  .continut :global(:where(th, td)) {
+    padding: 8px 10px 8px 0;
+    text-align: left;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .final {
+    margin-top: clamp(32px, 5vw, 48px);
+    padding-top: 20px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .final p {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+  }
+
+  .actiuni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .buton {
+    display: inline-block;
+    padding: 11px 18px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper-3);
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-panou);
+    text-decoration: none;
+    transition: background-color 150ms ease-out;
+  }
+
+  .buton:hover {
+    background: #000;
+  }
+
+  .buton-secundar {
+    color: var(--color-ink);
+    background: transparent;
+    border-color: var(--color-hairline);
+  }
+
+  .buton-secundar:hover {
+    background: var(--color-paper-2);
+  }
+</style>

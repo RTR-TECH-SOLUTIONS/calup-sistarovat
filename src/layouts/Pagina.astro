@@ -12,19 +12,21 @@ interface Props {
   limba: Limba;
   pagina: Pagina;
   descriere?: string;
+  /** Adresele aceleiași pagini în celelalte limbi, când nu sunt cele din RUTE (articolele). */
+  adrese?: Partial<Record<Limba, string>>;
 }
 
-const { titlu, limba, pagina, descriere } = Astro.props;
+const { titlu, limba, pagina, descriere, adrese } = Astro.props;
 const t = TEXT[limba];
 ---
 
 <!doctype html>
 <html lang={limba}>
   <head>
-    <Cap titlu={titlu} descriere={descriere} limba={limba} pagina={pagina} />
+    <Cap titlu={titlu} descriere={descriere} limba={limba} pagina={pagina} adrese={adrese} />
   </head>
   <body>
-    <Antet limba={limba} pagina={pagina} />
+    <Antet limba={limba} pagina={pagina} adrese={adrese} />
 
     <main>
       <slot />

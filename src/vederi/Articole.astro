@@ -1,0 +1,130 @@
+---
+/**
+ * Lista articolelor dintr-o limbă, cele mai noi primele. Cât timp nu e niciun
+ * articol, pagina spune asta și trimite la hartă și la zonă.
+ */
+import Pagina from '../layouts/Pagina.astro';
+import { ruta, type Limba } from '../i18n/limbi';
+import { TEXT } from '../i18n/text';
+import { articole, dataArticol, linkArticol } from '../lib/articole';
+
+interface Props {
+  limba: Limba;
+}
+
+const { limba } = Astro.props;
+const t = TEXT[limba].articole;
+const lista = await articole(limba);
+---
+
+<Pagina titlu={t.titlu} limba={limba} pagina="articole" descriere={t.descriere}>
+  <div class="cadru articole">
+    <header>
+      <h1>{t.h1}</h1>
+      <p class="lead">{t.lead}</p>
+    </header>
+
+    {
+      lista.length > 0 ? (
+        <ol class="lista">
+          {lista.map((a) => (
+            <li>
+              <time datetime={a.data.data.toISOString().slice(0, 10)}>{dataArticol(limba, a.data.data)}</time>
+              <h2>
+                <a href={linkArticol(a)}>{a.data.titlu}</a>
+              </h2>
+              <p>{a.data.descriere}</p>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div class="gol">
+          <p>{t.gol}</p>
+          <p class="gol-linkuri" set:html={t.golLinkuri(ruta('harta', limba), ruta('zona', limba))} />
+        </div>
+      )
+    }
+  </div>
+</Pagina>
+
+<style>
+  .articole {
+    max-width: calc(72ch + 2 * clamp(16px, 4vw, 32px));
+    padding-top: clamp(32px, 6vw, 64px);
+  }
+
+  h1 {
+    font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+    margin-bottom: 14px;
+  }
+
+  .lead {
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-2);
+  }
+
+  .lista,
+  .gol {
+    margin-top: clamp(24px, 4vw, 40px);
+    border-top: 1px solid var(--color-ink);
+  }
+
+  li {
+    padding: 20px 0 22px;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  time {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-ink-3);
+  }
+
+  h2 {
+    margin: 4px 0 8px;
+    font-size: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  }
+
+  h2 a {
+    color: inherit;
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 200ms ease-out;
+  }
+
+  h2 a:hover {
+    background-size: 100% 1px;
+  }
+
+  li p {
+    max-width: 64ch;
+    color: var(--color-ink-2);
+  }
+
+  .gol {
+    padding-top: 20px;
+  }
+
+  .gol p:first-child {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+  }
+
+  .gol-linkuri {
+    margin-top: 8px;
+    color: var(--color-ink-2);
+  }
+
+  .gol-linkuri :global(a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-ink-3);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms ease-out;
+  }
+
+  .gol-linkuri :global(a:hover) {
+    text-decoration-color: currentColor;
+  }
+</style>

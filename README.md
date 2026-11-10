@@ -1,7 +1,8 @@
-# Grundstücke Banat Rumänien · Calup 4, Șiștarovăț
+# Grundstücke Banat Rumänien · Șiștarovăț
 
-Previzualizare pentru un client: parcelele cadastrale ale calupului 4 din comuna
-Șiștarovăț (jud. Arad), cu cele de vânzare evidențiate. Publicată la
+Previzualizare pentru un client: parcelele cadastrale din comuna Șiștarovăț
+(jud. Arad), cu cele de vânzare evidențiate. Datele sunt ale calupului 4, dar pe
+site nu scrie „Calup 4”: clientul a cerut pe 10 noiembrie să apară Șiștarovăț peste tot. Publicată la
 https://demo.mrwebsites.ro/calup-sistarovat/. Domeniul cerut de client pentru
 lansare: `grundstuecke-banat-rumaenien.com` (liber la 10 noiembrie 2026, încă necumpărat).
 
@@ -22,6 +23,7 @@ fișierele din `src/pages/` doar aleg vederea (`src/vederi/`) și limba.
 | Harta (`?cad=<nr. cadastral>` deschide parcela) | `/` | `/en/` | `/de/` |
 | Lista parcelelor | `/parcele/` | `/en/parcels/` | `/de/flurstuecke/` |
 | Zona | `/zona/` | `/en/area/` | `/de/gegend/` |
+| Articole | `/articole/` | `/en/articles/` | `/de/artikel/` |
 | Întrebări frecvente | `/intrebari-frecvente/` | `/en/faq/` | `/de/faq/` |
 | Contact (`?cad=` completează numărul) | `/contact/` | `/en/contact/` | `/de/kontakt/` |
 | Confidențialitate | `/confidentialitate/` | `/en/privacy/` | `/de/datenschutz/` |
@@ -39,8 +41,11 @@ fișierele din `src/pages/` doar aleg vederea (`src/vederi/`) și limba.
 - „Despre noi” (`src/i18n/despre.ts`) și întrebările frecvente (`src/i18n/faq.ts`) iau
   prețurile din `src/lib/oferta.ts` (vânzare de la 1 €/m², concesiune de la
   0,06 €/m² pe an, cum le-a dat clientul) și cifrele din date (`src/lib/statistici.ts`).
-  Prețul se schimbă doar în `oferta.ts`. Planul calupului de pe „Despre noi” e
+  Prețul se schimbă doar în `oferta.ts`. Planul parcelelor de pe „Despre noi” e
   `/plan-calup.svg`, generat la build (`src/lib/plan.ts`).
+- Articolele sunt fișiere Markdown în `src/content/articole/<limbă>/`; formatul e în
+  README-ul de acolo. Cât timp nu e niciunul, lista spune că apar în curând, iar
+  build-ul avertizează că n-a găsit fișiere. Clientul trimite textele.
 - Contactul nu are server: formularul compune mesajul și deschide WhatsApp sau
   programul de email. Butonul „Sună” folosește numărul din Germania, cum a cerut clientul.
 
@@ -48,8 +53,8 @@ fișierele din `src/pages/` doar aleg vederea (`src/vederi/`) și limba.
 
 Numele, emailul, telefoanele (România, pe care e și WhatsApp-ul, și Germania) și, dacă
 e cazul, firma vânzătorului stau în `src/lib/contact.ts`. Ce lipsește apare pe site
-marcat cu galben („de completat”) și build-ul listează în consolă. Numele „Popescu Ion”
-e provizoriu.
+marcat cu galben („de completat”) și build-ul listează în consolă. Vânzătorul e
+„George”, cum a cerut clientul; pentru paginile legale ar trebui numele complet.
 
 Textele legale (`src/i18n/legal.ts`) descriu site-ul așa cum e acum: fără
 cookie-uri, fără analytics, fonturi servite de pe site (Astro le descarcă la

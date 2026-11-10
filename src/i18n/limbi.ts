@@ -22,6 +22,7 @@ export type Pagina =
   | 'harta'
   | 'parcele'
   | 'zona'
+  | 'articole'
   | 'faq'
   | 'contact'
   | 'confidentialitate'
@@ -33,6 +34,7 @@ export const RUTE: Record<Pagina, Record<Limba, string>> = {
   harta: { ro: '/', en: '/en/', de: '/de/' },
   parcele: { ro: '/parcele/', en: '/en/parcels/', de: '/de/flurstuecke/' },
   zona: { ro: '/zona/', en: '/en/area/', de: '/de/gegend/' },
+  articole: { ro: '/articole/', en: '/en/articles/', de: '/de/artikel/' },
   faq: { ro: '/intrebari-frecvente/', en: '/en/faq/', de: '/de/faq/' },
   contact: { ro: '/contact/', en: '/en/contact/', de: '/de/kontakt/' },
   confidentialitate: { ro: '/confidentialitate/', en: '/en/privacy/', de: '/de/datenschutz/' },

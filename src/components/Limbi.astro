@@ -1,21 +1,26 @@
 ---
-/** DE · EN · RO. Fiecare duce la aceeași pagină în cealaltă limbă. */
+/**
+ * DE · EN · RO. Fiecare duce la aceeași pagină în cealaltă limbă. Un articol
+ * fără traducere trimite la lista de articole din limba aleasă.
+ */
 import { NUME_LIMBA, ORDINE_LIMBI, ruta, type Limba, type Pagina } from '../i18n/limbi';
 import { TEXT } from '../i18n/text';
 
 interface Props {
   limba: Limba;
   pagina: Pagina;
+  /** Adresele aceleiași pagini în celelalte limbi, când nu sunt cele din RUTE (articolele). */
+  adrese?: Partial<Record<Limba, string>>;
 }
 
-const { limba, pagina } = Astro.props;
+const { limba, pagina, adrese } = Astro.props;
 ---
 
 <nav class="limbi" aria-label={TEXT[limba].limbiAria}>
   {
     ORDINE_LIMBI.map((l) => (
       <a
-        href={ruta(pagina, l)}
+        href={adrese?.[l] ?? ruta(pagina, l)}
         hreflang={l}
         lang={l}
         aria-label={NUME_LIMBA[l]}

@@ -36,7 +36,7 @@ const a = (href: string, text: string) => `<a href="${href}">${text}</a>`;
 export const FAQ: Record<Limba, TextFaq> = {
   ro: {
     titlu: `Întrebări frecvente · ${MARCA}`,
-    descriere: 'Prețuri, concesiune, acte și cumpărare: răspunsuri despre parcelele din calupul 4, Șiștarovăț, jud. Arad.',
+    descriere: 'Prețuri, concesiune, acte și cumpărare: răspunsuri despre parcelele din Șiștarovăț, jud. Arad.',
     h1: 'Întrebări frecvente',
     lead: 'Ce ne întreabă cel mai des cei care se uită la parcelele din Șiștarovăț.',
     categoriiMici: true,
@@ -51,11 +51,11 @@ export const FAQ: Record<Limba, TextFaq> = {
       },
       {
         q: 'Câte parcele sunt de vânzare și cât de mari sunt?',
-        a: `${s.vanzare}, în total ${s.haVanzare}, din cele ${s.total} ale calupului 4. Cea mai mică are ${s.min}, cea mai mare ${s.max}. Le vezi pe toate pe ${a(link.harta, 'hartă')} și în ${a(link.parcele, 'listă')}.`,
+        a: `${s.vanzare}, în total ${s.haVanzare}, din cele ${s.total} de pe hartă. Cea mai mică are ${s.min}, cea mai mare ${s.max}. Le vezi pe toate pe ${a(link.harta, 'hartă')} și în ${a(link.parcele, 'listă')}.`,
       },
       {
         q: 'Unde se află terenurile?',
-        a: 'În calupul 4 al comunei Șiștarovăț, în județul Arad, pe Dealurile Lipovei. Comuna e la aproximativ 40 km de Arad și 60 km de Timișoara.',
+        a: 'În comuna Șiștarovăț, în județul Arad, pe Dealurile Lipovei. Comuna e la aproximativ 40 km de Arad și 60 km de Timișoara.',
       },
       {
         q: 'De ce Șiștarovăț?',
@@ -88,7 +88,7 @@ export const FAQ: Record<Limba, TextFaq> = {
 
   en: {
     titlu: `FAQ · ${MARCA}`,
-    descriere: 'Prices, leasing, paperwork and buying: answers about the parcels in Calup 4, Șiștarovăț, Arad County, Romania.',
+    descriere: 'Prices, leasing, paperwork and buying: answers about the parcels in Șiștarovăț, Arad County, Romania.',
     h1: 'Frequently asked questions',
     lead: 'What people looking at the parcels in Șiștarovăț ask us most often.',
     categoriiMici: true,
@@ -103,11 +103,11 @@ export const FAQ: Record<Limba, TextFaq> = {
       },
       {
         q: 'How many parcels are for sale, and how big are they?',
-        a: `${s.vanzare}, ${s.haVanzare} in total, out of the ${s.total} in Calup 4. The smallest is ${s.min}, the largest ${s.max}. You can see them all on the ${a(link.harta, 'map')} and in the ${a(link.parcele, 'list')}.`,
+        a: `${s.vanzare}, ${s.haVanzare} in total, out of the ${s.total} on the map. The smallest is ${s.min}, the largest ${s.max}. You can see them all on the ${a(link.harta, 'map')} and in the ${a(link.parcele, 'list')}.`,
       },
       {
         q: 'Where is the land?',
-        a: 'In Calup 4 of Șiștarovăț commune, Arad County, in the Lipova Hills of western Romania. The commune is about 40 km from Arad and 60 km from Timișoara.',
+        a: 'In Șiștarovăț commune, Arad County, in the Lipova Hills of western Romania. The commune is about 40 km from Arad and 60 km from Timișoara.',
       },
       {
         q: 'Why Șiștarovăț?',
@@ -140,7 +140,7 @@ export const FAQ: Record<Limba, TextFaq> = {
 
   de: {
     titlu: `FAQ · ${MARCA}`,
-    descriere: 'Preise, Pacht, Unterlagen und Kauf: Antworten zu den Flurstücken in Calup 4, Șiștarovăț, Kreis Arad, Rumänien.',
+    descriere: 'Preise, Pacht, Unterlagen und Kauf: Antworten zu den Flurstücken in Șiștarovăț, Kreis Arad, Rumänien.',
     h1: 'Häufige Fragen',
     lead: 'Was uns Interessenten an den Flurstücken in Șiștarovăț am häufigsten fragen.',
     categoriiMici: false,
@@ -155,11 +155,11 @@ export const FAQ: Record<Limba, TextFaq> = {
       },
       {
         q: 'Wie viele Flurstücke stehen zum Verkauf, und wie groß sind sie?',
-        a: `${s.vanzare}, insgesamt ${s.haVanzare}, von den ${s.total.replace('Flurstücke', 'Flurstücken')} in Calup 4. Das kleinste hat ${s.min}, das größte ${s.max}. Alle sehen Sie auf der ${a(link.harta, 'Karte')} und in der ${a(link.parcele, 'Liste')}.`,
+        a: `${s.vanzare}, insgesamt ${s.haVanzare}, von den ${s.total.replace('Flurstücke', 'Flurstücken')} auf der Karte. Das kleinste hat ${s.min}, das größte ${s.max}. Alle sehen Sie auf der ${a(link.harta, 'Karte')} und in der ${a(link.parcele, 'Liste')}.`,
       },
       {
         q: 'Wo liegen die Grundstücke?',
-        a: 'In Calup 4 der Gemeinde Șiștarovăț im Kreis Arad, im Hügelland von Lipova im rumänischen Banat. Die Gemeinde liegt etwa 40 km von Arad und 60 km von Timișoara entfernt.',
+        a: 'In der Gemeinde Șiștarovăț im Kreis Arad, im Hügelland von Lipova im rumänischen Banat. Die Gemeinde liegt etwa 40 km von Arad und 60 km von Timișoara entfernt.',
       },
       {
         q: 'Warum Șiștarovăț?',

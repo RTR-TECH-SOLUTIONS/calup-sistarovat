@@ -6,8 +6,11 @@
  * lipsește până la lansare. Build-ul le listează în consolă.
  */
 export const CONTACT = {
-  /** Numele vânzătorului sau al firmei prin care vinde. Provizoriu, de cerut clientului. */
-  nume: 'Popescu Ion' as string | null,
+  /**
+   * Numele vânzătorului sau al firmei prin care vinde. „George” l-a cerut clientul
+   * pe 10 nov. Pentru paginile legale ar trebui numele complet al operatorului.
+   */
+  nume: 'George' as string | null,
   /** CUI și nr. de înregistrare, doar dacă vinde printr-o firmă. Altfel rămâne null și nu apare. */
   firma: null as string | null,
   adresa: null as string | null,

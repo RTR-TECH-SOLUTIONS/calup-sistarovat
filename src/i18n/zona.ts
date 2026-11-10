@@ -48,6 +48,7 @@ export interface TextZona {
   judet: string;
   /** Germana scrie substantivele cu majusculă: „50,21 ha Ackerland”, nu „ackerland”. */
   categoriiMici: boolean;
+  calupTitlu: string;
   calup: (c: Calup) => string;
   butonHarta: string;
   butonLista: string;
@@ -169,12 +170,13 @@ export const ZONA: Record<Limba, TextZona> = {
       'Harta județului Arad împărțit pe comune. Comuna Șiștarovăț e colorată cu negru, la marginea de sud a județului.',
     judet: 'Comuna Șiștarovăț, cu negru, între comunele județului Arad. Date ANCPI, licență Open Government.',
     categoriiMici: true,
+    calupTitlu: 'Parcelele de pe hartă',
     calup: (c) =>
-      `Calupul are ${c.total} cadastrale, cu o suprafață totală de ${c.ha}. ${c.vanzare} sunt de vânzare și însumează ${c.haVanzare}: ${enumerare(c.categorii, 'și')}.`,
+      `Pe hartă sunt ${c.total} cadastrale, cu o suprafață totală de ${c.ha}. ${c.vanzare} sunt de vânzare și însumează ${c.haVanzare}: ${enumerare(c.categorii, 'și')}.`,
     butonHarta: 'Vezi parcelele pe hartă',
     butonLista: 'Lista celor de vânzare',
     surse:
-      'Descrierea de la început e textul primit de la vânzător. Surse pentru restul paginii: Wikipedia, articolele despre comuna și satul Șiștarovăț și despre Banat; recensământul din 2021. Cifrele despre calup sunt calculate din exportul cadastral primit.',
+      'Descrierea de la început e textul primit de la vânzător. Surse pentru restul paginii: Wikipedia, articolele despre comuna și satul Șiștarovăț și despre Banat; recensământul din 2021. Cifrele despre parcele sunt calculate din exportul cadastral primit.',
   },
 
   en: {
@@ -287,12 +289,13 @@ export const ZONA: Record<Limba, TextZona> = {
       'Map of Arad County divided into communes. Șiștarovăț commune is shaded black, on the southern edge of the county.',
     judet: 'Șiștarovăț commune, in black, among the communes of Arad County. ANCPI data, Open Government licence.',
     categoriiMici: true,
+    calupTitlu: 'The parcels on the map',
     calup: (c) =>
-      `Calup 4 has ${c.total} with a total area of ${c.ha}. ${c.vanzare} are for sale, covering ${c.haVanzare} in all: ${enumerare(c.categorii, 'and')}.`,
+      `The map shows ${c.total} with a total area of ${c.ha}. ${c.vanzare} are for sale, covering ${c.haVanzare} in all: ${enumerare(c.categorii, 'and')}.`,
     butonHarta: 'See the parcels on the map',
     butonLista: 'List of parcels for sale',
     surse:
-      'The description at the top is the text we received from the seller. Sources for the rest of the page: Wikipedia, the articles on the commune and the village of Șiștarovăț and on the Banat; the 2021 census. The figures for Calup 4 are calculated from the cadastral export we received.',
+      'The description at the top is the text we received from the seller. Sources for the rest of the page: Wikipedia, the articles on the commune and the village of Șiștarovăț and on the Banat; the 2021 census. The parcel figures are calculated from the cadastral export we received.',
   },
 
   de: {
@@ -405,11 +408,12 @@ export const ZONA: Record<Limba, TextZona> = {
       'Karte des Kreises Arad, nach Gemeinden aufgeteilt. Die Gemeinde Șiștarovăț ist schwarz eingefärbt, am Südrand des Kreises.',
     judet: 'Die Gemeinde Șiștarovăț, schwarz, unter den Gemeinden des Kreises Arad. Daten ANCPI, Open-Government-Lizenz.',
     categoriiMici: false,
+    calupTitlu: 'Die Flurstücke auf der Karte',
     calup: (c) =>
-      `Calup 4 umfasst ${c.total} mit einer Gesamtfläche von ${c.ha}. ${c.vanzare} stehen zum Verkauf, zusammen ${c.haVanzare}: ${enumerare(c.categorii, 'und')}.`,
+      `Die Karte zeigt ${c.total} mit einer Gesamtfläche von ${c.ha}. ${c.vanzare} stehen zum Verkauf, zusammen ${c.haVanzare}: ${enumerare(c.categorii, 'und')}.`,
     butonHarta: 'Flurstücke auf der Karte ansehen',
     butonLista: 'Liste der Flurstücke zum Verkauf',
     surse:
-      'Die Beschreibung am Anfang ist der Text, den wir vom Verkäufer erhalten haben. Quellen für den Rest der Seite: Wikipedia, die Artikel über die Gemeinde und das Dorf Șiștarovăț und über das Banat; Volkszählung 2021. Die Zahlen zu Calup 4 sind aus dem erhaltenen Katasterexport berechnet.',
+      'Die Beschreibung am Anfang ist der Text, den wir vom Verkäufer erhalten haben. Quellen für den Rest der Seite: Wikipedia, die Artikel über die Gemeinde und das Dorf Șiștarovăț und über das Banat; Volkszählung 2021. Die Zahlen zu den Flurstücken sind aus dem erhaltenen Katasterexport berechnet.',
   },
 };
