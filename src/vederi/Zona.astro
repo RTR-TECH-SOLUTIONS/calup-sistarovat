@@ -13,6 +13,8 @@ import { ZONA } from '../i18n/zona';
 import hartaIosefina from '../assets/zona/harta-iosefina-sistarovat.jpg';
 import pastor from '../assets/zona/pastor-valerio-1851.jpg';
 import judet from '../assets/zona/judetul-arad-sistarovat.png';
+import hartaGermaniBanat from '../assets/zona/harta-germani-banat.jpg';
+import hartaGermaniAproape from '../assets/zona/harta-germani-langa-sistarovat.jpg';
 
 interface Props {
   limba: Limba;
@@ -34,6 +36,7 @@ const categorii = [...Map.groupBy(vanzare, (p) => p.categorie)]
 // Astro înghite spațiul dintre un rând de text și o expresie care începe pe
 // rândul următor, deci fraza se compune întreagă, în zona.ts.
 const d = t.descriereClient;
+const g = t.germani;
 
 const despreCalup = t.calup({
   total: fmt.parcele(parcele.length),
@@ -141,6 +144,64 @@ const despreCalup = t.calup({
         />
         <figcaption>{t.judet}</figcaption>
       </figure>
+    </section>
+
+    <!-- Textul trimis de vânzător. Hărțile stau lângă partea pe care o arată:
+         Banatul întreg lângă zone, vecinătatea satului lângă Șiștarovăț. -->
+    <section class="cadru bloc germani" aria-labelledby="titlu-germani">
+      <div class="text">
+        <h2 id="titlu-germani">{g.titlu}</h2>
+        <p>{g.intro}</p>
+        <h3>{g.zoneTitlu}</h3>
+        <p>{g.zoneIntro}</p>
+      </div>
+
+      <div class="cu-imagine cu-harta-germani">
+        <div class="text">
+          {
+            g.zone.map((z) => (
+              <section class="zona-germana">
+                <h4>{z.titlu}</h4>
+                <p>{z.intro}</p>
+                <ul class="puncte">
+                  {z.puncte.map(([loc, text]) => (
+                    <li>
+                      <strong>{loc}:</strong> {text}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+        <figure class="harta-germani">
+          <Picture
+            src={hartaGermaniBanat}
+            formats={['avif', 'webp']}
+            widths={[400, 800, 984]}
+            sizes="(max-width: 860px) 100vw, 420px"
+            alt={g.hartaBanatAlt}
+          />
+          <figcaption>{g.hartaBanat}</figcaption>
+        </figure>
+      </div>
+
+      <div class="cu-imagine cu-harta-germani">
+        <div class="text">
+          <h3>{g.sistarovatTitlu}</h3>
+          {g.sistarovat.map((p) => <p>{p}</p>)}
+        </div>
+        <figure class="harta-germani">
+          <Picture
+            src={hartaGermaniAproape}
+            formats={['avif', 'webp']}
+            widths={[400, 800, 983]}
+            sizes="(max-width: 860px) 100vw, 420px"
+            alt={g.hartaAproapeAlt}
+          />
+          <figcaption>{g.hartaAproape}</figcaption>
+        </figure>
+      </div>
     </section>
 
     <section class="cadru bloc calup" aria-labelledby="titlu-calup">
@@ -310,6 +371,43 @@ const despreCalup = t.calup({
     border-radius: var(--radius-mic);
   }
 
+  /* Istoria germanilor: textul la stânga, harta la dreapta, care rămâne în ecran cât se citesc zonele. */
+  .germani h3 {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    margin: 28px 0 10px;
+  }
+
+  .germani h4 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .cu-harta-germani {
+    grid-template-columns: minmax(0, 64ch) 420px;
+    margin-top: 28px;
+  }
+
+  .zona-germana + .zona-germana {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .harta-germani {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+
+  .harta-germani :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-panou);
+  }
+
   .calup .text {
     padding-top: 24px;
     border-top: 1px solid var(--color-hairline);
@@ -372,6 +470,11 @@ const despreCalup = t.calup({
 
     .portret {
       max-width: 280px;
+    }
+
+    .harta-germani {
+      position: static;
+      max-width: 480px;
     }
   }
 </style>

@@ -2,7 +2,8 @@
  * Paginile legale: confidențialitate (GDPR), termeni și cookies, în trei limbi.
  *
  * Ce scrie aici trebuie să rămână adevărat despre site: fără cookie-uri, fără
- * analytics, fonturi servite de pe site, harta de la Mapbox, formularul de
+ * analytics, fonturi servite de pe site, harta de la Mapbox, articolele de la
+ * Soro (trysoro.com), formularul de
  * contact care doar deschide WhatsApp. Dacă se schimbă ceva din astea, se
  * schimbă și textul.
  *
@@ -58,7 +59,7 @@ function confidentialitate(l: Limba): DocLegal {
     return {
       titlu: 'Privacy policy',
       descriere: `How personal data is handled on the ${MARCA} website.`,
-      actualizat: 'Last updated: 10 November 2026',
+      actualizat: 'Last updated: 11 November 2026',
       intro:
         'In short: this website uses no cookies and does not track visitors. We only receive personal data when you contact us, on WhatsApp, by phone or by email.',
       sectiuni: [
@@ -94,6 +95,7 @@ function confidentialitate(l: Limba): DocLegal {
             ul(
               'the company hosting the website;',
               'Mapbox, Inc. (USA), which delivers the map and the satellite imagery;',
+              'Soro (trysoro.com), which delivers the articles on the Articles page, with their images;',
               'WhatsApp (Meta), if you choose to write to us on WhatsApp; the WhatsApp privacy policy also applies to those messages;',
               'our email provider, if you write to us by email;',
               'the notary and the authorities, if a sale goes ahead, as far as the law requires.',
@@ -102,7 +104,7 @@ function confidentialitate(l: Limba): DocLegal {
         {
           titlu: 'Transfers outside the European Union',
           html: p(
-            'Mapbox is based in the USA, and Meta, the company behind WhatsApp, also processes data in the USA. These transfers take place under Chapter V of the GDPR, for example on the basis of the EU–US Data Privacy Framework or the standard contractual clauses approved by the European Commission.',
+            'Mapbox is based in the USA, Soro delivers the articles from servers in the USA, and Meta, the company behind WhatsApp, also processes data in the USA. These transfers take place under Chapter V of the GDPR, for example on the basis of the EU–US Data Privacy Framework or the standard contractual clauses approved by the European Commission.',
           ),
         },
         {
@@ -129,7 +131,7 @@ function confidentialitate(l: Limba): DocLegal {
     return {
       titlu: 'Datenschutzerklärung',
       descriere: `Wie auf der Website ${MARCA} mit personenbezogenen Daten umgegangen wird.`,
-      actualizat: 'Zuletzt aktualisiert: 10. November 2026',
+      actualizat: 'Zuletzt aktualisiert: 11. November 2026',
       intro:
         'Kurz gesagt: Diese Website verwendet keine Cookies und verfolgt keine Besucher. Personenbezogene Daten erhalten wir nur, wenn Sie uns kontaktieren, per WhatsApp, Telefon oder E-Mail.',
       sectiuni: [
@@ -165,6 +167,7 @@ function confidentialitate(l: Limba): DocLegal {
             ul(
               'das Unternehmen, das die Website hostet;',
               'Mapbox, Inc. (USA), das die Karte und die Satellitenbilder liefert;',
+              'Soro (trysoro.com), das die Artikel auf der Seite Artikel samt Bildern liefert;',
               'WhatsApp (Meta), wenn Sie uns per WhatsApp schreiben; für diese Nachrichten gilt zusätzlich die Datenschutzrichtlinie von WhatsApp;',
               'unser E-Mail-Anbieter, wenn Sie uns eine E-Mail schreiben;',
               'der Notar und die Behörden, wenn es zu einem Verkauf kommt, soweit das Gesetz es verlangt.',
@@ -173,7 +176,7 @@ function confidentialitate(l: Limba): DocLegal {
         {
           titlu: 'Übermittlung in Länder außerhalb der EU',
           html: p(
-            'Mapbox hat seinen Sitz in den USA, und Meta, das Unternehmen hinter WhatsApp, verarbeitet Daten ebenfalls in den USA. Diese Übermittlungen erfolgen nach Kapitel V der DSGVO, zum Beispiel auf Grundlage des EU-US-Datenschutzrahmens oder der von der Europäischen Kommission genehmigten Standardvertragsklauseln.',
+            'Mapbox hat seinen Sitz in den USA, Soro liefert die Artikel von Servern in den USA, und Meta, das Unternehmen hinter WhatsApp, verarbeitet Daten ebenfalls in den USA. Diese Übermittlungen erfolgen nach Kapitel V der DSGVO, zum Beispiel auf Grundlage des EU-US-Datenschutzrahmens oder der von der Europäischen Kommission genehmigten Standardvertragsklauseln.',
           ),
         },
         {
@@ -199,7 +202,7 @@ function confidentialitate(l: Limba): DocLegal {
   return {
     titlu: 'Politica de confidențialitate',
     descriere: `Cum sunt prelucrate datele personale pe site-ul ${MARCA}.`,
-    actualizat: 'Ultima actualizare: 10 noiembrie 2026',
+    actualizat: 'Ultima actualizare: 11 noiembrie 2026',
     intro:
       'Pe scurt: site-ul nu folosește cookie-uri și nu urmărește vizitatorii. Date personale primim doar când ne contactezi, pe WhatsApp, la telefon sau pe email.',
     sectiuni: [
@@ -235,6 +238,7 @@ function confidentialitate(l: Limba): DocLegal {
           ul(
             'firmei care găzduiește site-ul;',
             'Mapbox, Inc. (SUA), care livrează harta și imaginile din satelit;',
+            'Soro (trysoro.com), care livrează articolele de pe pagina Articole, cu imaginile lor;',
             'WhatsApp (Meta), dacă alegi să ne scrii pe WhatsApp; pentru mesajele de acolo se aplică și politica de confidențialitate WhatsApp;',
             'furnizorului nostru de email, dacă ne scrii pe email;',
             'notarului și autorităților, dacă se ajunge la vânzare, în măsura în care o cere legea.',
@@ -243,7 +247,7 @@ function confidentialitate(l: Limba): DocLegal {
       {
         titlu: 'Transferuri în afara Uniunii Europene',
         html: p(
-          'Mapbox are sediul în SUA, iar Meta, firma care deține WhatsApp, prelucrează date tot în SUA. Transferurile se fac în condițiile capitolului V din GDPR, de exemplu în baza Cadrului UE–SUA privind confidențialitatea datelor sau a clauzelor contractuale standard aprobate de Comisia Europeană.',
+          'Mapbox are sediul în SUA, Soro livrează articolele de pe servere din SUA, iar Meta, firma care deține WhatsApp, prelucrează date tot în SUA. Transferurile se fac în condițiile capitolului V din GDPR, de exemplu în baza Cadrului UE–SUA privind confidențialitatea datelor sau a clauzelor contractuale standard aprobate de Comisia Europeană.',
         ),
       },
       {
@@ -439,7 +443,7 @@ function cookies(l: Limba): DocLegal {
     return {
       titlu: 'Cookie policy',
       descriere: `The ${MARCA} website uses no cookies.`,
-      actualizat: 'Last updated: 9 November 2026',
+      actualizat: 'Last updated: 11 November 2026',
       intro: 'This website uses no cookies. That is why we do not ask for your consent with a banner.',
       sectiuni: [
         {
@@ -460,6 +464,7 @@ function cookies(l: Limba): DocLegal {
           titlu: 'External services',
           html: ul(
             'The map and the satellite imagery come from Mapbox. When they load, Mapbox receives your IP address, as any web server does, but it stores no cookies in your browser through this website.',
+            'The articles come from Soro (trysoro.com). When they load, Soro receives your IP address, as any web server does; its script stores no cookies and nothing else in your browser.',
             'The fonts are served from the same server as the website, not from Google.',
             'The WhatsApp links open the WhatsApp service, which has its own rules on cookies.',
           ),
@@ -483,7 +488,7 @@ function cookies(l: Limba): DocLegal {
     return {
       titlu: 'Hinweise zu Cookies',
       descriere: `Die Website ${MARCA} verwendet keine Cookies.`,
-      actualizat: 'Zuletzt aktualisiert: 9. November 2026',
+      actualizat: 'Zuletzt aktualisiert: 11. November 2026',
       intro:
         'Diese Website verwendet keine Cookies. Deshalb bitten wir Sie auch nicht mit einem Banner um Ihre Einwilligung.',
       sectiuni: [
@@ -505,6 +510,7 @@ function cookies(l: Limba): DocLegal {
           titlu: 'Externe Dienste',
           html: ul(
             'Karte und Satellitenbilder kommen von Mapbox. Beim Laden erhält Mapbox Ihre IP-Adresse, wie jeder Webserver, speichert über diese Website aber keine Cookies in Ihrem Browser.',
+            'Die Artikel kommen von Soro (trysoro.com). Beim Laden erhält Soro Ihre IP-Adresse, wie jeder Webserver; sein Skript speichert keine Cookies und auch sonst nichts in Ihrem Browser.',
             'Die Schriften werden vom selben Server wie die Website geladen, nicht von Google.',
             'Die WhatsApp-Links öffnen den Dienst WhatsApp, für den eigene Regeln zu Cookies gelten.',
           ),
@@ -527,7 +533,7 @@ function cookies(l: Limba): DocLegal {
   return {
     titlu: 'Politica de cookies',
     descriere: `Site-ul ${MARCA} nu folosește cookie-uri.`,
-    actualizat: 'Ultima actualizare: 9 noiembrie 2026',
+    actualizat: 'Ultima actualizare: 11 noiembrie 2026',
     intro: 'Site-ul nu folosește cookie-uri. De aceea nu îți cerem acordul printr-un banner.',
     sectiuni: [
       {
@@ -548,6 +554,7 @@ function cookies(l: Limba): DocLegal {
         titlu: 'Servicii externe',
         html: ul(
           'Harta și imaginile din satelit vin de la Mapbox. Când se încarcă, Mapbox primește adresa IP, ca orice server web, dar nu salvează cookie-uri în browser prin acest site.',
+          'Articolele vin de la Soro (trysoro.com). Când se încarcă, Soro primește adresa IP, ca orice server web; scriptul lor nu salvează cookie-uri și nici altceva în browser.',
           'Fonturile sunt servite de pe același server cu site-ul, nu de la Google.',
           'Linkurile spre WhatsApp deschid serviciul WhatsApp, care are propriile reguli despre cookie-uri.',
         ),

@@ -7,6 +7,13 @@
  * verificate pe 7 noiembrie 2026. Engleza și germana sunt traduceri ale
  * aceluiași text, fără nimic adăugat.
  * În germană râurile au numele germane (Marosch, Theiß), cum le știe cititorul.
+ *
+ * Istoria germanilor din Banat e documentul Word trimis de client pe WhatsApp
+ * pe 11 noiembrie 2026, cu două hărți, păstrat cum l-a scris, cu ortografia
+ * îndreptată. Două locuri sunt corectate după Wikipedia: la Oravița, documentul
+ * spunea că primii 13 mineri tirolezi au venit în 1703, când Banatul era încă
+ * otoman (coloniștii vin după 1717), iar „Haufeld” e Heufeld. Legendele
+ * hărților sunt ale noastre și spun doar ce se vede pe ele.
  */
 import type { Limba } from './limbi';
 import { MARCA } from './text';
@@ -16,6 +23,21 @@ export interface Descriere {
   intro: string;
   sectiuni: { titlu: string; intro?: string; puncte: [string, string][]; numerotat?: boolean }[];
   incheiere: string;
+}
+
+/** Istoria germanilor din Banat: zonele colonizate, apoi Șiștarovățul, fiecare parte cu harta ei. */
+export interface Germani {
+  titlu: string;
+  intro: string;
+  zoneTitlu: string;
+  zoneIntro: string;
+  zone: { titlu: string; intro: string; puncte: [string, string][] }[];
+  sistarovatTitlu: string;
+  sistarovat: string[];
+  hartaBanatAlt: string;
+  hartaBanat: string;
+  hartaAproapeAlt: string;
+  hartaAproape: string;
 }
 
 interface Calup {
@@ -46,6 +68,7 @@ export interface TextZona {
   banat: string[];
   judetAlt: string;
   judet: string;
+  germani: Germani;
   /** Germana scrie substantivele cu majusculă: „50,21 ha Ackerland”, nu „ackerland”. */
   categoriiMici: boolean;
   calupTitlu: string;
@@ -169,6 +192,97 @@ export const ZONA: Record<Limba, TextZona> = {
     judetAlt:
       'Harta județului Arad împărțit pe comune. Comuna Șiștarovăț e colorată cu negru, la marginea de sud a județului.',
     judet: 'Comuna Șiștarovăț, cu negru, între comunele județului Arad. Date ANCPI, licență Open Government.',
+    germani: {
+      titlu: 'Istoria etnicilor germani din Banat',
+      intro:
+        'Istoria etnicilor germani din Banat (cunoscuți în zonele de șes ca șvabi bănățeni și în zonele muntoase ca germani montani) reprezintă una dintre cele mai fascinante pagini de colonizare din Europa Centrală și de Est. Prezența lor în regiune a început imediat după trecerea Banatului sub stăpânire habsburgică în anul 1716, prin alungarea otomanilor.',
+      zoneTitlu: 'Zonele și localitățile unde s-au aflat germanii de-a lungul timpului',
+      zoneIntro:
+        'Colonizarea germană în Banat s-a desfășurat în mai multe valuri organizate de Imperiul Habsburgic sub trei monarhi diferiți: Valul Carolin (sub Carol al VI-lea, 1718–1740), Valul Terezian (sub Maria Tereza, 1744–1772) și Valul Iosefin (sub Iosif al II-lea, 1782–1787). Regiunea a fost împărțită geografic în funcție de specificul comunităților:',
+      zone: [
+        {
+          titlu: 'Banatul de Șes (Câmpia Timișului) – șvabii bănățeni',
+          intro:
+            'Coloniștii din această zonă proveneau în mare parte din sudul Germaniei (Rin, Lorena, Palatinat, Alsacia). Aceștia au transformat zonele mlăștinoase în terenuri agricole extrem de productive.',
+          puncte: [
+            [
+              'Timișoara (Temeswar)',
+              'Capitala culturală și administrativă. A fost nucleul vieții urbane germane, cu cartiere întregi dominate de arhitectura de tip administrativ austriac.',
+            ],
+            [
+              'Jimbolia (Hatzfeld)',
+              'A devenit una dintre cele mai mari și dezvoltate așezări șvăbești din câmpie, recunoscută pentru industria de țiglă și ceramică.',
+            ],
+            [
+              'Lenauheim (Tschatad)',
+              'Un sat de referință culturală, fiind locul natal al celebrului poet romantic Nikolaus Lenau.',
+            ],
+            [
+              'Biled (Billed), Săcălaz (Sackelhausen) și Sânandrei (Sankt Andreas)',
+              'Localități rurale mari din jurul Timișoarei, colonizate intensiv în perioada tereziană, care păstrează structura stradală caracteristică, tip tablă de șah.',
+            ],
+            [
+              'Charlottenburg',
+              'Un caz unic în Banat, fiind singurul sat construit în formă circulară (sat rotund), conservat ca monument istoric.',
+            ],
+            ['Gottlob și Lovrin', 'Centre agricole prospere, renumite pentru tehnicile avansate de cultură a pământului.'],
+          ],
+        },
+        {
+          titlu: 'Banatul Montan (Caraș-Severin) – germanii montani',
+          intro:
+            'Spre deosebire de șvabi, coloniștii din zona montană erau în special mineri, metalurgiști și meșteșugari proveniți din regiunile miniere din Austria (Austria Superioară, Stiria, Tirol) sau Boemia.',
+          puncte: [
+            [
+              'Oravița (Orawitz)',
+              'Punctul de plecare al istoriei industriale germane în regiune. Primii mineri tirolezi s-au așezat aici imediat după alungarea otomanilor.',
+            ],
+            [
+              'Reșița (Reschitza)',
+              'S-a transformat dintr-un mic sat într-un uriaș centru metalurgic și siderurgic la nivel european, datorită inginerilor și muncitorilor germani aduși pentru prelucrarea fierului.',
+            ],
+            [
+              'Anina (Steierdorf)',
+              'Fondată de coloniști din regiunea Steiermark (Stiria). A devenit rapid un centru minier carbonifer major.',
+            ],
+            [
+              'Dognecea (Dognatschka)',
+              'O altă veche comunitate minieră unde extragerea cuprului și a zincului a fost dezvoltată direct de către comunitățile de specialiști germani.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Banatul Sârbesc (Voivodina, Serbia)',
+          intro:
+            'După Tratatul de la Trianon din 1920, Banatul istoric a fost împărțit, o treime revenind Serbiei. În această zonă au existat comunități germane masive până la al Doilea Război Mondial.',
+          puncte: [
+            [
+              'Banatsko Veliko Selo',
+              'O așezare formată din unificarea administrativă a trei foste sate pur germane: Sankt Hubert, Charleville și Seultour.',
+            ],
+            ['Novi Kozarci', 'Sat creat prin unirea fostelor sate șvăbești Heufeld și Mastort.'],
+            [
+              'Pančevo, Kikinda (Grosskikinda) și Vršac',
+              'Orașe din Banatul sârbesc care adăposteau procente importante de populație germană urbană, implicată în comerț și meșteșuguri.',
+            ],
+          ],
+        },
+      ],
+      sistarovatTitlu: 'Prezența în satul Șiștarovăț (Schischtarowetz) și comunitățile similare',
+      sistarovat: [
+        'În timp ce marile așezări din șesul și muntele Banatului au fost colonizate masiv și compact cu etnici germani, devenind localități majoritare, au existat și sate unde prezența germană a fost una minoritară, integrată în comunități predominant românești. Un exemplu perfect în acest sens este satul Șiștarovăț (Schischtarowetz), aflat astăzi în județul Arad, la granița istorică a Banatului montan și de șes.',
+        'În secolele al XVIII-lea și al XIX-lea, după preluarea Banatului de către Coroana Habsburgică, un număr mic de germani s-au stabilit aici. Aceștia erau de obicei funcționari administrativi, pădurari, meșteșugari sau comercianți, trimiși pentru a gestiona resursele locale (cum ar fi prelucrarea lemnului din Dealurile Lipovei).',
+        'Astfel, istoria germanilor din Banat nu se rezumă doar la satele mari „pur” germane, ci și la amprenta discretă lăsată în sate colinare și forestiere precum Șiștarovăț, unde câteva familii au contribuit preț de generații la modernizarea economică a zonei.',
+      ],
+      hartaBanatAlt:
+        'Hartă a vestului Banatului, de la Jimbolia și Periam până la Bocșa și Anina, cu localitățile germane marcate cu verde și cu portocaliu. Șiștarovăț e marcat cu albastru, la nord-est de Timișoara.',
+      hartaBanat:
+        'Localitățile germane din Banat, cu numele lor nemțești: cu verde, satele șvabilor bănățeni, cu portocaliu, cele ale germanilor montani. Hartă primită de la vânzător.',
+      hartaAproapeAlt:
+        'Hartă între Arad, Lipova și Șiștarovăț: la vest de sat sunt marcate Mașloc (Blumenthal), Altringen și Bogda (Neuhof).',
+      hartaAproape:
+        'Pe hartă, cele mai apropiate sate germane de Șiștarovăț sunt Mașloc (Blumenthal), Altringen și Bogda (Neuhof). Hartă primită de la vânzător.',
+    },
     categoriiMici: true,
     calupTitlu: 'Parcelele de pe hartă',
     calup: (c) =>
@@ -176,7 +290,7 @@ export const ZONA: Record<Limba, TextZona> = {
     butonHarta: 'Vezi parcelele pe hartă',
     butonLista: 'Lista celor de vânzare',
     surse:
-      'Descrierea de la început e textul primit de la vânzător. Surse pentru restul paginii: Wikipedia, articolele despre comuna și satul Șiștarovăț și despre Banat; recensământul din 2021. Cifrele despre parcele sunt calculate din exportul cadastral primit.',
+      'Descrierea de la început și istoria etnicilor germani din Banat, cu cele două hărți, sunt primite de la vânzător. Surse pentru restul paginii: Wikipedia, articolele despre comuna și satul Șiștarovăț și despre Banat; recensământul din 2021. Cifrele despre parcele sunt calculate din exportul cadastral primit.',
   },
 
   en: {
@@ -288,6 +402,97 @@ export const ZONA: Record<Limba, TextZona> = {
     judetAlt:
       'Map of Arad County divided into communes. Șiștarovăț commune is shaded black, on the southern edge of the county.',
     judet: 'Șiștarovăț commune, in black, among the communes of Arad County. ANCPI data, Open Government licence.',
+    germani: {
+      titlu: 'The history of the ethnic Germans of the Banat',
+      intro:
+        'The history of the ethnic Germans of the Banat (known in the lowlands as Banat Swabians and in the mountains as Mountain Germans) is one of the most fascinating chapters of colonisation in Central and Eastern Europe. Their presence in the region began right after the Banat came under Habsburg rule in 1716, when the Ottomans were driven out.',
+      zoneTitlu: 'The areas and places where Germans lived over time',
+      zoneIntro:
+        'German colonisation of the Banat took place in several waves organised by the Habsburg Empire under three different monarchs: the Caroline wave (under Charles VI, 1718–1740), the Theresian wave (under Maria Theresa, 1744–1772) and the Josephine wave (under Joseph II, 1782–1787). The region was divided geographically according to the character of its communities:',
+      zone: [
+        {
+          titlu: 'The Banat lowlands (the Timiș Plain) – the Banat Swabians',
+          intro:
+            'The settlers in this area came mostly from southern Germany (the Rhine, Lorraine, the Palatinate, Alsace). They turned marshland into highly productive farmland.',
+          puncte: [
+            [
+              'Timișoara (Temeswar)',
+              'The cultural and administrative capital. It was the heart of German urban life, with whole districts dominated by Austrian administrative architecture.',
+            ],
+            [
+              'Jimbolia (Hatzfeld)',
+              'It became one of the largest and most developed Swabian settlements on the plain, known for its roof tile and ceramics industry.',
+            ],
+            [
+              'Lenauheim (Tschatad)',
+              'A village of cultural importance, as the birthplace of the famous Romantic poet Nikolaus Lenau.',
+            ],
+            [
+              'Biled (Billed), Săcălaz (Sackelhausen) and Sânandrei (Sankt Andreas)',
+              'Large rural settlements around Timișoara, intensively colonised in the Theresian period, which keep their characteristic chessboard street pattern.',
+            ],
+            [
+              'Charlottenburg',
+              'A unique case in the Banat, as the only village built in a circle (a round village), preserved as a historic monument.',
+            ],
+            ['Gottlob and Lovrin', 'Prosperous farming centres, renowned for their advanced methods of working the land.'],
+          ],
+        },
+        {
+          titlu: 'The Banat Mountains (Caraș-Severin) – the Mountain Germans',
+          intro:
+            'Unlike the Swabians, the settlers in the mountains were mainly miners, metalworkers and craftsmen from the mining regions of Austria (Upper Austria, Styria, Tyrol) or Bohemia.',
+          puncte: [
+            [
+              'Oravița (Orawitz)',
+              'The starting point of German industrial history in the region. The first Tyrolean miners settled here right after the Ottomans were driven out.',
+            ],
+            [
+              'Reșița (Reschitza)',
+              'It grew from a small village into a huge metallurgical and steelmaking centre of European standing, thanks to the German engineers and workers brought in to work the iron.',
+            ],
+            [
+              'Anina (Steierdorf)',
+              'Founded by settlers from Styria (Steiermark). It soon became a major coal mining centre.',
+            ],
+            [
+              'Dognecea (Dognatschka)',
+              'Another old mining community, where copper and zinc mining was developed directly by communities of German specialists.',
+            ],
+          ],
+        },
+        {
+          titlu: 'The Serbian Banat (Vojvodina, Serbia)',
+          intro:
+            'After the Treaty of Trianon in 1920, the historical Banat was divided, with a third going to Serbia. Large German communities lived in this area until the Second World War.',
+          puncte: [
+            [
+              'Banatsko Veliko Selo',
+              'A settlement formed by the administrative merger of three formerly purely German villages: Sankt Hubert, Charleville and Seultour.',
+            ],
+            ['Novi Kozarci', 'A village created by joining the former Swabian villages of Heufeld and Mastort.'],
+            [
+              'Pančevo, Kikinda (Grosskikinda) and Vršac',
+              'Towns in the Serbian Banat with a sizeable urban German population, active in trade and crafts.',
+            ],
+          ],
+        },
+      ],
+      sistarovatTitlu: 'Germans in Șiștarovăț (Schischtarowetz) and similar communities',
+      sistarovat: [
+        'While the large settlements of the Banat plain and mountains were colonised heavily and compactly by ethnic Germans and became German-majority places, there were also villages where Germans were a minority, part of predominantly Romanian communities. A perfect example is the village of Șiștarovăț (Schischtarowetz), today in Arad County, on the historical border between the mountain and the lowland Banat.',
+        'In the 18th and 19th centuries, after the Banat passed to the Habsburg Crown, a small number of Germans settled here. They were usually administrative officials, foresters, craftsmen or merchants, sent to manage local resources (such as timber from the Lipova Hills).',
+        'So the history of the Banat Germans is not only about the large, “purely” German villages, but also about the discreet mark left on hill and forest villages such as Șiștarovăț, where a few families helped modernise the local economy for generations.',
+      ],
+      hartaBanatAlt:
+        'Map of the western Banat, from Jimbolia and Periam to Bocșa and Anina, with German settlements marked in green and orange. Șiștarovăț is marked in blue, north-east of Timișoara.',
+      hartaBanat:
+        'German settlements in the Banat with their German names: in green, the villages of the Banat Swabians; in orange, those of the Mountain Germans. Map from the seller.',
+      hartaAproapeAlt:
+        'Map between Arad, Lipova and Șiștarovăț: west of the village, Mașloc (Blumenthal), Altringen and Bogda (Neuhof) are marked.',
+      hartaAproape:
+        'On the map, the German villages closest to Șiștarovăț are Mașloc (Blumenthal), Altringen and Bogda (Neuhof). Map from the seller.',
+    },
     categoriiMici: true,
     calupTitlu: 'The parcels on the map',
     calup: (c) =>
@@ -295,7 +500,7 @@ export const ZONA: Record<Limba, TextZona> = {
     butonHarta: 'See the parcels on the map',
     butonLista: 'List of parcels for sale',
     surse:
-      'The description at the top is the text we received from the seller. Sources for the rest of the page: Wikipedia, the articles on the commune and the village of Șiștarovăț and on the Banat; the 2021 census. The parcel figures are calculated from the cadastral export we received.',
+      'The description at the top and the history of the ethnic Germans of the Banat, with its two maps, come from the seller. Sources for the rest of the page: Wikipedia, the articles on the commune and the village of Șiștarovăț and on the Banat; the 2021 census. The parcel figures are calculated from the cadastral export we received.',
   },
 
   de: {
@@ -407,6 +612,97 @@ export const ZONA: Record<Limba, TextZona> = {
     judetAlt:
       'Karte des Kreises Arad, nach Gemeinden aufgeteilt. Die Gemeinde Șiștarovăț ist schwarz eingefärbt, am Südrand des Kreises.',
     judet: 'Die Gemeinde Șiștarovăț, schwarz, unter den Gemeinden des Kreises Arad. Daten ANCPI, Open-Government-Lizenz.',
+    germani: {
+      titlu: 'Die Geschichte der Deutschen im Banat',
+      intro:
+        'Die Geschichte der Deutschen im Banat (in der Ebene als Banater Schwaben, im Bergland als Berglanddeutsche bekannt) gehört zu den faszinierendsten Kapiteln der Kolonisation in Mittel- und Osteuropa. Ihre Anwesenheit in der Region begann unmittelbar, nachdem das Banat 1716 mit der Vertreibung der Osmanen unter habsburgische Herrschaft gekommen war.',
+      zoneTitlu: 'Gebiete und Orte, in denen im Lauf der Zeit Deutsche lebten',
+      zoneIntro:
+        'Die deutsche Kolonisation des Banats verlief in mehreren Wellen, die das Habsburgerreich unter drei verschiedenen Herrschern organisierte: der Karolinische Schwabenzug (unter Karl VI., 1718–1740), der Theresianische (unter Maria Theresia, 1744–1772) und der Josephinische (unter Joseph II., 1782–1787). Geografisch gliederte sich die Region nach der Eigenart der Gemeinschaften:',
+      zone: [
+        {
+          titlu: 'Die Banater Ebene (Temesch-Ebene) – die Banater Schwaben',
+          intro:
+            'Die Siedler in diesem Gebiet stammten großenteils aus Süddeutschland (Rhein, Lothringen, Pfalz, Elsass). Sie verwandelten Sumpfland in äußerst ertragreiches Ackerland.',
+          puncte: [
+            [
+              'Timișoara (Temeswar)',
+              'Die kulturelle und administrative Hauptstadt. Sie war das Zentrum des deutschen städtischen Lebens, mit ganzen Vierteln, die von österreichischer Verwaltungsarchitektur geprägt sind.',
+            ],
+            [
+              'Jimbolia (Hatzfeld)',
+              'Sie wurde zu einer der größten und am weitesten entwickelten schwäbischen Siedlungen der Ebene, bekannt für ihre Ziegel- und Keramikindustrie.',
+            ],
+            [
+              'Lenauheim (Tschatad)',
+              'Ein Dorf von kultureller Bedeutung, Geburtsort des berühmten romantischen Dichters Nikolaus Lenau.',
+            ],
+            [
+              'Biled (Billed), Săcălaz (Sackelhausen) und Sânandrei (Sankt Andreas)',
+              'Große Dörfer rund um Timișoara, in theresianischer Zeit dicht besiedelt, die ihr typisches schachbrettartiges Straßennetz bewahrt haben.',
+            ],
+            [
+              'Charlottenburg',
+              'Ein Einzelfall im Banat: das einzige kreisförmig angelegte Dorf (Runddorf), als historisches Denkmal erhalten.',
+            ],
+            ['Gottlob und Lovrin', 'Wohlhabende landwirtschaftliche Zentren, bekannt für fortschrittliche Methoden der Bodenbearbeitung.'],
+          ],
+        },
+        {
+          titlu: 'Das Banater Bergland (Caraș-Severin) – die Berglanddeutschen',
+          intro:
+            'Anders als die Schwaben waren die Siedler im Bergland vor allem Bergleute, Hüttenarbeiter und Handwerker aus den Bergbaugebieten Österreichs (Oberösterreich, Steiermark, Tirol) oder aus Böhmen.',
+          puncte: [
+            [
+              'Oravița (Orawitz)',
+              'Der Ausgangspunkt der deutschen Industriegeschichte in der Region. Die ersten Tiroler Bergleute ließen sich hier gleich nach der Vertreibung der Osmanen nieder.',
+            ],
+            [
+              'Reșița (Reschitza)',
+              'Aus einem kleinen Dorf wurde ein riesiges Hütten- und Stahlzentrum von europäischem Rang, dank der deutschen Ingenieure und Arbeiter, die für die Eisenverarbeitung geholt wurden.',
+            ],
+            [
+              'Anina (Steierdorf)',
+              'Von Siedlern aus der Steiermark gegründet. Der Ort wurde rasch zu einem bedeutenden Kohlebergbauzentrum.',
+            ],
+            [
+              'Dognecea (Dognatschka)',
+              'Eine weitere alte Bergbaugemeinde, in der der Abbau von Kupfer und Zink direkt von deutschen Fachleuten aufgebaut wurde.',
+            ],
+          ],
+        },
+        {
+          titlu: 'Das serbische Banat (Vojvodina, Serbien)',
+          intro:
+            'Nach dem Vertrag von Trianon 1920 wurde das historische Banat geteilt, ein Drittel fiel an Serbien. In diesem Gebiet gab es bis zum Zweiten Weltkrieg große deutsche Gemeinschaften.',
+          puncte: [
+            [
+              'Banatsko Veliko Selo',
+              'Ein Ort, der durch den administrativen Zusammenschluss von drei ehemals rein deutschen Dörfern entstand: Sankt Hubert, Charleville und Seultour.',
+            ],
+            ['Novi Kozarci', 'Ein Dorf, das aus dem Zusammenschluss der ehemaligen schwäbischen Dörfer Heufeld und Mastort hervorging.'],
+            [
+              'Pančevo, Kikinda (Großkikinda) und Vršac',
+              'Städte im serbischen Banat mit einem bedeutenden Anteil deutscher Stadtbevölkerung, die in Handel und Handwerk tätig war.',
+            ],
+          ],
+        },
+      ],
+      sistarovatTitlu: 'Deutsche in Șiștarovăț (Schischtarowetz) und ähnlichen Gemeinden',
+      sistarovat: [
+        'Während die großen Siedlungen in der Ebene und im Bergland des Banats dicht und geschlossen von Deutschen besiedelt wurden und zu deutschen Mehrheitsorten wurden, gab es auch Dörfer, in denen die Deutschen eine Minderheit waren, eingebunden in überwiegend rumänische Gemeinschaften. Ein perfektes Beispiel dafür ist das Dorf Șiștarovăț (Schischtarowetz), heute im Kreis Arad, an der historischen Grenze zwischen Banater Bergland und Ebene.',
+        'Im 18. und 19. Jahrhundert, nachdem das Banat an die Habsburger Krone gefallen war, ließ sich hier eine kleine Zahl Deutscher nieder. Meist waren es Verwaltungsbeamte, Förster, Handwerker oder Kaufleute, die die örtlichen Ressourcen verwalten sollten (etwa die Holzverarbeitung im Hügelland von Lipova).',
+        'Die Geschichte der Banater Deutschen beschränkt sich also nicht auf die großen „rein“ deutschen Dörfer, sondern umfasst auch die stillen Spuren in Hügel- und Walddörfern wie Șiștarovăț, wo einige Familien über Generationen zur wirtschaftlichen Modernisierung der Gegend beitrugen.',
+      ],
+      hartaBanatAlt:
+        'Karte des westlichen Banats, von Jimbolia und Periam bis Bocșa und Anina, mit deutschen Orten in Grün und Orange. Șiștarovăț ist blau markiert, nordöstlich von Timișoara.',
+      hartaBanat:
+        'Deutsche Orte im Banat mit ihren deutschen Namen: grün die Dörfer der Banater Schwaben, orange die der Berglanddeutschen. Karte vom Verkäufer.',
+      hartaAproapeAlt:
+        'Karte zwischen Arad, Lipova und Șiștarovăț: westlich des Dorfes sind Mașloc (Blumenthal), Altringen und Bogda (Neuhof) markiert.',
+      hartaAproape:
+        'Die deutschen Dörfer, die auf der Karte Șiștarovăț am nächsten liegen: Mașloc (Blumenthal), Altringen und Bogda (Neuhof). Karte vom Verkäufer.',
+    },
     categoriiMici: false,
     calupTitlu: 'Die Flurstücke auf der Karte',
     calup: (c) =>
@@ -414,6 +710,6 @@ export const ZONA: Record<Limba, TextZona> = {
     butonHarta: 'Flurstücke auf der Karte ansehen',
     butonLista: 'Liste der Flurstücke zum Verkauf',
     surse:
-      'Die Beschreibung am Anfang ist der Text, den wir vom Verkäufer erhalten haben. Quellen für den Rest der Seite: Wikipedia, die Artikel über die Gemeinde und das Dorf Șiștarovăț und über das Banat; Volkszählung 2021. Die Zahlen zu den Flurstücken sind aus dem erhaltenen Katasterexport berechnet.',
+      'Die Beschreibung am Anfang und die Geschichte der Deutschen im Banat mit den beiden Karten stammen vom Verkäufer. Quellen für den Rest der Seite: Wikipedia, die Artikel über die Gemeinde und das Dorf Șiștarovăț und über das Banat; Volkszählung 2021. Die Zahlen zu den Flurstücken sind aus dem erhaltenen Katasterexport berechnet.',
   },
 };

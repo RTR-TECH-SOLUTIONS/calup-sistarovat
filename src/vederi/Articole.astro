@@ -1,10 +1,14 @@
 ---
 /**
- * Lista articolelor dintr-o limbă, cele mai noi primele. Cât timp nu e niciun
- * articol, pagina spune asta și trimite la hartă și la zonă.
+ * Articolele: ale noastre din src/content/articole, dacă sunt, apoi blogul
+ * clientului de la Soro (trysoro.com). Scriptul Soro, trimis de client pe
+ * 11 noiembrie 2026, își desenează singur lista în #soro-blog și deschide un
+ * articol pe aceeași pagină, la ?post=<slug>. Nu pune cookie-uri și nu scrie
+ * nimic în browser (verificat în script); dacă începe să o facă, se schimbă și
+ * paginile legale. Stilurile lui se suprascriu mai jos, ca să arate ca site-ul.
  */
 import Pagina from '../layouts/Pagina.astro';
-import { ruta, type Limba } from '../i18n/limbi';
+import { type Limba } from '../i18n/limbi';
 import { TEXT } from '../i18n/text';
 import { articole, dataArticol, linkArticol } from '../lib/articole';
 
@@ -25,7 +29,7 @@ const lista = await articole(limba);
     </header>
 
     {
-      lista.length > 0 ? (
+      lista.length > 0 && (
         <ol class="lista">
           {lista.map((a) => (
             <li>
@@ -37,13 +41,11 @@ const lista = await articole(limba);
             </li>
           ))}
         </ol>
-      ) : (
-        <div class="gol">
-          <p>{t.gol}</p>
-          <p class="gol-linkuri" set:html={t.golLinkuri(ruta('harta', limba), ruta('zona', limba))} />
-        </div>
       )
     }
+
+    <div id="soro-blog" class="soro"></div>
+    <script is:inline src="https://app.trysoro.com/api/embed/41b2efb7-ad07-45eb-8cfe-4943f37824c2" defer></script>
   </div>
 </Pagina>
 
@@ -64,8 +66,7 @@ const lista = await articole(limba);
     color: var(--color-ink-2);
   }
 
-  .lista,
-  .gol {
+  .lista {
     margin-top: clamp(24px, 4vw, 40px);
     border-top: 1px solid var(--color-ink);
   }
@@ -102,29 +103,132 @@ const lista = await articole(limba);
     color: var(--color-ink-2);
   }
 
-  .gol {
-    padding-top: 20px;
+  /* Blogul Soro, adus la fonturile și culorile site-ului. Selectorii au o clasă
+     în plus față de ai lui, pentru că stilurile lui se încarcă după ale noastre. */
+  .soro {
+    min-height: 12rem;
+    margin-top: clamp(24px, 4vw, 40px);
   }
 
-  .gol p:first-child {
+  /* Cu un articol deschis, titlul paginii lasă locul titlului articolului. */
+  .articole:has(:global(.soro-blog-article)) > header {
+    display: none;
+  }
+
+  .soro :global(.soro-blog) {
+    max-width: none;
+    margin: 0;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+  }
+
+  .soro :global(.soro-blog-list) {
+    gap: 0;
+    border-top: 1px solid var(--color-ink);
+  }
+
+  .soro :global(.soro-blog-card) {
+    gap: 20px;
+    padding: 20px 0 22px;
+    border: 0;
+    border-bottom: 1px solid var(--color-hairline);
+    border-radius: 0;
+  }
+
+  .soro :global(.soro-blog-card:hover) {
+    box-shadow: none;
+  }
+
+  .soro :global(.soro-blog-card-image) {
+    width: 168px;
+    height: 112px;
+    border-radius: var(--radius-mic);
+  }
+
+  .soro :global(.soro-blog-card-title),
+  .soro :global(.soro-blog-article-title),
+  .soro :global(.soro-blog-article-content h2),
+  .soro :global(.soro-blog-article-content h3) {
     font-family: var(--font-serif);
-    font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
   }
 
-  .gol-linkuri {
-    margin-top: 8px;
+  .soro :global(.soro-blog-card-title) {
+    margin-bottom: 8px;
+    font-size: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+    line-height: 1.2;
+  }
+
+  .soro :global(.soro-blog-card-excerpt) {
+    font-size: 1rem;
     color: var(--color-ink-2);
   }
 
-  .gol-linkuri :global(a) {
+  .soro :global(.soro-blog-card-date),
+  .soro :global(.soro-blog-article-date) {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-ink-3);
+  }
+
+  .soro :global(.soro-blog-back) {
+    color: var(--color-ink);
+    border-color: var(--color-hairline);
+    border-radius: var(--radius-panou);
+    transition: background-color 150ms ease-out;
+  }
+
+  .soro :global(.soro-blog-back:hover) {
+    background: var(--color-paper-2);
+    border-color: var(--color-hairline);
+  }
+
+  .soro :global(.soro-blog-article-title) {
+    font-size: clamp(2rem, 1.5rem + 2.2vw, 3rem);
+    line-height: 1.15;
+  }
+
+  .soro :global(.soro-blog-article-date) {
+    display: block;
+  }
+
+  .soro :global(.soro-blog-article-image) {
+    border-radius: var(--radius-panou);
+  }
+
+  .soro :global(.soro-blog-article-content) {
+    max-width: 68ch;
+    font-size: 1.0625rem;
+    color: var(--color-ink);
+  }
+
+  .soro :global(.soro-blog-article-content h2) {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  }
+
+  .soro :global(.soro-blog-article-content h3) {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  }
+
+  .soro :global(.soro-blog-article-content a) {
     color: var(--color-ink);
     text-decoration: underline;
     text-decoration-color: var(--color-ink-3);
     text-underline-offset: 3px;
-    transition: text-decoration-color 150ms ease-out;
   }
 
-  .gol-linkuri :global(a:hover) {
-    text-decoration-color: currentColor;
+  .soro :global(.soro-blog-empty),
+  .soro :global(.soro-blog-loading) {
+    color: var(--color-ink-2);
+  }
+
+  @media (max-width: 600px) {
+    .soro :global(.soro-blog-card-image) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 2;
+    }
   }
 </style>

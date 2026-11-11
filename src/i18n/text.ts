@@ -112,9 +112,6 @@ const ro = {
     descriere: 'Articole despre Șiștarovăț, Banat și terenurile din zonă.',
     h1: 'Articole',
     lead: 'Despre Șiștarovăț, Banat și terenurile din zonă.',
-    gol: 'Primele articole apar aici în curând.',
-    golLinkuri: (harta: string, zona: string) =>
-      `Până atunci, vezi parcelele pe <a href="${harta}">hartă</a> sau citește despre <a href="${zona}">zonă</a>.`,
     toate: 'Toate articolele',
     finalText: 'Te interesează o parcelă din Șiștarovăț?',
     butonHarta: 'Vezi parcelele pe hartă',
@@ -256,9 +253,6 @@ const en: Text = {
     descriere: 'Articles about Șiștarovăț, the Banat and the land in the area.',
     h1: 'Articles',
     lead: 'About Șiștarovăț, the Banat and the land in the area.',
-    gol: 'The first articles will appear here soon.',
-    golLinkuri: (harta: string, zona: string) =>
-      `Until then, see the parcels on the <a href="${harta}">map</a> or read about <a href="${zona}">the area</a>.`,
     toate: 'All articles',
     finalText: 'Interested in a parcel in Șiștarovăț?',
     butonHarta: 'See the parcels on the map',
@@ -400,9 +394,6 @@ const de: Text = {
     descriere: 'Artikel über Șiștarovăț, das Banat und die Grundstücke in der Gegend.',
     h1: 'Artikel',
     lead: 'Über Șiștarovăț, das Banat und die Grundstücke in der Gegend.',
-    gol: 'Die ersten Artikel erscheinen hier in Kürze.',
-    golLinkuri: (harta: string, zona: string) =>
-      `Bis dahin finden Sie die Flurstücke auf der <a href="${harta}">Karte</a> und mehr über <a href="${zona}">die Gegend</a>.`,
     toate: 'Alle Artikel',
     finalText: 'Interessieren Sie sich für ein Flurstück in Șiștarovăț?',
     butonHarta: 'Flurstücke auf der Karte ansehen',
