@@ -13,7 +13,14 @@ export const CONTACT = {
   nume: 'George' as string | null,
   /** CUI și nr. de înregistrare, doar dacă vinde printr-o firmă. Altfel rămâne null și nu apare. */
   firma: null as string | null,
-  adresa: null as string | null,
+  /**
+   * Adresele, trimise de client pe 11 nov ca să apară la contact, în ordinea lui.
+   * Țara nu stă aici: se scrie în limba paginii (TEXT[limba].contact.tara).
+   */
+  adrese: [
+    { tara: 'de', randuri: ['Bergrat Mahr Str. 18', '98693 Ilmenau'] },
+    { tara: 'ro', randuri: ['Bd. Revoluției 95, ap. 5', '310130 Arad'] },
+  ] as { tara: 'de' | 'ro'; randuri: string[] }[],
   email: 'badoiu_george@yahoo.de' as string | null,
   /** Numărul de pe care scrie clientul. Pe el e și WhatsApp-ul. */
   telefon: '+40 742 314 574',

@@ -30,17 +30,21 @@ const a = (href: string, text: string) =>
   `<a href="${href}"${href.startsWith('http') ? ' rel="noopener"' : ''}>${text}</a>`;
 
 const SAU: Record<Limba, string> = { ro: 'sau', en: 'or', de: 'oder' };
+const SI: Record<Limba, string> = { ro: 'și', en: 'and', de: 'und' };
 
 /** Datele care se repetă, în forma fiecărei limbi. */
 function date(l: Limba) {
   const t = TEXT[l];
   const nume = camp(CONTACT.nume, t.deCompletat, t.contact.lipsaNume);
-  const extra = [CONTACT.firma, CONTACT.adresa].filter(Boolean).map((x) => camp(x, '', ''));
+  const firma = CONTACT.firma ? [camp(CONTACT.firma, '', '')] : [];
+  // Adresele, în paranteză după nume: „George (strada, oraș, țara, și strada, oraș, țara)”.
+  const adrese = CONTACT.adrese.map((x) => camp([...x.randuri, t.contact.tara[x.tara]].join(', '), '', ''));
+  const inParanteza = adrese.length ? ` (${adrese.slice(0, -1).join(', ')}${adrese.length > 1 ? `, ${SI[l]} ` : ''}${adrese.at(-1)})` : '';
   const email = CONTACT.email
     ? a(`mailto:${CONTACT.email}`, camp(CONTACT.email, '', ''))
     : camp(null, t.deCompletat, t.contact.lipsaEmail);
   return {
-    vanzator: [nume, ...extra].join(', '),
+    vanzator: [nume, ...firma].join(', ') + inParanteza,
     // Două numere: cel din România (și pe WhatsApp) și cel din Germania.
     telefon: `${a(telefonLink, CONTACT.telefon)} ${SAU[l]} ${a(telefonDeLink, CONTACT.telefonDe)}`,
     whatsapp: a(whatsapp(), 'WhatsApp'),
@@ -277,7 +281,7 @@ function termeni(l: Limba): DocLegal {
     return {
       titlu: 'Terms of use',
       descriere: `Terms of use for the ${MARCA} website.`,
-      actualizat: 'Last updated: 10 November 2026',
+      actualizat: 'Last updated: 11 November 2026',
       sectiuni: [
         {
           titlu: 'About this website',
@@ -331,7 +335,7 @@ function termeni(l: Limba): DocLegal {
     return {
       titlu: 'Nutzungsbedingungen',
       descriere: `Nutzungsbedingungen der Website ${MARCA}.`,
-      actualizat: 'Zuletzt aktualisiert: 10. November 2026',
+      actualizat: 'Zuletzt aktualisiert: 11. November 2026',
       sectiuni: [
         {
           titlu: 'Über diese Website',
@@ -386,7 +390,7 @@ function termeni(l: Limba): DocLegal {
   return {
     titlu: 'Termeni și condiții',
     descriere: `Termenii de folosire a site-ului ${MARCA}.`,
-    actualizat: 'Ultima actualizare: 10 noiembrie 2026',
+    actualizat: 'Ultima actualizare: 11 noiembrie 2026',
     sectiuni: [
       {
         titlu: 'Despre site',

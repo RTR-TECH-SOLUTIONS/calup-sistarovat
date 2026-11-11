@@ -81,12 +81,18 @@ const email = mailto();
           </dd>
         </div>
         {
-          CONTACT.adresa && (
+          CONTACT.adrese.map(({ tara, randuri }) => (
             <div>
-              <dt>{t.adresa}</dt>
-              <dd>{CONTACT.adresa}</dd>
+              <dt>{t.adresa[tara]}</dt>
+              <dd>
+                <address class="adresa">
+                  {randuri.map((r) => (
+                    <span>{r}</span>
+                  ))}
+                </address>
+              </dd>
             </div>
-          )
+          ))
         }
       </dl>
 
@@ -263,6 +269,15 @@ const email = mailto();
     display: block;
     font-size: 0.875rem;
     color: var(--color-ink-2);
+  }
+
+  /* Strada pe un rând, codul poștal și orașul pe următorul. */
+  .adresa {
+    font-style: normal;
+  }
+
+  .adresa span {
+    display: block;
   }
 
   /* WhatsApp și apelul pe un rând, emailul dedesubt pe toată lățimea. */
