@@ -39,4 +39,6 @@ jobs:
         with:
           name: site
           path: dist
+          # .htaccess (redirecționările de pe Apache) e fișier ascuns; fără asta lipsește.
+          include-hidden-files: true
           retention-days: 14
