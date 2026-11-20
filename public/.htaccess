@@ -1,0 +1,11 @@
+# Doar pentru domeniul clientului, unde site-ul stă pe Apache (Enhance).
+# GitHub Pages, unde e demo-ul, nu citește fișierul.
+#
+# Până pe 20 noiembrie 2026, articolele se deschideau de la Soro pe pagina
+# Articole, la ?post=<adresa>. Acum fiecare are pagina lui, în germană, la
+# /de/artikel/<adresa>/, așa că adresele vechi duc acolo, permanent.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{QUERY_STRING} (^|&)post=([a-z0-9-]+)(&|$)
+  RewriteRule ^(articole|en/articles|de/artikel)/?$ /de/artikel/%2/ [R=301,L,QSD]
+</IfModule>

@@ -14,13 +14,16 @@ const articole = defineCollection({
     // Id-ul e chiar calea, „ro/nume-fisier”: din ea citim limba și adresa.
     generateId: ({ entry }) => entry.replace(/\.md$/, ''),
   }),
-  schema: z.object({
-    titlu: z.string(),
-    descriere: z.string(),
-    data: z.coerce.date(),
-    /** Leagă traducerile între ele. Implicit e numele fișierului. */
-    cheie: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      titlu: z.string(),
+      descriere: z.string(),
+      data: z.coerce.date(),
+      /** Leagă traducerile între ele. Implicit e numele fișierului. */
+      cheie: z.string().optional(),
+      /** Poza de sus, calea relativă la fișier, de exemplu ./imagini/nume.webp. */
+      imagine: image().optional(),
+    }),
 });
 
 export const collections = { articole };

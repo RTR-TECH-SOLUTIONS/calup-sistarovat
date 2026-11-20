@@ -1,16 +1,19 @@
 ---
 /**
- * Articolele: ale noastre din src/content/articole, dacă sunt, apoi blogul
- * clientului de la Soro (trysoro.com). Scriptul Soro, trimis de client pe
- * 11 noiembrie 2026, își desenează singur lista în #soro-blog și deschide un
- * articol pe aceeași pagină, la ?post=<slug>. Nu pune cookie-uri și nu scrie
- * nimic în browser (verificat în script); dacă începe să o facă, se schimbă și
- * paginile legale. Stilurile lui se suprascriu mai jos, ca să arate ca site-ul.
+ * Lista de articole, din src/content/articole. Pe fiecare limbă apar și
+ * articolele scrise în altă limbă, netraduse, cu limba lor lângă dată.
+ *
+ * Până pe 20 noiembrie 2026, aici era blogul clientului de la Soro
+ * (trysoro.com), care deschidea un articol pe aceeași pagină, la ?post=<slug>.
+ * Atunci am copiat articolele în src/content/articole/de, cu aceleași adrese,
+ * și am scos scriptul. Linkurile vechi duc la pagina articolului: pe domeniu
+ * prin public/.htaccess (301), iar scriptul de mai jos acoperă restul.
  */
+import { Picture } from 'astro:assets';
 import Pagina from '../layouts/Pagina.astro';
 import { type Limba } from '../i18n/limbi';
 import { TEXT } from '../i18n/text';
-import { articole, dataArticol, linkArticol } from '../lib/articole';
+import { adresa, articoleInLista, dataArticol, limbaArticol, linkArticol } from '../lib/articole';
 
 interface Props {
   limba: Limba;
@@ -18,10 +21,16 @@ interface Props {
 
 const { limba } = Astro.props;
 const t = TEXT[limba].articole;
-const lista = await articole(limba);
+const lista = await articoleInLista(limba);
+const postVechi = Object.fromEntries(lista.map((a) => [adresa(a), linkArticol(a)]));
 ---
 
 <Pagina titlu={t.titlu} limba={limba} pagina="articole" descriere={t.descriere}>
+  <script is:inline define:vars={{ postVechi }}>
+    const post = new URLSearchParams(location.search).get('post');
+    if (post && Object.hasOwn(postVechi, post)) location.replace(postVechi[post]);
+  </script>
+
   <div class="cadru articole">
     <header>
       <h1>{t.h1}</h1>
@@ -31,21 +40,41 @@ const lista = await articole(limba);
     {
       lista.length > 0 && (
         <ol class="lista">
-          {lista.map((a) => (
-            <li>
-              <time datetime={a.data.data.toISOString().slice(0, 10)}>{dataArticol(limba, a.data.data)}</time>
-              <h2>
-                <a href={linkArticol(a)}>{a.data.titlu}</a>
-              </h2>
-              <p>{a.data.descriere}</p>
-            </li>
-          ))}
+          {
+            lista.map((a) => {
+              const limbaA = limbaArticol(a);
+              const strain = limbaA !== limba;
+              return (
+                <li class:list={{ 'cu-imagine': a.data.imagine }} lang={strain ? limbaA : undefined}>
+                  {a.data.imagine && (
+                    <a class="poza" href={linkArticol(a)} tabindex="-1" aria-hidden="true">
+                      <Picture
+                        src={a.data.imagine}
+                        formats={['avif']}
+                        fallbackFormat="webp"
+                        widths={[336, 600, 900]}
+                        sizes="(max-width: 600px) calc(100vw - 32px), 168px"
+                        alt=""
+                      />
+                    </a>
+                  )}
+                  <div class="text">
+                    <p class="meta" lang={limba}>
+                      <time datetime={a.data.data.toISOString().slice(0, 10)}>{dataArticol(limba, a.data.data)}</time>
+                      {strain && <span> · {t.inLimba[limbaA]}</span>}
+                    </p>
+                    <h2>
+                      <a href={linkArticol(a)}>{a.data.titlu}</a>
+                    </h2>
+                    <p class="rezumat">{a.data.descriere}</p>
+                  </div>
+                </li>
+              );
+            })
+          }
         </ol>
       )
     }
-
-    <div id="soro-blog" class="soro"></div>
-    <script is:inline src="https://app.trysoro.com/api/embed/41b2efb7-ad07-45eb-8cfe-4943f37824c2" defer></script>
   </div>
 </Pagina>
 
@@ -76,7 +105,29 @@ const lista = await articole(limba);
     border-bottom: 1px solid var(--color-hairline);
   }
 
-  time {
+  .cu-imagine {
+    display: grid;
+    grid-template-columns: 168px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .poza {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-mic);
+    background: var(--color-paper-2);
+  }
+
+  .poza :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .meta {
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     color: var(--color-ink-3);
@@ -85,6 +136,7 @@ const lista = await articole(limba);
   h2 {
     margin: 4px 0 8px;
     font-size: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+    line-height: 1.2;
   }
 
   h2 a {
@@ -98,137 +150,15 @@ const lista = await articole(limba);
     background-size: 100% 1px;
   }
 
-  li p {
+  .rezumat {
     max-width: 64ch;
     color: var(--color-ink-2);
   }
 
-  /* Blogul Soro, adus la fonturile și culorile site-ului. Selectorii au o clasă
-     în plus față de ai lui, pentru că stilurile lui se încarcă după ale noastre. */
-  .soro {
-    min-height: 12rem;
-    margin-top: clamp(24px, 4vw, 40px);
-  }
-
-  /* Cu un articol deschis, titlul paginii lasă locul titlului articolului. */
-  .articole:has(:global(.soro-blog-article)) > header {
-    display: none;
-  }
-
-  .soro :global(.soro-blog) {
-    max-width: none;
-    margin: 0;
-    font-family: var(--font-sans);
-    color: var(--color-ink);
-  }
-
-  .soro :global(.soro-blog-list) {
-    gap: 0;
-    border-top: 1px solid var(--color-ink);
-  }
-
-  .soro :global(.soro-blog-card) {
-    gap: 20px;
-    padding: 20px 0 22px;
-    border: 0;
-    border-bottom: 1px solid var(--color-hairline);
-    border-radius: 0;
-  }
-
-  .soro :global(.soro-blog-card:hover) {
-    box-shadow: none;
-  }
-
-  .soro :global(.soro-blog-card-image) {
-    width: 168px;
-    height: 112px;
-    border-radius: var(--radius-mic);
-  }
-
-  .soro :global(.soro-blog-card-title),
-  .soro :global(.soro-blog-article-title),
-  .soro :global(.soro-blog-article-content h2),
-  .soro :global(.soro-blog-article-content h3) {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    color: var(--color-ink);
-  }
-
-  .soro :global(.soro-blog-card-title) {
-    margin-bottom: 8px;
-    font-size: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
-    line-height: 1.2;
-  }
-
-  .soro :global(.soro-blog-card-excerpt) {
-    font-size: 1rem;
-    color: var(--color-ink-2);
-  }
-
-  .soro :global(.soro-blog-card-date),
-  .soro :global(.soro-blog-article-date) {
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    color: var(--color-ink-3);
-  }
-
-  .soro :global(.soro-blog-back) {
-    color: var(--color-ink);
-    border-color: var(--color-hairline);
-    border-radius: var(--radius-panou);
-    transition: background-color 150ms ease-out;
-  }
-
-  .soro :global(.soro-blog-back:hover) {
-    background: var(--color-paper-2);
-    border-color: var(--color-hairline);
-  }
-
-  .soro :global(.soro-blog-article-title) {
-    font-size: clamp(2rem, 1.5rem + 2.2vw, 3rem);
-    line-height: 1.15;
-  }
-
-  .soro :global(.soro-blog-article-date) {
-    display: block;
-  }
-
-  .soro :global(.soro-blog-article-image) {
-    border-radius: var(--radius-panou);
-  }
-
-  .soro :global(.soro-blog-article-content) {
-    max-width: 68ch;
-    font-size: 1.0625rem;
-    color: var(--color-ink);
-  }
-
-  .soro :global(.soro-blog-article-content h2) {
-    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
-  }
-
-  .soro :global(.soro-blog-article-content h3) {
-    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-  }
-
-  .soro :global(.soro-blog-article-content a) {
-    color: var(--color-ink);
-    text-decoration: underline;
-    text-decoration-color: var(--color-ink-3);
-    text-underline-offset: 3px;
-  }
-
-  .soro :global(.soro-blog-empty),
-  .soro :global(.soro-blog-loading) {
-    color: var(--color-ink-2);
-  }
-
   @media (max-width: 600px) {
-    .soro :global(.soro-blog-card-image) {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 3 / 2;
+    .cu-imagine {
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
   }
 </style>

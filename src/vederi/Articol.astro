@@ -3,6 +3,7 @@
  * Un articol. Textul vine din Markdown, deci stilurile pentru titluri, liste,
  * citate și imagini sunt aici, aplicate pe tot ce scrie Markdown-ul.
  */
+import { Picture } from 'astro:assets';
 import { render } from 'astro:content';
 import Pagina from '../layouts/Pagina.astro';
 import { ruta, type Limba } from '../i18n/limbi';
@@ -16,7 +17,7 @@ interface Props {
 
 const { limba, articol } = Astro.props;
 const t = TEXT[limba].articole;
-const { titlu, descriere, data } = articol.data;
+const { titlu, descriere, data, imagine } = articol.data;
 const { Content } = await render(articol);
 const adrese = await traduceri(articol);
 ---
@@ -30,6 +31,23 @@ const adrese = await traduceri(articol);
       <h1>{titlu}</h1>
       <p class="lead">{descriere}</p>
     </header>
+
+    {
+      imagine && (
+        <figure class="coperta">
+          <Picture
+            src={imagine}
+            formats={['avif']}
+            fallbackFormat="webp"
+            widths={[600, 900, 1200, 1536]}
+            sizes="(max-width: 720px) calc(100vw - 32px), 660px"
+            alt={titlu}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
 
     <div class="continut">
       <Content />
@@ -86,6 +104,19 @@ const adrese = await traduceri(articol);
     line-height: 1.65;
     color: var(--color-ink-2);
     border-bottom: 1px solid var(--color-ink);
+  }
+
+  .coperta {
+    margin-top: clamp(20px, 3vw, 28px);
+    overflow: hidden;
+    border-radius: var(--radius-panou);
+    background: var(--color-paper-2);
+  }
+
+  .coperta :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   .continut {
