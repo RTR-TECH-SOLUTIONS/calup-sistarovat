@@ -1,9 +1,9 @@
 name: Build pentru grundstuecke-banat-rumaenien.com
 
 # Site-ul de pe domeniul clientului, găzduit la noi (Enhance). Spre deosebire de demo:
-# adresele pornesc din rădăcina domeniului și nu există robots.txt care să blocheze
-# indexarea. Se pornește de mână; rezultatul (dist/) rămâne ca artefact „site”, gata
-# de urcat în public_html.
+# adresele pornesc din rădăcina domeniului, paginile nu au noindex (vezi Cap.astro), iar
+# robots.txt lasă Google să intre și îi arată sitemap-ul. Se pornește de mână; rezultatul
+# (dist/) rămâne ca artefact „site”, gata de urcat în public_html.
 
 on:
   workflow_dispatch:
@@ -26,6 +26,11 @@ jobs:
 
       - name: Dependențe
         run: npm ci
+
+      - name: robots.txt cu sitemap-ul
+        run: |
+          mkdir -p public
+          printf 'User-agent: *\nAllow: /\n\nSitemap: https://grundstuecke-banat-rumaenien.com/sitemap-index.xml\n' > public/robots.txt
 
       - name: Build Astro
         run: npm run build

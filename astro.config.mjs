@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 // Previzualizarea stă pe demo.mrwebsites.ro/calup-sistarovat/, deci CI-ul pune
 // SITE_URL și SITE_BASE. Căile interne trec toate prin `cale()` din src/lib/cale.ts.
@@ -11,6 +12,9 @@ export default defineConfig({
   site,
   base,
   devToolbar: { enabled: false },
+  // sitemap-index.xml pentru Google. Pe domeniu îl anunță și robots.txt, pus de
+  // build-domeniu.yml. plan-calup.svg nu e pagină.
+  integrations: [sitemap({ filter: (pagina) => !pagina.endsWith('.svg') })],
   // Fonturile se descarcă la build și se servesc de pe site, nu de la Google.
   // latin-ext aduce ș, ț și ă; browserul îl cere doar unde apar.
   fonts: [

@@ -1,13 +1,22 @@
 ---
 /**
- * Lista de articole, din src/content/articole. Pe fiecare limbă apar și
+ * Pagina Articole are două părți.
+ *
+ * Sus e blogul clientului de la Holo, pus pe 25 noiembrie 2026 la cererea lui:
+ * scriptul aduce lista și deschide un articol pe aceeași pagină, la ?post=<slug>.
+ * Codul e exact cel trimis de client. Scriptul își pune singur titlul,
+ * descrierea și canonical-ul articolului deschis, deci pagina nu are canonical
+ * propriu.
+ *
+ * Dedesubt e lista din src/content/articole. Pe fiecare limbă apar și
  * articolele scrise în altă limbă, netraduse, cu limba lor lângă dată.
  *
- * Până pe 20 noiembrie 2026, aici era blogul clientului de la Soro
- * (trysoro.com), care deschidea un articol pe aceeași pagină, la ?post=<slug>.
- * Atunci am copiat articolele în src/content/articole/de, cu aceleași adrese,
- * și am scos scriptul. Linkurile vechi duc la pagina articolului: pe domeniu
- * prin public/.htaccess (301), iar scriptul de mai jos acoperă restul.
+ * Până pe 20 noiembrie 2026, blogul clientului era la Soro (trysoro.com), tot cu
+ * ?post=<slug>. Atunci am copiat articolele în src/content/articole/de, cu
+ * aceleași adrese, și am scos scriptul. Linkurile vechi duc la pagina
+ * articolului: pe domeniu prin public/.htaccess (301), iar scriptul de mai jos
+ * acoperă restul. Ambele redirecționează doar adresele articolelor de pe site,
+ * deci un ?post= de la Holo rămâne pe pagină.
  */
 import { Picture } from 'astro:assets';
 import Pagina from '../layouts/Pagina.astro';
@@ -25,7 +34,7 @@ const lista = await articoleInLista(limba);
 const postVechi = Object.fromEntries(lista.map((a) => [adresa(a), linkArticol(a)]));
 ---
 
-<Pagina titlu={t.titlu} limba={limba} pagina="articole" descriere={t.descriere}>
+<Pagina titlu={t.titlu} limba={limba} pagina="articole" descriere={t.descriere} canonic={false}>
   <script is:inline define:vars={{ postVechi }}>
     const post = new URLSearchParams(location.search).get('post');
     if (post && Object.hasOwn(postVechi, post)) location.replace(postVechi[post]);
@@ -36,6 +45,12 @@ const postVechi = Object.fromEntries(lista.map((a) => [adresa(a), linkArticol(a)
       <h1>{t.h1}</h1>
       <p class="lead">{t.lead}</p>
     </header>
+
+    <div id="holo-blog"></div>
+    <script
+      is:inline
+      src="https://prod-api-holo-ai.fly.dev/public/seo/embed/ddfe89e9-b10a-4cb2-9e31-abc20d7a2088.js"
+      defer></script>
 
     {
       lista.length > 0 && (
@@ -153,6 +168,58 @@ const postVechi = Object.fromEntries(lista.map((a) => [adresa(a), linkArticol(a)
   .rezumat {
     max-width: 64ch;
     color: var(--color-ink-2);
+  }
+
+  /*
+   * Articolele Holo vin ca HTML simplu, iar resetul din global.css le aplatizează
+   * subtitlurile și listele. Aici primesc aceleași mărimi ca un articol de pe
+   * site (Articol.astro). Primul h1 din text repetă titlul de deasupra, deci nu
+   * se mai arată.
+   */
+  .articole :global(.holo-blog-article-content) {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .articole :global(.holo-blog-article-content > h1:first-child) {
+    display: none;
+  }
+
+  .articole :global(.holo-blog-article-content :where(p, ul, ol, blockquote, table)) {
+    margin-bottom: 1.1em;
+  }
+
+  .articole :global(.holo-blog-article-content h2) {
+    margin: 1.8em 0 0.5em;
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+    line-height: 1.2;
+  }
+
+  .articole :global(.holo-blog-article-content h3) {
+    margin: 1.5em 0 0.4em;
+    font-size: 1.3125rem;
+    line-height: 1.25;
+  }
+
+  .articole :global(.holo-blog-article-content :where(ul, ol)) {
+    padding-left: 1.3em;
+  }
+
+  .articole :global(.holo-blog-article-content ul) {
+    list-style: disc;
+  }
+
+  .articole :global(.holo-blog-article-content ol) {
+    list-style: decimal;
+  }
+
+  .articole :global(.holo-blog-article-content li + li) {
+    margin-top: 0.35em;
+  }
+
+  .articole :global(.holo-blog-article-content a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   @media (max-width: 600px) {

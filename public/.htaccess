@@ -4,8 +4,12 @@
 # Până pe 20 noiembrie 2026, articolele se deschideau de la Soro pe pagina
 # Articole, la ?post=<adresa>. Acum fiecare are pagina lui, în germană, la
 # /de/artikel/<adresa>/, așa că adresele vechi duc acolo, permanent.
+#
+# Din 25 noiembrie, pe aceeași pagină e blogul de la Holo, care folosește tot
+# ?post=<adresa>. De aceea regula prinde doar cele 10 adrese de la Soro, scrise
+# pe nume; orice alt ?post= rămâne pe pagină, pentru Holo.
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteCond %{QUERY_STRING} (^|&)post=([a-z0-9-]+)(&|$)
+  RewriteCond %{QUERY_STRING} (^|&)post=(flaeche-einer-katasterparzelle-ermitteln|grundstueck-in-sistarovat-kaufen|grundstueck-nach-katasternummer-suchen-arad|grundstuecke-arad-kaufen|grundstuecke-banat-rumaenien-richtig-pruefen|grundstuecksgrenzen-online-in-rumaenien-pruefen|interaktive-katasterkarte-arad-nutzen|katasternummer-rumaenien-erklaert|unterschied-kataster-und-grundbuch-rumaenien|verfuegbare-grundstuecke-auf-karte-filtern)(&|$)
   RewriteRule ^(articole|en/articles|de/artikel)/?$ /de/artikel/%2/ [R=301,L,QSD]
 </IfModule>

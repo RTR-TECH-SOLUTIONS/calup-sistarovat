@@ -14,16 +14,17 @@ interface Props {
   descriere?: string;
   /** Adresele aceleiași pagini în celelalte limbi, când nu sunt cele din RUTE (articolele). */
   adrese?: Partial<Record<Limba, string>>;
+  canonic?: boolean;
 }
 
-const { titlu, limba, pagina, descriere, adrese } = Astro.props;
+const { titlu, limba, pagina, descriere, adrese, canonic } = Astro.props;
 const t = TEXT[limba];
 ---
 
 <!doctype html>
 <html lang={limba}>
   <head>
-    <Cap titlu={titlu} descriere={descriere} limba={limba} pagina={pagina} adrese={adrese} />
+    <Cap titlu={titlu} descriere={descriere} limba={limba} pagina={pagina} adrese={adrese} canonic={canonic} />
   </head>
   <body>
     <Antet limba={limba} pagina={pagina} adrese={adrese} />

@@ -36,4 +36,8 @@ Articolele din `de/` sunt ale clientului, scrise la Soro (trysoro.com) între
 cerut să scoatem scriptul Soro. Adresele sunt cele de la Soro, ca să meargă
 redirecționarea de la `?post=<adresa>` (vezi `public/.htaccess`).
 
+Din 25 noiembrie 2026, deasupra listei de aici, pe pagina Articole, e blogul
+clientului de la Holo, adus de scriptul lui (vezi `src/vederi/Articole.astro`).
+Articolele Holo nu sunt în acest dosar; se scriu și se publică la Holo.
+
 Acest README nu apare pe site: se citesc doar fișierele din `ro/`, `en/` și `de/`.

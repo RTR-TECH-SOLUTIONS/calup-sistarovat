@@ -15,6 +15,7 @@
     "date": "node scripts/kml-calup.mjs"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
     "astro": "^7.2.3",
     "maplibre-gl": "^6.4.1"
   },
